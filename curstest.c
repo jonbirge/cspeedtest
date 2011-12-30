@@ -7,7 +7,7 @@
 
 #define BARSIZE 10
 
-void drawbar(double frac, int width, int line);
+void drawbar(double frac, int width, int line, int offset);
 
 int main()
 {
@@ -56,7 +56,7 @@ int main()
 	 attroff (A_BOLD);
 	 attroff (COLOR_PAIR(1));
 	 
-	 drawbar ( (double) ms/1000.0, BARSIZE, 3);
+	 drawbar ( 1.0 - (double) ms/1000.0, BARSIZE, 2, 28);
       }
 
       move (nrows - 1, ncols - 1);
@@ -74,16 +74,16 @@ int main()
    endwin ();
 }
 
-void drawbar(double frac, int width, int line)
+void drawbar(double frac, int width, int line, int offset)
 {
-   move (line, 0);
+   move (line, offset);
    clrtoeol ();
    insch ('[');
-   move (line, 1);
+   move (line, offset + 1);
    for (int j = 0; j < round ( (double) width*frac); ++j)
    {
       addch (ACS_CKBOARD);
    }
-   move (line, width + 1);
+   move (line, offset + width + 1);
    insch (']');
 }
