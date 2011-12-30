@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -Wall -O2 -std=c99 -lncurses
 LIBS = -lcurses
 
-all : curstest
+all : cursbench
 
 clean :
-	-rm *~ curstest
+	-rm *~ cursbench
 	-rm -df *.dSYM
 
