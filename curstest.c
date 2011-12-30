@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define N_AVE 1000
+#define N_AVE 128
 
 void drawbar(double frac, int width, int line, int offset);
 
@@ -26,6 +26,7 @@ int main()
    char d;
    WINDOW *wnd;
    int nrows, ncols;
+   int attrb;
    
    wnd = initscr ();
    cbreak ();
@@ -35,6 +36,12 @@ int main()
    start_color ();
    init_pair (1, COLOR_GREEN, COLOR_BLACK);
    init_pair (2, COLOR_YELLOW, COLOR_BLACK);
+   init_pair (3, COLOR_RED, COLOR_BLACK);
+   init_pair (4, COLOR_CYAN, COLOR_BLACK);
+   init_pair (5, COLOR_MAGENTA, COLOR_BLACK);
+   init_pair (6, COLOR_BLUE, COLOR_BLACK);
+   init_pair (7, COLOR_WHITE, COLOR_BLACK);
+   init_pair (8, COLOR_BLACK, COLOR_BLUE);
    clear ();
    refresh ();
    
@@ -56,7 +63,7 @@ int main()
    {
       ++k;
 
-      if (k % N_AVE == 0)
+      if (!(k % N_AVE))
       {
 	 gettimeofday (&systime, NULL);
 	 sec = systime.tv_sec;
@@ -77,8 +84,6 @@ int main()
 	 attroff(COLOR_PAIR(1));
       }
       
-      drawbar((double) (k % N_AVE)/N_AVE, 10, 0, 22);
-
       if (!paused)
       {
 	 for (r = 2; r < nrows - 2; ++r)
@@ -86,18 +91,27 @@ int main()
 	    for (c = 0; c < ncols; ++c)
 	    {
 	       move (r, c);
+	       attrb = random () & 0x0F00;
+	       attron (attrb);
 	       insch ((random () & 0x3F) + 33);
+	       attroff (attrb);
 	    }
 	 }
       }
+      else
+      {
+	 usleep(10000);
+      }
 
-      if (k % 100 == 0)
+      if (k % 16 == 0)
       {
 	 d = getch ();
 	 if (d == 'q')
 	    done = 1;
 	 if (d == 'p')
 	    paused = !paused;
+
+	 drawbar((double) (k % N_AVE)/N_AVE, 10, 0, 22);
       }
 
       refresh();
@@ -108,14 +122,17 @@ int main()
 
 void drawbar(double frac, int width, int line, int offset)
 {
+   int j;
+
    move (line, offset);
-   clrtoeol ();
-   insch ('[');
-   move (line, offset + 1);
-   for (int j = 0; j < round ( (double) width*frac); ++j)
+   addch ('[');
+   for (j = 0; j < round ( (double) width*frac); ++j)
    {
       addch (ACS_CKBOARD);
    }
-   move (line, offset + width + 1);
-   insch (']');
+   for (; j < width; ++j)
+   {
+      addch (' ');
+   }
+   addch (']');
 }
