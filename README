@@ -1,4 +1,10 @@
-This program writes charactes to roughly fill the terminal screen, and
+This program writes random characters to fill the terminal screen, and
 reports on the resulting "frame rate". This is essentially a benchmark
-for a text terminal using curses, but also serves as a quick
-introduction to curses programming.
+for a text terminal using ncurses, but mostly serves as a quick
+introduction to ncurses programming.
+
+Usage: curses-benchmark [options]
+Options:
+-c   use color
+-b   black and white (default)
+-h   show this help
