@@ -1,14 +1,32 @@
-#include <ncurses.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/time.h>
-#include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <ncurses.h>
+#include <sys/time.h>
+#include <time.h>
+#include <math.h>
 
-#define N_AVE 128
+#define N_AVE_COLOR 128
+#define N_AVE 1024
 
-void drawbar(double frac, int width, int line, int offset);
+
+void drawbar(double frac, int width, int line, int offset)
+{
+   int j;
+   
+   move (line, offset);
+   addch ('[');
+   for (j = 0; j < ceil( (double) width*frac); ++j)
+   {
+      addch (ACS_CKBOARD);
+   }
+   for (; j < width; ++j)
+   {
+      addch (ACS_BULLET);
+   }
+   addch (']');
+   printw(" (%f = %d/%d)", frac, (int) ceil( (double) width*frac), width);
+}
 
 void drawline(int row, int width)
 {
@@ -18,7 +36,7 @@ void drawline(int row, int width)
       addch (ACS_HLINE);
 }
 
-int main()
+int main (int argc, char **argv)
 {
    int done = 0;
    int paused = 0;
@@ -27,6 +45,19 @@ int main()
    WINDOW *wnd;
    int nrows, ncols;
    int attrb;
+   int docolor, nave;
+   int opt;
+   
+   docolor = 0;
+   nave = N_AVE;
+   while ((opt = getopt (argc, argv, "bc")) != -1)
+      switch (opt)
+      {
+	 case 'c':
+	    docolor = 1;
+	    nave = N_AVE_COLOR;
+	    break;
+      }
    
    wnd = initscr ();
    cbreak ();
@@ -63,7 +94,7 @@ int main()
    {
       ++k;
 
-      if (!(k % N_AVE))
+      if (!(k % nave))
       {
 	 gettimeofday (&systime, NULL);
 	 sec = systime.tv_sec;
@@ -79,7 +110,7 @@ int main()
 	 clrtoeol ();
 	 printw ("curses fps: ");
 	 attron (A_BOLD);
-	 printw ("%.1f", (double) dk/ (double) dt);
+	 printw ("%4.1f", (double) dk/ (double) dt);
 	 attroff (A_BOLD);
 	 attroff(COLOR_PAIR(1));
       }
@@ -91,19 +122,24 @@ int main()
 	    for (c = 0; c < ncols; ++c)
 	    {
 	       move (r, c);
-	       attrb = random () & 0x0F00;
-	       attron (attrb);
+	       if (docolor)
+	       {
+		  attrb = random () & 0x0F00;
+		  attron (attrb);
+		  if ((random() >> 16 & 0x1))
+		     attron (A_BOLD);
+	       }
 	       insch ((random () & 0x3F) + 33);
-	       attroff (attrb);
+	       if (docolor)
+	       {
+		  attroff (attrb);
+		  attroff (A_BOLD);
+	       }
 	    }
 	 }
       }
-      else
-      {
-	 usleep(10000);
-      }
 
-      if (k % 16 == 0)
+      if (!(k % (nave/32)))
       {
 	 d = getch ();
 	 if (d == 'q')
@@ -111,28 +147,13 @@ int main()
 	 if (d == 'p')
 	    paused = !paused;
 
-	 drawbar((double) (k % N_AVE)/N_AVE, 10, 0, 22);
+	 drawbar ((double) (k % nave)/nave, 10, 0, 22);
+	 
+	 usleep (50000);
       }
 
       refresh();
    }
 
    endwin ();
-}
-
-void drawbar(double frac, int width, int line, int offset)
-{
-   int j;
-
-   move (line, offset);
-   addch ('[');
-   for (j = 0; j < round ( (double) width*frac); ++j)
-   {
-      addch (ACS_CKBOARD);
-   }
-   for (; j < width; ++j)
-   {
-      addch (' ');
-   }
-   addch (']');
 }
