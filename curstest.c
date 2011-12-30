@@ -4,19 +4,23 @@
 #include <time.h>
 #include <sys/time.h>
 #include <math.h>
-
-#define BARSIZE 10
+#include <stdlib.h>
 
 void drawbar(double frac, int width, int line, int offset);
+
+void drawline(int row, int width)
+{
+   move (row, 0);
+   clrtoeol ();
+   for (int j = 0; j < width; ++j)
+      addch (ACS_HLINE);
+}
 
 int main()
 {
    int done = 0;
    int paused = 0;
-   int k = 0;
-   struct tm *lcltime;
    struct timeval systime;
-   int ms;
    char d;
    WINDOW *wnd;
    int nrows, ncols;
@@ -27,46 +31,70 @@ int main()
    nodelay (wnd, TRUE);
    getmaxyx (wnd, nrows, ncols);
    start_color ();
-   init_pair (1, COLOR_RED, COLOR_BLACK);
+   init_pair (1, COLOR_GREEN, COLOR_BLACK);
+   init_pair (2, COLOR_YELLOW, COLOR_BLACK);
    clear ();
    refresh ();
    
+   attron(COLOR_PAIR(2));
+   drawline (1, ncols);
+   drawline (nrows - 2, ncols);
    move (nrows - 1, 0);
-   printw("type q to quit, p to pause timer...");
+   printw("type q to quit, p to pause...");
+   attroff(COLOR_PAIR(2));
 
+   int r, c;
+   int sec, us, secold = 0, usold = 0;
+   double dt;
+   long dk, k = 0, kold = 0;
+   gettimeofday (&systime, NULL);
+   secold = systime.tv_sec;
+   usold = systime.tv_usec;
    while (!done)
    {
-      gettimeofday (&systime, NULL);
-      lcltime = localtime (&systime.tv_sec);
-      ms = systime.tv_usec/1000;
-      move (0, 0);
-      printw ("frame: ");
-      attron (A_BOLD);
-      printw ("%d", ++k);
-      attroff (A_BOLD);
+      ++k;
 
+      if (k % 1000 == 0)
+      {
+	 gettimeofday (&systime, NULL);
+	 sec = systime.tv_sec;
+	 us = systime.tv_usec;
+	 dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
+	 secold = sec;
+	 usold = us;
+	 dk = k - kold;
+	 kold = k;
+
+	 attron(COLOR_PAIR(1));
+	 move (0, 0);
+	 clrtoeol ();
+	 printw ("curses fps: ");
+	 attron (A_BOLD);
+	 printw ("%f", (double) dk/ (double) dt);
+	 attroff (A_BOLD);
+	 attroff(COLOR_PAIR(1));
+      }
+      
       if (!paused)
       {
-	 move (2, 0);
-	 printw ("current time: ");
-	 attron (A_BOLD);
-	 attron (COLOR_PAIR(1));
-	 printw ("%.2d:%.2d:%.2d.%0.3d",
-		lcltime->tm_hour, lcltime->tm_min, lcltime->tm_sec, ms);
-	 attroff (A_BOLD);
-	 attroff (COLOR_PAIR(1));
-	 
-	 drawbar ( 1.0 - (double) ms/1000.0, BARSIZE, 2, 28);
+	 for (r = 2; r < nrows - 2; ++r)
+	 {
+	    for (c = 0; c < ncols; ++c)
+	    {
+	       move (r, c);
+	       insch ((random () & 0x3F) + 33);
+	    }
+	 }
       }
 
-      move (nrows - 1, ncols - 1);
-      usleep (50000);
-
-      d = getch ();
-      if (d == 'q')
-	 done = 1;
-      if (d == 'p')
-	 paused = !paused;
+      if (k % 100 == 0)
+      {
+	 d = getch ();
+	 if (d == 'q')
+	    done = 1;
+	 if (d == 'p')
+	    paused = !paused;
+      }
 
       refresh();
    }
