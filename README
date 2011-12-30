@@ -1,2 +1,2 @@
-This is a trivial program meant as a demo for how to do simple UIs in UNIX-like
-operating systems.
+This program writes charactes to roughly fill the terminal screen, and reports on the
+resulting "frame rate". This is essentially a benchmark for a text terminal using curses.
