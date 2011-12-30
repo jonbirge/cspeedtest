@@ -25,7 +25,6 @@ void drawbar(double frac, int width, int line, int offset)
       addch (ACS_BULLET);
    }
    addch (']');
-   printw(" (%f = %d/%d)", frac, (int) ceil( (double) width*frac), width);
 }
 
 void drawline(int row, int width)
@@ -87,7 +86,7 @@ int main (int argc, char **argv)
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
    move (nrows - 1, 0);
-   printw("type q to quit, p to pause...");
+   printw("type q to quit, c to toggle color, p to pause...");
    attroff(COLOR_PAIR(2));
 
    int r, c;
@@ -149,10 +148,21 @@ int main (int argc, char **argv)
       if (!(k % (nave/32)))
       {
 	 d = getch ();
-	 if (d == 'q')
-	    done = 1;
-	 if (d == 'p')
-	    paused = !paused;
+	 switch (d)
+	 {
+	    case 'q':
+	       done = 1;
+	       break;
+	    case 'p':
+	       paused = !paused;
+	       break;
+	    case 'c':
+	       docolor = !docolor;
+	       if (docolor)
+		  nave = N_AVE_COLOR;
+	       else
+		  nave = N_AVE;
+	 }
 
 	 drawbar ((double) (k % nave)/nave, 10, 0, 22);
 	 
