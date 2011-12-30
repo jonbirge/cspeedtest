@@ -90,9 +90,9 @@ int main (int argc, char **argv)
    attroff(COLOR_PAIR(2));
 
    int r, c;
-   int sec, us, secold = 0, usold = 0;
+   int sec, us, secold, usold;
    double dt;
-   long dk, k = 0, kold = 0;
+   long dk, k = -1, kold = -1;
    gettimeofday (&systime, NULL);
    secold = systime.tv_sec;
    usold = systime.tv_usec;
@@ -100,27 +100,6 @@ int main (int argc, char **argv)
    {
       ++k;
 
-      if (!(k % nave))
-      {
-	 gettimeofday (&systime, NULL);
-	 sec = systime.tv_sec;
-	 us = systime.tv_usec;
-	 dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
-	 secold = sec;
-	 usold = us;
-	 dk = k - kold;
-	 kold = k;
-
-	 attron(COLOR_PAIR(1));
-	 move (0, 0);
-	 clrtoeol ();
-	 printw ("curses fps: ");
-	 attron (A_BOLD);
-	 printw ("%4.1f", (double) dk/ (double) dt);
-	 attroff (A_BOLD);
-	 attroff(COLOR_PAIR(1));
-      }
-      
       if (!paused)
       {
 	 for (r = 2; r < nrows - 2; ++r)
@@ -164,11 +143,34 @@ int main (int argc, char **argv)
 		  nave = N_AVE;
 	 }
 
-	 drawbar ((double) (k % nave)/nave, 10, 0, 22);
+	 drawbar ((double) (k % nave)/nave, 10, 0, 20);
+	 printw ("   frames: %d", k);
 	 
 	 usleep (50000);
       }
 
+      if (!(k % nave))
+      {
+	 gettimeofday (&systime, NULL);
+	 sec = systime.tv_sec;
+	 us = systime.tv_usec;
+	 dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
+	 secold = sec;
+	 dk = k - kold;
+
+	 attron(COLOR_PAIR(1));
+	 move (0, 0);
+	 clrtoeol ();
+	 printw ("curses fps: ");
+	 attron (A_BOLD);
+	 printw ("%4.1f", (double) dk/ (double) dt);
+	 attroff (A_BOLD);
+	 attroff(COLOR_PAIR(1));
+
+	 usold = us;
+	 kold = k;
+      }
+      
       refresh();
    }
 
