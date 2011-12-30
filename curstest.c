@@ -13,7 +13,7 @@ int main()
 {
    int done = 0;
    int paused = 0;
-   int k;
+   int k = 0;
    struct tm *lcltime;
    struct timeval systime;
    int ms;
@@ -27,7 +27,7 @@ int main()
    nodelay (wnd, TRUE);
    getmaxyx (wnd, nrows, ncols);
    clear ();
-   //refresh ();
+   refresh ();
    
    move (nrows - 1, 0);
    printw("awaiting command...");
@@ -38,7 +38,7 @@ int main()
       lcltime = localtime (&(systime.tv_sec));
       ms = systime.tv_usec/1000;
       move (0, 0);
-      printw ("frame id %d:", ++k);
+      printw ("frame %d:", ++k);
       move (2, 0);
       printw ("current time = %.2d:%.2d:%.2d.%0.3d",
 	      lcltime->tm_hour, lcltime->tm_min, lcltime->tm_sec, ms);
@@ -64,7 +64,7 @@ void drawbar(double frac, int width, int line)
    clrtoeol (); // is this slow?
    insch ('[');
    move (line, 1);
-   for (int j = 0; j < round((double)width*frac); ++j)
+   for (int j = 0; j < round((double) width*frac); ++j)
    {
       addch ('=');
    }
