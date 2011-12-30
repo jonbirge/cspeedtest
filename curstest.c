@@ -6,6 +6,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#define N_AVE 1000
+
 void drawbar(double frac, int width, int line, int offset);
 
 void drawline(int row, int width)
@@ -54,7 +56,7 @@ int main()
    {
       ++k;
 
-      if (k % 1000 == 0)
+      if (k % N_AVE == 0)
       {
 	 gettimeofday (&systime, NULL);
 	 sec = systime.tv_sec;
@@ -70,11 +72,13 @@ int main()
 	 clrtoeol ();
 	 printw ("curses fps: ");
 	 attron (A_BOLD);
-	 printw ("%f", (double) dk/ (double) dt);
+	 printw ("%.1f", (double) dk/ (double) dt);
 	 attroff (A_BOLD);
 	 attroff(COLOR_PAIR(1));
       }
       
+      drawbar((double) (k % N_AVE)/N_AVE, 10, 0, 22);
+
       if (!paused)
       {
 	 for (r = 2; r < nrows - 2; ++r)
