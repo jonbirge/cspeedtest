@@ -50,13 +50,20 @@ int main (int argc, char **argv)
    
    docolor = 0;
    nave = N_AVE;
-   while ((opt = getopt (argc, argv, "bc")) != -1)
+   while ((opt = getopt (argc, argv, "bch")) != -1)
       switch (opt)
       {
 	 case 'c':
 	    docolor = 1;
 	    nave = N_AVE_COLOR;
 	    break;
+	 case 'h':
+	    printf("Usage: curses-benchmark [options]\n");
+	    printf("Options:\n");
+	    printf("-c   use color\n");
+	    printf("-b   black and white (default)\n");
+	    printf("-h   show this help\n");
+	    return (0);
       }
    
    wnd = initscr ();
@@ -156,4 +163,6 @@ int main (int argc, char **argv)
    }
 
    endwin ();
+
+   return 0;
 }
