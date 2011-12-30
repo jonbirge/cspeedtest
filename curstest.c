@@ -21,12 +21,13 @@ int main()
    WINDOW *wnd;
    int nrows, ncols;
    
-   // init screen
    wnd = initscr ();
    cbreak ();
    noecho ();
    nodelay (wnd, TRUE);
    getmaxyx (wnd, nrows, ncols);
+   start_color ();
+   init_pair (1, COLOR_RED, COLOR_BLACK);
    clear ();
    refresh ();
    
@@ -39,13 +40,21 @@ int main()
       lcltime = localtime (&systime.tv_sec);
       ms = systime.tv_usec/1000;
       move (0, 0);
-      printw ("frame %d:", ++k);
+      printw ("frame: ");
+      attron (A_BOLD);
+      printw ("%d", ++k);
+      attroff (A_BOLD);
 
       if (!paused)
       {
 	 move (2, 0);
-	 printw ("current time = %.2d:%.2d:%.2d.%0.3d",
-		 lcltime->tm_hour, lcltime->tm_min, lcltime->tm_sec, ms);
+	 printw ("current time: ");
+	 attron (A_BOLD);
+	 attron (COLOR_PAIR(1));
+	 printw ("%.2d:%.2d:%.2d.%0.3d",
+		lcltime->tm_hour, lcltime->tm_min, lcltime->tm_sec, ms);
+	 attroff (A_BOLD);
+	 attroff (COLOR_PAIR(1));
 	 
 	 drawbar ( (double) ms/1000.0, BARSIZE, 3);
       }
@@ -58,6 +67,8 @@ int main()
 	 done = 1;
       if (d == 'p')
 	 paused = !paused;
+
+      refresh();
    }
 
    endwin ();
@@ -66,14 +77,13 @@ int main()
 void drawbar(double frac, int width, int line)
 {
    move (line, 0);
-   clrtoeol (); // is this slow?
+   clrtoeol ();
    insch ('[');
    move (line, 1);
    for (int j = 0; j < round ( (double) width*frac); ++j)
    {
-      addch ('=');
+      addch (ACS_CKBOARD);
    }
    move (line, width + 1);
    insch (']');
 }
-   
