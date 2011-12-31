@@ -6,8 +6,8 @@
 #include <time.h>
 #include <math.h>
 
-#define N_AVE_COLOR 128
-#define N_AVE 1024
+#define N_AVE_COLOR 64
+#define N_AVE 256
 
 
 void drawbar(double frac, int width, int line, int offset)
@@ -16,10 +16,12 @@ void drawbar(double frac, int width, int line, int offset)
    
    move (line, offset);
    addch ('[');
+   attron (A_BOLD);
    for (j = 0; j < ceil( (double) width*frac); ++j)
    {
       addch (ACS_CKBOARD);
    }
+   attroff (A_BOLD);
    for (; j < width; ++j)
    {
       addch (ACS_BULLET);
@@ -47,6 +49,7 @@ int main (int argc, char **argv)
    int docolor, nave;
    int opt;
    
+   // options and defaults
    docolor = 0;
    nave = N_AVE;
    while ((opt = getopt (argc, argv, "bch")) != -1)
@@ -65,6 +68,7 @@ int main (int argc, char **argv)
 	    return (0);
       }
    
+   // init ncurses
    wnd = initscr ();
    cbreak ();
    noecho ();
@@ -81,7 +85,8 @@ int main (int argc, char **argv)
    init_pair (8, COLOR_BLACK, COLOR_BLUE);
    clear ();
    refresh ();
-   
+
+   // static displays
    attron(COLOR_PAIR(2));
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
@@ -89,6 +94,7 @@ int main (int argc, char **argv)
    printw("type q to quit, c to toggle color, p to pause...");
    attroff(COLOR_PAIR(2));
 
+   // main loop
    int r, c;
    int sec, us, secold, usold;
    double dt;
@@ -104,9 +110,9 @@ int main (int argc, char **argv)
       {
 	 for (r = 2; r < nrows - 2; ++r)
 	 {
+	    move (r, 0);
 	    for (c = 0; c < ncols; ++c)
 	    {
-	       move (r, c);
 	       if (docolor)
 	       {
 		  attrb = random () & 0x0F00;
@@ -114,7 +120,7 @@ int main (int argc, char **argv)
 		  if ((random() >> 16 & 0x1))
 		     attron (A_BOLD);
 	       }
-	       insch ((random () & 0x3F) + 33);
+	       addch ((random () & 0x3F) + 33);
 	       if (docolor)
 	       {
 		  attroff (attrb);
@@ -169,6 +175,8 @@ int main (int argc, char **argv)
 
 	 usold = us;
 	 kold = k;
+
+	 drawbar (0, 10, 0, 20);
       }
       
       refresh();
