@@ -9,7 +9,6 @@
 #define N_AVE_COLOR 64
 #define N_AVE 256
 
-
 void drawbar(double frac, int width, int line, int offset)
 {
    int j;
@@ -82,7 +81,14 @@ int main (int argc, char **argv)
    init_pair (5, COLOR_MAGENTA, COLOR_BLACK);
    init_pair (6, COLOR_BLUE, COLOR_BLACK);
    init_pair (7, COLOR_WHITE, COLOR_BLACK);
-   init_pair (8, COLOR_BLACK, COLOR_BLUE);
+   init_pair (8, COLOR_BLACK, COLOR_GREEN);
+   init_pair (9, COLOR_BLACK, COLOR_CYAN);
+   init_pair (10, COLOR_BLACK, COLOR_RED);
+   init_pair (11, COLOR_BLACK, COLOR_MAGENTA);
+   init_pair (12, COLOR_BLACK, COLOR_BLUE);
+   init_pair (13, COLOR_BLACK, COLOR_WHITE);
+   init_pair (14, COLOR_BLACK, COLOR_YELLOW);
+
    clear ();
    refresh ();
 
@@ -117,7 +123,7 @@ int main (int argc, char **argv)
 	       {
 		  attrb = random () & 0x0F00;
 		  attron (attrb);
-		  if ((random() >> 16 & 0x1))
+		  if ((random() & 0x1))
 		     attron (A_BOLD);
 	       }
 	       addch ((random () & 0x3F) + 33);
