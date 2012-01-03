@@ -6,5 +6,4 @@ introduction to ncurses programming.
 Usage: curses-benchmark [options]
 Options:
 -c   use color
--b   black and white (default)
 -h   show this help
