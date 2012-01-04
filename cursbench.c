@@ -62,7 +62,6 @@ int main (int argc, char **argv)
 	    printf("Usage: curses-benchmark [options]\n");
 	    printf("Options:\n");
 	    printf("-c   use color\n");
-	    printf("-b   black and white (default)\n");
 	    printf("-h   show this help\n");
 	    return (0);
       }
