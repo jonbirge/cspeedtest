@@ -155,7 +155,7 @@ int main (int argc, char **argv)
 		  nave = N_AVE;
 	 }
 
-	 drawbar ((double) (k % nave)/nave, 10, 0, 20);
+	 drawbar ((double) (k % nave)/nave, 10, 0, 14);
 	 printw ("   frames: %d", k);
 	 
 	 usleep (50000);
@@ -173,16 +173,16 @@ int main (int argc, char **argv)
 	 attron(COLOR_PAIR(1));
 	 move (0, 0);
 	 clrtoeol ();
-	 printw ("curses fps: ");
+	 printw ("fps: ");
 	 attron (A_BOLD);
-	 printw ("%4.1f", (double) dk/ (double) dt);
+	 printw ("%.1f", (double) dk/ (double) dt);
 	 attroff (A_BOLD);
 	 attroff(COLOR_PAIR(1));
 
 	 usold = us;
 	 kold = k;
 
-	 drawbar (0, 10, 0, 20);
+	 drawbar (0, 10, 0, 14);
       }
       
       refresh();
