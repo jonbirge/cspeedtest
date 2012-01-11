@@ -15,12 +15,10 @@ void drawbar(double frac, int width, int line, int offset)
    
    move (line, offset);
    addch ('[');
-   attron (A_BOLD);
    for (j = 0; j < ceil( (double) width*frac); ++j)
    {
       addch (ACS_CKBOARD);
    }
-   attroff (A_BOLD);
    for (; j < width; ++j)
    {
       addch (ACS_BULLET);
