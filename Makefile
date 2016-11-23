@@ -1,8 +1,11 @@
-CFLAGS = -Wall -O2 -std=c99 -lncurses
+UNIXOS = $(shell uname -s)
 
 all : cursbench
 
-clean :
-	-rm *~ cursbench
-	-rm -df *.dSYM
+ifeq ($(UNIXOS),Linux)
+  include Makefile.linux
+endif
 
+ifeq ($(UNIXOS),Darwin)
+  include Makefile.osx
+endif
