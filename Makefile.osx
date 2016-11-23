@@ -1,0 +1,5 @@
+CFLAGS = -Wall -O2 -std=c99 -lncurses
+
+clean :
+	-rm *~ cursbench
+	-rm -df *.dSYM
