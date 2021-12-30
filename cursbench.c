@@ -121,15 +121,10 @@ int main (int argc, char **argv)
             {
                attrb = random () & 0x0F00;
                attron (attrb);
-               if ((random() & 0x1))
-                  attron (A_BOLD);
             }
             addch ((random () & 0x3F) + 33);
             if (docolor)
-            {
                attroff (attrb);
-               attroff (A_BOLD);
-            }
          }
       }  
 
@@ -166,7 +161,7 @@ int main (int argc, char **argv)
          
          fps = (double) dk / (double) dt;
          if (docolor)
-            bps = 16*fps*nrows*ncols;
+            bps = 64*fps*nrows*ncols;
          else
             bps = 8*fps*nrows*ncols;
 
