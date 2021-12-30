@@ -1,13 +1,15 @@
-# curses-benchmark
+# curses-speedtest
 
 ## Overview
 
-This program writes random characters to fill the terminal screen, and reports on the resulting "frame rate". This is essentially a benchmark for a text terminal using ncurses, but mostly serves as a quick demo of ncurses programming on OS X and linux.
+This program uses curses to write screenfuls of random characters to the terminal, and uses the resulting framerate to estimate the network throughput. This is essentially a "clientless" speedtest for the network between a server and you using your terminal as the speedtest client.
 
 ## Usage
 
+Install and compile on your remove server using make. Then run as follows:
+
 ```
-curses-benchmark [options]
+curses-speedtest [options]
 Options:
 -c   use color
 -h   show this help
