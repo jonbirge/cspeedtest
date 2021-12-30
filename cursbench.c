@@ -55,6 +55,47 @@ void write_matrix(int nrows, int ncols, int docolor)
       }  
 }
 
+void display_mbps(int dk, int nrows, int ncols, int docolor)
+{
+   static int sec, us, secold = 0, usold = 0;
+   struct timeval systime;
+   double dt, fps, bps;
+
+   if (secold == 0)
+   {
+      // init
+      gettimeofday (&systime, NULL);
+      secold = systime.tv_sec;
+      usold = systime.tv_usec;
+   }
+   else
+   {
+      // normal ops
+      gettimeofday (&systime, NULL);
+      sec = systime.tv_sec;
+      us = systime.tv_usec;
+      dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
+      secold = sec;
+      
+      fps = (double) dk / (double) dt;
+      if (docolor)
+         bps = 64*fps*nrows*ncols;
+      else
+         bps = 8*fps*nrows*ncols;
+
+      attron (COLOR_PAIR(1));
+      move (0, 0);
+      clrtoeol ();
+      printw ("Mbps: ");
+      attron (A_BOLD);
+      printw ("%.1f", bps/1024/1024);
+      attroff (A_BOLD);
+      attroff (COLOR_PAIR(1));
+
+      usold = us;
+   }
+}
+
 void static_display(char* str, int nrows, int ncols)
 {
    attron(COLOR_PAIR(2));
@@ -86,13 +127,11 @@ void init_colors()
 int main (int argc, char **argv)
 {
    int done = 0;
-   struct timeval systime;
    char d;
    WINDOW *wnd;
    int nrows, ncols;
    int docolor, nave;
    int opt;
-   double fps, bps;
    
    // options and defaults
    docolor = 0;
@@ -125,16 +164,11 @@ int main (int argc, char **argv)
    clear ();
    refresh ();
 
-   // static displays
+   // static display
    static_display("type q to quit, c to toggle color...", nrows, ncols);
 
    // main loop
-   int sec, us, secold, usold;
-   double dt;
-   long dk, k = -1, kold = -1;
-   gettimeofday (&systime, NULL);
-   secold = systime.tv_sec;
-   usold = systime.tv_usec;
+   long dk, k = -1, kold = -1;  // frame counters
    while (!done)
    {
       ++k;
@@ -166,31 +200,9 @@ int main (int argc, char **argv)
       // fps and throughput update
       if (!(k % nave))
       {
-         gettimeofday (&systime, NULL);
-         sec = systime.tv_sec;
-         us = systime.tv_usec;
-         dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
-         secold = sec;
          dk = k - kold;
-         
-         fps = (double) dk / (double) dt;
-         if (docolor)
-            bps = 64*fps*nrows*ncols;
-         else
-            bps = 8*fps*nrows*ncols;
-
-         attron (COLOR_PAIR(1));
-         move (0, 0);
-         clrtoeol ();
-         printw ("Mbps: ");
-         attron (A_BOLD);
-         printw ("%.1f", bps/1024/1024);
-         attroff (A_BOLD);
-         attroff (COLOR_PAIR(1));
-
-         usold = us;
+         display_mbps (dk, nrows, ncols, docolor);
          kold = k;
-
 	      drawbar (0, 10, 0, 14);
       }
       
