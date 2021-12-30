@@ -2,49 +2,22 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
-#include <sys/time.h>
-#include <time.h>
-#include <math.h>
+//#include <sys/time.h>
+//#include <time.h>
+//#include <math.h>
+#include "curslib.h"
 
 #define N_AVE_COLOR 64
 #define N_AVE 256
 
-void drawbar(double frac, int width, int line, int offset)
-{
-   int j;
-   
-   move (line, offset);
-   addch ('[');
-   for (j = 0; j < ceil( (double) width*frac); ++j)
-   {
-      addch (ACS_CKBOARD);
-   }
-   for (; j < width; ++j)
-   {
-      addch (ACS_BULLET);
-   }
-   addch (']');
-}
-
-void drawline(int row, int width)
-{
-   move (row, 0);
-   clrtoeol ();
-   for (int j = 0; j < width; ++j)
-      addch (ACS_HLINE);
-}
-
 int main (int argc, char **argv)
 {
    int done = 0;
-   struct timeval systime;
    char d;
    WINDOW *wnd;
    int nrows, ncols;
-   int attrb;
    int docolor, nave;
    int opt;
-   double fps, bps;
    
    // options and defaults
    docolor = 0;
@@ -68,65 +41,26 @@ int main (int argc, char **argv)
    
    // init ncurses
    wnd = initscr ();
+   nodelay (wnd, TRUE);
    cbreak ();
    noecho ();
-   nodelay (wnd, TRUE);
-   getmaxyx (wnd, nrows, ncols);
    start_color ();
-   init_pair (1, COLOR_GREEN, COLOR_BLACK);
-   init_pair (2, COLOR_YELLOW, COLOR_BLACK);
-   init_pair (3, COLOR_RED, COLOR_BLACK);
-   init_pair (4, COLOR_CYAN, COLOR_BLACK);
-   init_pair (5, COLOR_MAGENTA, COLOR_BLACK);
-   init_pair (6, COLOR_BLUE, COLOR_BLACK);
-   init_pair (7, COLOR_WHITE, COLOR_BLACK);
-   init_pair (8, COLOR_BLACK, COLOR_GREEN);
-   init_pair (9, COLOR_BLACK, COLOR_CYAN);
-   init_pair (10, COLOR_BLACK, COLOR_RED);
-   init_pair (11, COLOR_BLACK, COLOR_MAGENTA);
-   init_pair (12, COLOR_BLACK, COLOR_BLUE);
-   init_pair (13, COLOR_BLACK, COLOR_WHITE);
-   init_pair (14, COLOR_BLACK, COLOR_YELLOW);
-
+   init_colors ();
+   getmaxyx (wnd, nrows, ncols);
    clear ();
    refresh ();
 
-   // static displays
-   attron(COLOR_PAIR(2));
-   drawline (1, ncols);
-   drawline (nrows - 2, ncols);
-   move (nrows - 1, 0);
-   printw("type q to quit, c to toggle color...");
-   attroff(COLOR_PAIR(2));
+   // static display
+   static_display("type q to quit, c to toggle color...", nrows, ncols);
 
    // main loop
-   int r, c;
-   int sec, us, secold, usold;
-   double dt;
-   long dk, k = -1, kold = -1;
-   gettimeofday (&systime, NULL);
-   secold = systime.tv_sec;
-   usold = systime.tv_usec;
+   long dk, k = -1, kold = -1;  // frame counters
    while (!done)
    {
       ++k;
 
       // write matrix of characters
-      for (r = 2; r < nrows - 2; ++r)
-      {
-         move (r, 0);
-         for (c = 0; c < ncols; ++c)
-         {
-            if (docolor)
-            {
-               attrb = random () & 0x0F00;
-               attron (attrb);
-            }
-            addch ((random () & 0x3F) + 33);
-            if (docolor)
-               attroff (attrb);
-         }
-      }  
+      write_matrix (nrows, ncols, docolor);
 
       // gui polling and update
       if (!(k % (nave/32)))
@@ -152,31 +86,9 @@ int main (int argc, char **argv)
       // fps and throughput update
       if (!(k % nave))
       {
-         gettimeofday (&systime, NULL);
-         sec = systime.tv_sec;
-         us = systime.tv_usec;
-         dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
-         secold = sec;
          dk = k - kold;
-         
-         fps = (double) dk / (double) dt;
-         if (docolor)
-            bps = 64*fps*nrows*ncols;
-         else
-            bps = 8*fps*nrows*ncols;
-
-         attron (COLOR_PAIR(1));
-         move (0, 0);
-         clrtoeol ();
-         printw ("Mbps: ");
-         attron (A_BOLD);
-         printw ("%.1f", bps/1024/1024);
-         attroff (A_BOLD);
-         attroff (COLOR_PAIR(1));
-
-         usold = us;
+         display_mbps (dk, nrows, ncols, docolor);
          kold = k;
-
 	      drawbar (0, 10, 0, 14);
       }
       

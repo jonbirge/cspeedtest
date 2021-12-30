@@ -1,4 +1,4 @@
 cursbench
 .vscode
+*.o
 *~
-*.dSYM
