@@ -37,7 +37,6 @@ void drawline(int row, int width)
 int main (int argc, char **argv)
 {
    int done = 0;
-   int paused = 0;
    struct timeval systime;
    char d;
    WINDOW *wnd;
@@ -45,24 +44,27 @@ int main (int argc, char **argv)
    int attrb;
    int docolor, nave;
    int opt;
+   double fps;
    
    // options and defaults
    docolor = 0;
    nave = N_AVE;
    while ((opt = getopt (argc, argv, "bch")) != -1)
+   {
       switch (opt)
       {
-	 case 'c':
-	    docolor = 1;
-	    nave = N_AVE_COLOR;
-	    break;
-	 case 'h':
-	    printf("Usage: curses-benchmark [options]\n");
-	    printf("Options:\n");
-	    printf("-c   use color\n");
-	    printf("-h   show this help\n");
-	    return (0);
+      case 'c':
+         docolor = 1;
+         nave = N_AVE_COLOR;
+         break;
+      case 'h':
+         printf("Usage: curses-benchmark [options]\n");
+         printf("Options:\n");
+         printf("-c   use color\n");
+         printf("-h   show this help\n");
+         return (0);
       }
+   }  
    
    // init ncurses
    wnd = initscr ();
@@ -94,7 +96,7 @@ int main (int argc, char **argv)
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
    move (nrows - 1, 0);
-   printw("type q to quit, c to toggle color, p to pause...");
+   printw("type q to quit, c to toggle color...");
    attroff(COLOR_PAIR(2));
 
    // main loop
@@ -109,77 +111,75 @@ int main (int argc, char **argv)
    {
       ++k;
 
-      if (!paused)
+      // write matrix of characters
+      for (r = 2; r < nrows - 2; ++r)
       {
-	 for (r = 2; r < nrows - 2; ++r)
-	 {
-	    move (r, 0);
-	    for (c = 0; c < ncols; ++c)
-	    {
-	       if (docolor)
-	       {
-		  attrb = random () & 0x0F00;
-		  attron (attrb);
-		  if ((random() & 0x1))
-		     attron (A_BOLD);
-	       }
-	       addch ((random () & 0x3F) + 33);
-	       if (docolor)
-	       {
-		  attroff (attrb);
-		  attroff (A_BOLD);
-	       }
-	    }
-	 }
-      }
+         move (r, 0);
+         for (c = 0; c < ncols; ++c)
+         {
+            if (docolor)
+            {
+               attrb = random () & 0x0F00;
+               attron (attrb);
+               if ((random() & 0x1))
+                  attron (A_BOLD);
+            }
+            addch ((random () & 0x3F) + 33);
+            if (docolor)
+            {
+               attroff (attrb);
+               attroff (A_BOLD);
+            }
+         }
+      }  
 
+      // gui polling and update
       if (!(k % (nave/32)))
       {
-	 d = getch ();
-	 switch (d)
-	 {
-	    case 'q':
-	       done = 1;
-	       break;
-	    case 'p':
-	       paused = !paused;
-	       break;
-	    case 'c':
-	       docolor = !docolor;
-	       if (docolor)
-		  nave = N_AVE_COLOR;
-	       else
-		  nave = N_AVE;
-	 }
+	      d = getch ();
+	      switch (d)
+	      {
+            case 'q':
+               done = 1;
+               break;
+            case 'c':
+               docolor = !docolor;
+               if (docolor)
+                  nave = N_AVE_COLOR;
+               else
+                  nave = N_AVE;
+	      }
 
-	 drawbar ((double) (k % nave)/nave, 10, 0, 14);
-	 printw ("   frames: %d", k);
-	 
-	 usleep (50000);
+         drawbar ((double) (k % nave)/nave, 10, 0, 14);
+         printw ("   frames: %d", k);
+         
+         usleep (50000);
       }
 
+      // fps update
       if (!(k % nave))
       {
-	 gettimeofday (&systime, NULL);
-	 sec = systime.tv_sec;
-	 us = systime.tv_usec;
-	 dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
-	 secold = sec;
-	 dk = k - kold;
+         gettimeofday (&systime, NULL);
+         sec = systime.tv_sec;
+         us = systime.tv_usec;
+         dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
+         secold = sec;
+         dk = k - kold;
+         fps = (double) dk / (double) dt;
 
-	 attron(COLOR_PAIR(1));
-	 move (0, 0);
-	 clrtoeol ();
-	 printw ("fps: ");
-	 attron (A_BOLD);
-	 printw ("%.1f", (double) dk/ (double) dt);
-	 attroff (A_BOLD);
-	 attroff(COLOR_PAIR(1));
+         attron (COLOR_PAIR(1));
+         move (0, 0);
+         clrtoeol ();
+         printw ("fps: ");
+         attron (A_BOLD);
+         printw ("%.1f", fps);
+         attroff (A_BOLD);
+         attroff (COLOR_PAIR(1));
 
-	 usold = us;
-	 kold = k;
+         usold = us;
+         kold = k;
 
-	 drawbar (0, 10, 0, 14);
+	      drawbar (0, 10, 0, 14);
       }
       
       refresh();
