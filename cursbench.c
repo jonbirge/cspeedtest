@@ -152,8 +152,6 @@ int main (int argc, char **argv)
 
          drawbar ((double) (k % nave)/nave, 10, 0, 14);
          printw ("   frames: %d", k);
-         
-         usleep (50000);
       }
 
       // fps and throughput update
