@@ -44,7 +44,7 @@ int main (int argc, char **argv)
    int attrb;
    int docolor, nave;
    int opt;
-   double fps;
+   double fps, bps;
    
    // options and defaults
    docolor = 0;
@@ -156,7 +156,7 @@ int main (int argc, char **argv)
          usleep (50000);
       }
 
-      // fps update
+      // fps and throughput update
       if (!(k % nave))
       {
          gettimeofday (&systime, NULL);
@@ -165,14 +165,19 @@ int main (int argc, char **argv)
          dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
          secold = sec;
          dk = k - kold;
+         
          fps = (double) dk / (double) dt;
+         if (docolor)
+            bps = 16*fps*nrows*ncols;
+         else
+            bps = 8*fps*nrows*ncols;
 
          attron (COLOR_PAIR(1));
          move (0, 0);
          clrtoeol ();
-         printw ("fps: ");
+         printw ("Mbps: ");
          attron (A_BOLD);
-         printw ("%.1f", fps);
+         printw ("%.1f", bps/1024/1024);
          attroff (A_BOLD);
          attroff (COLOR_PAIR(1));
 
