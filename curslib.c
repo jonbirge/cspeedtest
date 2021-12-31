@@ -45,8 +45,6 @@ void write_matrix(int nrows, int ncols, int docolor)
                attron (attrb);
             }
             addch ((random () & 0x3F) + 33);
-            if (docolor)
-               attroff (attrb);
          }
       }  
 }

@@ -76,8 +76,10 @@ int main (int argc, char **argv)
 	       nave = N_AVE;
 	 }
 
+	 attron (COLOR_PAIR(1));
          drawbar ((double) (k % nave)/nave, 10, 0, 14);
          printw ("   frames: %d", k);
+	 attroff (COLOR_PAIR(1));
       }
 
       // fps and throughput update
