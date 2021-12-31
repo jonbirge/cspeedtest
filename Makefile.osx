@@ -1,2 +1,2 @@
 CFLAGS = -Wall -O2 -std=c99
-LDLIBS = -lncurses
+LDLIBS = -lncurses -lm

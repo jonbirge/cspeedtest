@@ -41,10 +41,10 @@ void write_matrix(int nrows, int ncols, int docolor)
          {
             if (docolor)
             {
-               attrb = random () & 0x0F00;
+               attrb = rand () & 0x0F00;
                attron (attrb);
             }
-            addch ((random () & 0x3F) + 33);
+            addch ((rand () & 0x3F) + 33);
          }
       }  
 }

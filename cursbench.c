@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include <getopt.h>
 #include "curslib.h"
 
 #define N_AVE_COLOR 64
@@ -19,7 +20,7 @@ int main (int argc, char **argv)
    // options and defaults
    docolor = 0;
    nave = N_AVE;
-   while ((opt = getopt (argc, argv, "bch")) != -1)
+   while ((opt = getopt (argc, argv, "ch")) != -1)
    {
       switch (opt)
       {

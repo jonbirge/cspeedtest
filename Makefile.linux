@@ -1,5 +1,4 @@
 # -D_XOPEN_SOURCE : required for getopt(3)
-# -D_DEFAULT_SOURCE : required for random(3)
 # -lm : required by ceil(3)
-CFLAGS = -Wall -O2 -std=c99 -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
+CFLAGS = -Wall -O2 -std=c99
 LDLIBS = -lm -lncurses
