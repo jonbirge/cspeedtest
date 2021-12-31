@@ -73,7 +73,7 @@ void display_mbps(int dk, int nrows, int ncols, int docolor)
       
       fps = (double) dk / (double) dt;
       if (docolor)
-	bps = (8+64+64)*fps*nrows*ncols;  // char and two attribs
+         bps = (8+64+64)*fps*nrows*ncols;  // char and two attribs
       else
          bps = 8*fps*nrows*ncols;
 
@@ -110,10 +110,4 @@ void init_colors()
    init_pair (6, COLOR_BLUE, COLOR_BLACK);
    init_pair (7, COLOR_WHITE, COLOR_BLACK);
    init_pair (8, COLOR_BLACK, COLOR_GREEN);
-   init_pair (9, COLOR_BLACK, COLOR_CYAN);
-   init_pair (10, COLOR_BLACK, COLOR_RED);
-   init_pair (11, COLOR_BLACK, COLOR_MAGENTA);
-   init_pair (12, COLOR_BLACK, COLOR_BLUE);
-   init_pair (13, COLOR_BLACK, COLOR_WHITE);
-   init_pair (14, COLOR_BLACK, COLOR_YELLOW);
 }
