@@ -44,12 +44,8 @@ int main (int argc, char **argv)
    noecho ();
    start_color ();
    init_colors ();
-   getmaxyx (wnd, nrows, ncols);
    clear ();
    refresh ();
-
-   // static display
-   static_display("Type q to quit, c to toggle color.", nrows, ncols);
 
    // main loop
    long dk, k = -1, kold = -1;  // frame counters
@@ -57,30 +53,36 @@ int main (int argc, char **argv)
    {
       ++k;
 
+      // init
+      getmaxyx (wnd, nrows, ncols);
+
+      // static display
+      static_display("Type q to quit, c to toggle color.", nrows, ncols);
+
       // write matrix of characters
       write_matrix (nrows, ncols, docolor);
 
       // gui polling and update
       if (!(k % (nave/32)))
       {
-	 d = getch ();
-	 switch (d)
-	 {
-	 case 'q':
-	    done = 1;
-	    break;
-	 case 'c':
-	    docolor = !docolor;
-	    if (docolor)
-	       nave = N_AVE_COLOR;
-	    else
-	       nave = N_AVE;
-	 }
+         d = getch ();
+         switch (d)
+         {
+         case 'q':
+            done = 1;
+            break;
+         case 'c':
+            docolor = !docolor;
+            if (docolor)
+               nave = N_AVE_COLOR;
+            else
+               nave = N_AVE;
+         }
 
-	 attron (COLOR_PAIR(1));
-         drawbar ((double) (k % nave)/nave, 10, 0, 14);
-         printw ("   frames: %d", k);
-	 attroff (COLOR_PAIR(1));
+         attron (COLOR_PAIR(1));
+            drawbar ((double) (k % nave)/nave, 10, 0, 14);
+            printw ("   frames: %d", k);
+         attroff (COLOR_PAIR(1));
       }
 
       // fps and throughput update
@@ -89,7 +91,7 @@ int main (int argc, char **argv)
          dk = k - kold;
          display_mbps (dk, nrows, ncols, docolor);
          kold = k;
-	 drawbar (0, 10, 0, 14);
+         drawbar (0, 10, 0, 14);
       }
       
       refresh();
