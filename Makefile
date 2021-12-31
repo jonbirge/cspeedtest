@@ -1,11 +1,11 @@
 CFLAGS = -Wall -O2 -std=c99
 LDLIBS = -lm -lncurses
 
-all : cursbench
+all : cspeedtest
 
-cursbench : cursbench.o curslib.o
+cspeedtest : cspeedtest.o curslib.o
 
 clean :
-	-rm -f cursbench
+	-rm -f cspeedtest
 	-rm -f *.o
 	-rm -f *~

@@ -9,8 +9,10 @@ This program uses curses to write screenfuls of random characters to the termina
 Install and compile on your remove server using make. Then run as follows:
 
 ```
-curses-speedtest [options]
+Usage: cspeedtest [options]
+
 Options:
--c   use color
--h   show this help
+  -b   low bandwidth (B/W)
+  -h   show this help
+  -v   show version
 ```
