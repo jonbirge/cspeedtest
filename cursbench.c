@@ -27,10 +27,10 @@ int main (int argc, char **argv)
          docolor = 0;
          break;
       case 'h':
-         printf("Usage: curses-benchmark [options]\n");
+         printf("Usage: curses-benchmark [options]\n\n");
          printf("Options:\n");
-         printf("-b   low bandwidth (use B/W)\n");
-         printf("-h   show this help\n");
+         printf("   -b\tlow bandwidth (B/W)\n");
+         printf("   -h\tshow this help\n");
          return (0);
       case 'v':
          printf("cursbench <dev>\n");
