@@ -34,19 +34,21 @@ void write_matrix(int nrows, int ncols, int docolor)
 {
    int r, c, attrb;
 
+   attron (A_BOLD);
    for (r = 2; r < nrows - 2; ++r)
+   {
+      move (r, 0);
+      for (c = 0; c < ncols; ++c)
       {
-         move (r, 0);
-         for (c = 0; c < ncols; ++c)
+         if (docolor)
          {
-            if (docolor)
-            {
-               attrb = COLOR_PAIR((rand () & (int)7) + 1);
-               attron (attrb);
-            }
-            addch ((rand () & 0x3F) + 33);
+            attrb = COLOR_PAIR((rand () & 0x0007) + 1);
+            attron (attrb);
          }
+         addch ((rand () & 0x3F) + 33);
       }
+   }
+   attroff (A_BOLD);
 }
 
 void display_mbps(int dk, int nrows, int ncols, int docolor)
@@ -103,11 +105,11 @@ void static_display(char* str, int nrows, int ncols)
 void init_colors()
 {
    init_pair (1, COLOR_WHITE, COLOR_BLACK);
-   init_pair (2, COLOR_GREEN, COLOR_BLACK);
-   init_pair (3, COLOR_YELLOW, COLOR_BLACK);
-   init_pair (4, COLOR_RED, COLOR_BLACK);
-   init_pair (5, COLOR_CYAN, COLOR_BLACK);
-   init_pair (6, COLOR_MAGENTA, COLOR_BLACK);
-   init_pair (7, COLOR_BLUE, COLOR_BLACK);
-   init_pair (8, COLOR_BLACK, COLOR_GREEN);
+   init_pair (2, COLOR_BLACK, COLOR_WHITE);
+   init_pair (3, COLOR_CYAN, COLOR_BLACK);
+   init_pair (4, COLOR_MAGENTA, COLOR_BLACK);
+   init_pair (5, COLOR_YELLOW, COLOR_BLACK);
+   init_pair (6, COLOR_BLACK, COLOR_CYAN);
+   init_pair (7, COLOR_BLACK, COLOR_MAGENTA);
+   init_pair (8, COLOR_BLACK, COLOR_YELLOW);
 }
