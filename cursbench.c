@@ -5,8 +5,8 @@
 #include <getopt.h>
 #include "curslib.h"
 
-#define N_AVE_COLOR 64
-#define N_AVE 256
+#define N_AVE_COLOR 128
+#define N_AVE 1024
 
 int main (int argc, char **argv)
 {
@@ -18,8 +18,7 @@ int main (int argc, char **argv)
    int opt;
    
    // options and defaults
-   docolor = 0;
-   nave = N_AVE;
+   docolor = 1;  // default to color
    while ((opt = getopt (argc, argv, "ch")) != -1)
    {
       switch (opt)
@@ -54,10 +53,14 @@ int main (int argc, char **argv)
       ++k;
 
       // init
+      if (docolor)
+         nave = N_AVE_COLOR;
+      else
+         nave = N_AVE;
       getmaxyx (wnd, nrows, ncols);
 
       // static display
-      static_display("Type q to quit, c to toggle color.", nrows, ncols);
+      static_display(nrows, ncols, docolor);
 
       // write matrix of characters
       write_matrix (nrows, ncols, docolor);
@@ -73,10 +76,6 @@ int main (int argc, char **argv)
             break;
          case 'c':
             docolor = !docolor;
-            if (docolor)
-               nave = N_AVE_COLOR;
-            else
-               nave = N_AVE;
          }
 
          attron (COLOR_PAIR(1));

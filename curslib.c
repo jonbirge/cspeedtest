@@ -92,13 +92,33 @@ void display_mbps(int dk, int nrows, int ncols, int docolor)
    }
 }
 
-void static_display(char* str, int nrows, int ncols)
+void static_display(int nrows, int ncols, int docolor)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
    move (nrows - 1, 0);
-   printw(str);
+   // "Type q to quit, c to toggle color."
+   printw ("Type ");
+   attron (A_BOLD);
+   addch ('q');
+   attroff (A_BOLD);
+   printw(" to to quit, ");
+   attron (A_BOLD);
+   addch ('c');
+   attroff (A_BOLD);
+   printw(" to toggle ");
+   if (docolor)
+   {
+      attron (COLOR_PAIR(2));
+      printw("color");
+      attron (COLOR_PAIR(1));
+   }
+   else
+   {
+      printw("color");
+   }
+   addch ('.');
    attroff(COLOR_PAIR(1));
 }
 

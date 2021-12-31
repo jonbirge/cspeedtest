@@ -6,6 +6,6 @@ void write_matrix(int nrows, int ncols, int docolor);
 
 void display_mbps(int dk, int nrows, int ncols, int docolor);
 
-void static_display(char* str, int nrows, int ncols);
+void static_display(int nrows, int ncols, int docolor);
 
 void init_colors();
