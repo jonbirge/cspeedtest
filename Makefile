@@ -1,16 +1,9 @@
-UNIXOS = $(shell uname -s)
+UCFLAGS = -Wall -O2 -std=c99
+LDLIBS = -lm -lncurses
 
 all : cursbench
 
 cursbench : cursbench.o curslib.o
-
-ifeq ($(UNIXOS),Linux)
-  include Makefile.linux
-endif
-
-ifeq ($(UNIXOS),Darwin)
-  include Makefile.osx
-endif
 
 clean :
 	-rm cursbench

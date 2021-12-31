@@ -2,9 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
-//#include <sys/time.h>
-//#include <time.h>
-//#include <math.h>
+#include <getopt.h>
 #include "curslib.h"
 
 #define N_AVE_COLOR 64
@@ -22,7 +20,7 @@ int main (int argc, char **argv)
    // options and defaults
    docolor = 0;
    nave = N_AVE;
-   while ((opt = getopt (argc, argv, "bch")) != -1)
+   while ((opt = getopt (argc, argv, "ch")) != -1)
    {
       switch (opt)
       {
@@ -51,7 +49,7 @@ int main (int argc, char **argv)
    refresh ();
 
    // static display
-   static_display("type q to quit, c to toggle color...", nrows, ncols);
+   static_display("Type q to quit, c to toggle color.", nrows, ncols);
 
    // main loop
    long dk, k = -1, kold = -1;  // frame counters
@@ -65,22 +63,24 @@ int main (int argc, char **argv)
       // gui polling and update
       if (!(k % (nave/32)))
       {
-	      d = getch ();
-	      switch (d)
-	      {
-            case 'q':
-               done = 1;
-               break;
-            case 'c':
-               docolor = !docolor;
-               if (docolor)
-                  nave = N_AVE_COLOR;
-               else
-                  nave = N_AVE;
-	      }
+	 d = getch ();
+	 switch (d)
+	 {
+	 case 'q':
+	    done = 1;
+	    break;
+	 case 'c':
+	    docolor = !docolor;
+	    if (docolor)
+	       nave = N_AVE_COLOR;
+	    else
+	       nave = N_AVE;
+	 }
 
+	 attron (COLOR_PAIR(1));
          drawbar ((double) (k % nave)/nave, 10, 0, 14);
          printw ("   frames: %d", k);
+	 attroff (COLOR_PAIR(1));
       }
 
       // fps and throughput update
@@ -89,7 +89,7 @@ int main (int argc, char **argv)
          dk = k - kold;
          display_mbps (dk, nrows, ncols, docolor);
          kold = k;
-	      drawbar (0, 10, 0, 14);
+	 drawbar (0, 10, 0, 14);
       }
       
       refresh();
