@@ -1,5 +1,4 @@
 #include <stdlib.h>
-//#include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
 #include <sys/time.h>
@@ -76,7 +75,7 @@ void display_mbps(int dk, int nrows, int ncols, int docolor)
       
       fps = (double) dk / (double) dt;
       if (docolor)
-         bps = 64*fps*nrows*ncols;
+	bps = (8+64+64)*fps*nrows*ncols;  // char and two attribs
       else
          bps = 8*fps*nrows*ncols;
 
