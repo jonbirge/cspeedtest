@@ -1,4 +1,0 @@
-# -D_XOPEN_SOURCE : required for getopt(3)
-# -lm : required by ceil(3)
-CFLAGS = -Wall -O2 -std=c99
-LDLIBS = -lm -lncurses
