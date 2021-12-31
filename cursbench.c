@@ -19,19 +19,22 @@ int main (int argc, char **argv)
    
    // options and defaults
    docolor = 1;  // default to color
-   while ((opt = getopt (argc, argv, "ch")) != -1)
+   while ((opt = getopt (argc, argv, "bhv")) != -1)
    {
       switch (opt)
       {
-      case 'c':
-         docolor = 1;
-         nave = N_AVE_COLOR;
+      case 'b':
+         docolor = 0;
          break;
       case 'h':
          printf("Usage: curses-benchmark [options]\n");
          printf("Options:\n");
-         printf("-c   use color\n");
+         printf("-b   low bandwidth (use B/W)\n");
          printf("-h   show this help\n");
+         return (0);
+      case 'v':
+         printf("cursbench <dev>\n");
+         printf("Copyright (c) 2021 Jonathan R. Birge\n");
          return (0);
       }
    }  
