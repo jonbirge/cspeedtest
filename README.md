@@ -16,3 +16,7 @@ Options:
   -h   show this help
   -v   show version
 ```
+
+## Screenshot
+
+<img width="923" alt="cspeedtest-color" src="https://user-images.githubusercontent.com/660566/147842191-f486bfaa-2f5c-4466-a19b-7e73e34e956f.png">
