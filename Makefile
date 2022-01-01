@@ -1,11 +1,11 @@
-UNIXOS = $(shell uname -s)
+CFLAGS = -Wall -O2 -std=c99
+LDLIBS = -lm -lncurses
 
-all : cursbench
+all : cspeedtest
 
-ifeq ($(UNIXOS),Linux)
-  include Makefile.linux
-endif
+cspeedtest : cspeedtest.o curslib.o
 
-ifeq ($(UNIXOS),Darwin)
-  include Makefile.osx
-endif
+clean :
+	-rm -f cspeedtest
+	-rm -f *.o
+	-rm -f *~

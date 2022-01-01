@@ -1,3 +1,4 @@
-cursbench
+cspeedtest
+.vscode
+*.o
 *~
-*.dSYM
