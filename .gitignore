@@ -13,3 +13,5 @@ configure
 depcomp
 install-sh
 missing
+.deps
+*.gz
