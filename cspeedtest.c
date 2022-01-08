@@ -33,7 +33,7 @@ int main (int argc, char **argv)
          printf("   -h\tshow this help\n");
          return (0);
       case 'v':
-         printf("cursbench ");
+         printf("cspeedtest ");
          printf(VERSION);
          printf("\n");
          printf("Copyright (c) 2021 Jonathan R. Birge\n");
