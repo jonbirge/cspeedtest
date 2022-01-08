@@ -27,13 +27,15 @@ int main (int argc, char **argv)
          docolor = 0;
          break;
       case 'h':
-         printf("Usage: curses-benchmark [options]\n\n");
+         printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
          printf("   -b\tlow bandwidth (B/W)\n");
          printf("   -h\tshow this help\n");
          return (0);
       case 'v':
-         printf("cursbench 1.0\n");
+         printf("cspeedtest ");
+         printf(VERSION);
+         printf("\n");
          printf("Copyright (c) 2021 Jonathan R. Birge\n");
          return (0);
       }
