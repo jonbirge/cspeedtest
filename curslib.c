@@ -1,8 +1,6 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <ncurses.h>
 #include <sys/time.h>
-#include <time.h>
 #include <math.h>
 
 void drawbar(double frac, int width, int line, int offset)
