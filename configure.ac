@@ -4,7 +4,7 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_CHECK_LIB(m, ceil)
 AC_CHECK_LIB(ncurses, initscr)
-AC_CHECK_FUNC([getopt])
-AC_CHECK_FUNC([gettimeofday])
-AC_CONFIG_FILES([Makefile])
+AC_CHECK_FUNC(getopt)
+AC_CHECK_FUNC(gettimeofday)
+AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
