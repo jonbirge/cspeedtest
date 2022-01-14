@@ -17,18 +17,22 @@ int main (int argc, char **argv)
    
    // options and defaults
    docolor = 0;  // default to bw
-   docomp = 1;  // default to compressible
-   while ((opt = getopt (argc, argv, "bhv")) != -1)
+   docomp = 0;  // default to random
+   while ((opt = getopt (argc, argv, "bhrv")) != -1)
    {
       switch (opt)
       {
       case 'b':
          docolor = 0;
          break;
+      case 'r':
+         docomp = 1;
+         break;
       case 'h':
          printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
          printf("   -b\tlow bandwidth (B/W)\n");
+         printf("   -r\tnon-random pattern\n");
          printf("   -v\tdisplay version\n");
          printf("   -h\tshow this help\n");
          return (0);
