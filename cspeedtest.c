@@ -64,7 +64,7 @@ int main (int argc, char **argv)
       getmaxyx (wnd, nrows, ncols);
 
       // static display
-      static_display(nrows, ncols, docolor);
+      static_display(nrows, ncols, docolor, docomp);
 
       // write matrix of characters
       if (docomp)
