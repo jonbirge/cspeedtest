@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <getopt.h>
+#include <math.h>
 #include "curslib.h"
 
 #define N_AVE_COLOR 128
@@ -77,8 +78,8 @@ int main (int argc, char **argv)
       else
          write_matrix (nrows, ncols, docolor);
 
-      // gui polling and update (TODO should separate)
-      if (!(k % 32))
+      // interface polling
+      if (!(k % 4))
       {
          d = getch ();
          switch (d)
@@ -95,7 +96,11 @@ int main (int argc, char **argv)
 	         doreset = 1;
             break;
          }
+      }
 
+      // update display
+      if (!(k % (int) ceil(nave/BAR_WIDTH)))
+      {
          attron (COLOR_PAIR(1));
          drawbar ((double) (k % nave)/nave, BAR_WIDTH, 0, 14);
          printw ("   frames: %d", k);
