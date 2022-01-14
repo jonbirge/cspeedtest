@@ -53,11 +53,16 @@ void write_matrix(int nrows, int ncols, int docolor)
 // Compressible matrix of data
 void write_matrix_comp(int nrows, int ncols, int docolor)
 {
-   double slow = 256;  // factor to slow animation
-   int r, c, attrb, q = 0;
+   double slow;  // factor to slow animation
+   register int r, c, attrb, q = 0;
    static int phase;
 
-   if (phase/slow < nrows)
+   if (docolor)
+      slow = 8;
+   else
+      slow = 256;
+
+   if (phase/slow < ncols)
       phase++;
    else
       phase = 1;
@@ -73,7 +78,7 @@ void write_matrix_comp(int nrows, int ncols, int docolor)
             {
                attroff (COLOR_PAIR(3));
                attron (COLOR_PAIR(6));
-               addch ('.');
+               addch ('#');
                attroff (COLOR_PAIR(6));
                attron (COLOR_PAIR(3));
             }
@@ -84,6 +89,11 @@ void write_matrix_comp(int nrows, int ncols, int docolor)
          }
          else
          {
+            if (docolor)
+            {
+               attrb = COLOR_PAIR((rand () & 0x0002) + 1);
+               attron (attrb);
+            }
             addch('.');
          }
       }
