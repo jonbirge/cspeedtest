@@ -72,7 +72,7 @@ void write_matrix_comp(int nrows, int ncols, int docolor)
             {
                attroff (COLOR_PAIR(3));
                attron (COLOR_PAIR(6));
-               addch (' ');
+               addch ('.');
                attroff (COLOR_PAIR(6));
                attron (COLOR_PAIR(3));
             }
@@ -83,14 +83,7 @@ void write_matrix_comp(int nrows, int ncols, int docolor)
          }
          else
          {
-            if (docolor)
-            {
-               addch (' ');
-            }
-            else
-            {
-               addch ('.');
-            }
+            addch('.');
          }
       }
    }
