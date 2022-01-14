@@ -1,8 +1,6 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <ncurses.h>
 #include <sys/time.h>
-#include <time.h>
 #include <math.h>
 
 void drawbar(double frac, int width, int line, int offset)
@@ -75,7 +73,7 @@ void display_mbps(int dk, int nrows, int ncols, int docolor)
       
       fps = (double) dk / (double) dt;
       if (docolor)
-         bps = (8+64+64)*fps*nrows*ncols;  // char and two attrib calls
+         bps = (8+64)*fps*nrows*ncols;  // char and attrib calls
       else
          bps = 8*fps*nrows*ncols;
 

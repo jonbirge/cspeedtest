@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
 #include <ncurses.h>
 #include <getopt.h>
 #include "curslib.h"
@@ -30,6 +27,7 @@ int main (int argc, char **argv)
          printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
          printf("   -b\tlow bandwidth (B/W)\n");
+         printf("   -v\tdisplay version\n");
          printf("   -h\tshow this help\n");
          return (0);
       case 'v':
