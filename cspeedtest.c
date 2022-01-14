@@ -11,11 +11,12 @@ int main (int argc, char **argv)
    char d;
    WINDOW *wnd;
    int nrows, ncols;
-   int docolor, nave;
+   int docolor, docomp, nave;
    int opt;
    
    // options and defaults
-   docolor = 1;  // default to color
+   docolor = 0;  // default to bw
+   docomp = 1;  // default to compressible
    while ((opt = getopt (argc, argv, "bhv")) != -1)
    {
       switch (opt)
@@ -66,7 +67,10 @@ int main (int argc, char **argv)
       static_display(nrows, ncols, docolor);
 
       // write matrix of characters
-      write_matrix (nrows, ncols, docolor);
+      if (docomp)
+         write_matrix_comp (nrows, ncols, docolor);
+      else
+         write_matrix (nrows, ncols, docolor);
 
       // gui polling and update
       if (!(k % (nave/32)))
@@ -79,6 +83,10 @@ int main (int argc, char **argv)
             break;
          case 'c':
             docolor = !docolor;
+            break;
+         case 'r':
+            docomp = !docomp;
+            break;
          }
 
          attron (COLOR_PAIR(1));

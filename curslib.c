@@ -28,6 +28,7 @@ void drawline(int row, int width)
       addch (ACS_HLINE);
 }
 
+// Completely random matrix of data
 void write_matrix(int nrows, int ncols, int docolor)
 {
    int r, c, attrb;
@@ -44,6 +45,53 @@ void write_matrix(int nrows, int ncols, int docolor)
             attron (attrb);
          }
          addch ((rand () & 0x3F) + 33);
+      }
+   }
+   attroff (A_BOLD);
+}
+
+// Compressible matrix of data
+void write_matrix_comp(int nrows, int ncols, int docolor)
+{
+   int r, c, attrb, q = 0;
+   static int spacing;
+
+   if (spacing < nrows)
+      spacing++;
+   else
+      spacing = 1;
+   attron (A_BOLD);
+   for (r = 2; r < nrows - 2; ++r)
+   {
+      move (r, 0);
+      for (c = 0; c < ncols; ++c)
+      {
+         if (++q % spacing == 0)
+         {
+            if (docolor)
+            {
+               attroff (COLOR_PAIR(3));
+               attron (COLOR_PAIR(6));
+               addch (' ');
+               attroff (COLOR_PAIR(6));
+               attron (COLOR_PAIR(3));
+            }
+            else
+            {
+               addch ('#');
+            }
+         }
+         else
+         {
+            if (docolor)
+            {
+               addch (' ');
+            }
+            else
+            {
+               addch ('.');
+            }
+         }
       }
    }
    attroff (A_BOLD);
@@ -96,12 +144,16 @@ void static_display(int nrows, int ncols, int docolor)
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
    move (nrows - 1, 0);
-   // "Type q to quit, c to toggle color."
+   // "Type q to quit, b to toggle B/W, c to use compressible display."
    printw ("Type ");
    attron (A_BOLD);
    addch ('q');
    attroff (A_BOLD);
    printw(" to to quit, ");
+   attron (A_BOLD);
+   addch ('r');
+   attroff (A_BOLD);
+   printw (" to toggle randomness, ");
    attron (A_BOLD);
    addch ('c');
    attroff (A_BOLD);
