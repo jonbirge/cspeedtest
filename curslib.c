@@ -53,20 +53,21 @@ void write_matrix(int nrows, int ncols, int docolor)
 // Compressible matrix of data
 void write_matrix_comp(int nrows, int ncols, int docolor)
 {
+   double slow = 256;  // factor to slow animation
    int r, c, attrb, q = 0;
-   static int spacing;
+   static int phase;
 
-   if (spacing < nrows)
-      spacing++;
+   if (phase/slow < nrows)
+      phase++;
    else
-      spacing = 1;
+      phase = 1;
    attron (A_BOLD);
    for (r = 2; r < nrows - 2; ++r)
    {
       move (r, 0);
       for (c = 0; c < ncols; ++c)
       {
-         if (++q % spacing == 0)
+         if ((++q % (int) ceil(phase/slow)) == 0)
          {
             if (docolor)
             {
