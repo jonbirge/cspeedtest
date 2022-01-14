@@ -74,7 +74,7 @@ int main (int argc, char **argv)
          write_matrix (nrows, ncols, docolor);
 
       // gui polling and update (TODO should separate)
-      if (!(k % 128))
+      if (!(k % 32))
       {
          d = getch ();
          switch (d)
@@ -84,11 +84,11 @@ int main (int argc, char **argv)
             break;
          case 'c':
             docolor = !docolor;
-	    doreset = 1;
+	         doreset = 1;
             break;
          case 'r':
             docomp = !docomp;
-	    doreset = 1;
+	         doreset = 1;
             break;
          }
 
@@ -101,11 +101,11 @@ int main (int argc, char **argv)
       // throughput update
       if (!(k % nave) || doreset)
       {
-	 dk = k - kold;
+	      dk = k - kold;
          display_mbps (dk, nrows, ncols, docolor, doreset);
          kold = k;
          drawbar (0, BAR_WIDTH, 0, 14);
-	 doreset = 0;
+	      doreset = 0;
       }
       
       refresh();

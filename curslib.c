@@ -103,6 +103,7 @@ void display_mbps(int dk, int nrows, int ncols, int docolor, int reset)
       gettimeofday (&systime, NULL);
       secold = systime.tv_sec;
       usold = systime.tv_usec;
+      bps = 0;
    }
    else
    {
@@ -119,17 +120,20 @@ void display_mbps(int dk, int nrows, int ncols, int docolor, int reset)
       else
          bps = 8*fps*nrows*ncols;
 
-      attron (COLOR_PAIR(1));
-      move (0, 0);
-      clrtoeol ();
-      printw ("Mbps: ");
-      attron (A_BOLD);
-      printw ("%.1f", bps/1024/1024);
-      attroff (A_BOLD);
-      attroff (COLOR_PAIR(1));
-
       usold = us;
    }
+
+   attron(COLOR_PAIR(1));
+   move(0, 0);
+   clrtoeol();
+   printw ("Mbps: ");
+   attron(A_BOLD);
+   if (bps == 0)
+      printw ("---");
+   else
+      printw ("%.1f", bps / 1024 / 1024);
+   attroff(A_BOLD);
+   attroff(COLOR_PAIR(1));
 }
 
 void static_display(int nrows, int ncols, int docolor, int docomp)
