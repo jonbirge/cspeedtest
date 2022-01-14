@@ -8,6 +8,6 @@ void write_matrix (int nrows, int ncols, int docolor);
 
 void write_matrix_comp (int nrows, int ncols, int docolor);
 
-void display_mbps (int dk, int nrows, int ncols, int docolor);
+void display_mbps (int dk, int nrows, int ncols, int docolor, int reset);
 
 void static_display (int nrows, int ncols, int docolor, int docomp);

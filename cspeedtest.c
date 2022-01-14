@@ -4,6 +4,7 @@
 
 #define N_AVE_COLOR 128
 #define N_AVE 1024
+#define BAR_WIDTH 32
 
 int main (int argc, char **argv)
 {
@@ -11,7 +12,7 @@ int main (int argc, char **argv)
    char d;
    WINDOW *wnd;
    int nrows, ncols;
-   int docolor, docomp, nave;
+   int docolor, docomp, nave, doreset = 0;
    int opt;
    
    // options and defaults
@@ -41,14 +42,14 @@ int main (int argc, char **argv)
    }  
    
    // init ncurses
-   wnd = initscr ();
+   wnd = initscr();
    nodelay (wnd, TRUE);
-   cbreak ();
-   noecho ();
-   start_color ();
-   init_colors ();
-   clear ();
-   refresh ();
+   cbreak();
+   noecho();
+   start_color();
+   init_colors();
+   clear();
+   refresh();
 
    // main loop
    long dk, k = -1, kold = -1;  // frame counters
@@ -72,8 +73,8 @@ int main (int argc, char **argv)
       else
          write_matrix (nrows, ncols, docolor);
 
-      // gui polling and update
-      if (!(k % (nave/32)))
+      // gui polling and update (TODO should separate)
+      if (!(k % 128))
       {
          d = getch ();
          switch (d)
@@ -83,25 +84,28 @@ int main (int argc, char **argv)
             break;
          case 'c':
             docolor = !docolor;
+	    doreset = 1;
             break;
          case 'r':
             docomp = !docomp;
+	    doreset = 1;
             break;
          }
 
          attron (COLOR_PAIR(1));
-         drawbar ((double) (k % nave)/nave, 10, 0, 14);
+         drawbar ((double) (k % nave)/nave, BAR_WIDTH, 0, 14);
          printw ("   frames: %d", k);
          attroff (COLOR_PAIR(1));
       }
 
-      // fps and throughput update
-      if (!(k % nave))
+      // throughput update
+      if (!(k % nave) || doreset)
       {
-         dk = k - kold;
-         display_mbps (dk, nrows, ncols, docolor);
+	 dk = k - kold;
+         display_mbps (dk, nrows, ncols, docolor, doreset);
          kold = k;
-         drawbar (0, 10, 0, 14);
+         drawbar (0, BAR_WIDTH, 0, 14);
+	 doreset = 0;
       }
       
       refresh();

@@ -90,13 +90,14 @@ void write_matrix_comp(int nrows, int ncols, int docolor)
    attroff (A_BOLD);
 }
 
-void display_mbps(int dk, int nrows, int ncols, int docolor)
+// Track and display bitrate
+void display_mbps(int dk, int nrows, int ncols, int docolor, int reset)
 {
    static int sec, us, secold = 0, usold = 0;
    struct timeval systime;
    double dt, fps, bps;
 
-   if (secold == 0)
+   if (reset || secold == 0)
    {
       // init
       gettimeofday (&systime, NULL);
