@@ -1,4 +1,4 @@
-AC_INIT([cspeedtest], [1.1], [birge@mit.edu])
+AC_INIT([cspeedtest], [1.2], [birge@mit.edu])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CC
 AC_PROG_INSTALL
