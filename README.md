@@ -13,6 +13,7 @@ Usage: cspeedtest [options]
 
 Options:
   -b   low bandwidth (B/W)
+  -r   non-random pattern (test compression)
   -h   show this help
   -v   show version
 ```
