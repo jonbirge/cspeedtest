@@ -28,6 +28,7 @@ void drawline(int row, int width)
       addch (ACS_HLINE);
 }
 
+// Completely random matrix of data
 void write_matrix(int nrows, int ncols, int docolor)
 {
    int r, c, attrb;
@@ -49,18 +50,71 @@ void write_matrix(int nrows, int ncols, int docolor)
    attroff (A_BOLD);
 }
 
-void display_mbps(int dk, int nrows, int ncols, int docolor)
+// Compressible matrix of data
+void write_matrix_comp(int nrows, int ncols, int docolor)
+{
+   double slow;  // factor to slow animation
+   register int r, c, attrb, q = 0;
+   static int phase;
+
+   if (docolor)
+      slow = 8;
+   else
+      slow = 256;
+
+   if (phase/slow < ncols)
+      phase++;
+   else
+      phase = 1;
+   attron (A_BOLD);
+   for (r = 2; r < nrows - 2; ++r)
+   {
+      move (r, 0);
+      for (c = 0; c < ncols; ++c)
+      {
+         if ((++q % (int) ceil(phase/slow)) == 0)
+         {
+            if (docolor)
+            {
+               attroff (COLOR_PAIR(3));
+               attron (COLOR_PAIR(6));
+               addch ('#');
+               attroff (COLOR_PAIR(6));
+               attron (COLOR_PAIR(3));
+            }
+            else
+            {
+               addch ('#');
+            }
+         }
+         else
+         {
+            if (docolor)
+            {
+               attrb = COLOR_PAIR((rand () & 0x0002) + 1);
+               attron (attrb);
+            }
+            addch('.');
+         }
+      }
+   }
+   attroff (A_BOLD);
+}
+
+// Track and display bitrate
+void display_mbps(int dk, int nrows, int ncols, int docolor, int reset)
 {
    static int sec, us, secold = 0, usold = 0;
    struct timeval systime;
    double dt, fps, bps;
 
-   if (secold == 0)
+   if (reset || secold == 0)
    {
       // init
       gettimeofday (&systime, NULL);
       secold = systime.tv_sec;
       usold = systime.tv_usec;
+      bps = 0;
    }
    else
    {
@@ -77,31 +131,48 @@ void display_mbps(int dk, int nrows, int ncols, int docolor)
       else
          bps = 8*fps*nrows*ncols;
 
-      attron (COLOR_PAIR(1));
-      move (0, 0);
-      clrtoeol ();
-      printw ("Mbps: ");
-      attron (A_BOLD);
-      printw ("%.1f", bps/1024/1024);
-      attroff (A_BOLD);
-      attroff (COLOR_PAIR(1));
-
       usold = us;
    }
+
+   attron(COLOR_PAIR(1));
+   move(0, 0);
+   clrtoeol();
+   printw ("Mbps: ");
+   attron(A_BOLD);
+   if (bps == 0)
+      printw ("---");
+   else
+      printw ("%.1f", bps / 1024 / 1024);
+   attroff(A_BOLD);
+   attroff(COLOR_PAIR(1));
 }
 
-void static_display(int nrows, int ncols, int docolor)
+void static_display(int nrows, int ncols, int docolor, int docomp)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
    move (nrows - 1, 0);
-   // "Type q to quit, c to toggle color."
    printw ("Type ");
    attron (A_BOLD);
    addch ('q');
    attroff (A_BOLD);
    printw(" to to quit, ");
+   attron (A_BOLD);
+   addch ('r');
+   attroff (A_BOLD);
+   printw (" to toggle ");
+   if (docomp)
+   {
+      printw ("random");
+   }
+   else
+   {
+      attron (COLOR_PAIR(2));
+      printw("random");
+      attron (COLOR_PAIR(1));
+   }
+   printw (", ");
    attron (A_BOLD);
    addch ('c');
    attroff (A_BOLD);
