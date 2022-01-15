@@ -1,9 +1,14 @@
+#include "config.h"
 #include <ncurses.h>
+#include <math.h>
+#ifdef HAVE_GETOPT
 #include <getopt.h>
+#endif
 #include "curslib.h"
 
 #define N_AVE_COLOR 128
-#define N_AVE 1024
+#define N_AVE 128
+#define BAR_WIDTH 32
 
 int main (int argc, char **argv)
 {
@@ -11,43 +16,54 @@ int main (int argc, char **argv)
    char d;
    WINDOW *wnd;
    int nrows, ncols;
-   int docolor, nave;
+   int docolor, docomp, nave, doreset = 0;
    int opt;
    
    // options and defaults
    docolor = 1;  // default to color
-   while ((opt = getopt (argc, argv, "bhv")) != -1)
+   docomp = 0;  // default to random
+   #ifdef HAVE_GETOPT
+   while ((opt = getopt (argc, argv, "bhrv")) != -1)
    {
       switch (opt)
       {
       case 'b':
          docolor = 0;
          break;
+      case 'r':
+         docomp = 1;
+         break;
       case 'h':
          printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
          printf("   -b\tlow bandwidth (B/W)\n");
+         printf("   -r\tnon-random pattern\n");
          printf("   -v\tdisplay version\n");
          printf("   -h\tshow this help\n");
          return (0);
       case 'v':
-         printf("cspeedtest ");
-         printf(VERSION);
+         printf(PACKAGE_STRING);
          printf("\n");
          printf("Copyright (c) 2021 Jonathan R. Birge\n");
+         printf("Bug reports to ");
+         printf(PACKAGE_BUGREPORT);
+         printf("\n");
          return (0);
       }
-   }  
+   }
+   #else
+   fprintf(stderr, "getopt() not available; ignoring command line options.\n");
+   #endif
    
    // init ncurses
-   wnd = initscr ();
+   wnd = initscr();
    nodelay (wnd, TRUE);
-   cbreak ();
-   noecho ();
-   start_color ();
-   init_colors ();
-   clear ();
-   refresh ();
+   cbreak();
+   noecho();
+   start_color();
+   init_colors();
+   clear();
+   refresh();
 
    // main loop
    long dk, k = -1, kold = -1;  // frame counters
@@ -63,13 +79,16 @@ int main (int argc, char **argv)
       getmaxyx (wnd, nrows, ncols);
 
       // static display
-      static_display(nrows, ncols, docolor);
+      static_display(nrows, ncols, docolor, docomp);
 
       // write matrix of characters
-      write_matrix (nrows, ncols, docolor);
+      if (docomp)
+         write_matrix_comp (nrows, ncols, docolor);
+      else
+         write_matrix (nrows, ncols, docolor);
 
-      // gui polling and update
-      if (!(k % (nave/32)))
+      // interface polling
+      if (!(k % 8))
       {
          d = getch ();
          switch (d)
@@ -79,23 +98,43 @@ int main (int argc, char **argv)
             break;
          case 'c':
             docolor = !docolor;
+            doreset = 1;
+            break;
+         case 'r':
+            docomp = !docomp;
+            doreset = 1;
+            break;
+         case 'a':
+            doreset = 1;
+            break; 
          }
+      }
 
+      if (doreset)
+      {
+        k = 0;
+        kold = 0;
+      }
+
+      // update display
+      if (!(k % (int) ceil(nave/BAR_WIDTH)))
+      {
          attron (COLOR_PAIR(1));
-         drawbar ((double) (k % nave)/nave, 10, 0, 14);
+         drawbar ((double) (k % nave)/nave, BAR_WIDTH, 0, 14);
          printw ("   frames: %d", k);
          attroff (COLOR_PAIR(1));
       }
 
-      // fps and throughput update
+      // throughput update
       if (!(k % nave))
       {
          dk = k - kold;
-         display_mbps (dk, nrows, ncols, docolor);
+         display_mbps (dk, nrows, ncols, docolor, doreset);
+         drawbar (0, BAR_WIDTH, 0, 14);
          kold = k;
-         drawbar (0, 10, 0, 14);
       }
-      
+
+      doreset = 0;
       refresh();
    }
 

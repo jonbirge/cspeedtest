@@ -10,6 +10,10 @@ compile
 config.log
 config.status
 configure
+config.h
+config.h.in
+stamp*
+null.d
 depcomp
 install-sh
 missing
