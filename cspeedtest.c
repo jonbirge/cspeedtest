@@ -1,6 +1,8 @@
 #include <ncurses.h>
-#include <getopt.h>
 #include <math.h>
+#ifdef HAVE_GETOPT
+#include <getopt.h>
+#endif
 #include "curslib.h"
 #include "config.h"
 
@@ -20,6 +22,7 @@ int main (int argc, char **argv)
    // options and defaults
    docolor = 1;  // default to color
    docomp = 0;  // default to random
+   #ifdef HAVE_GETOPT
    while ((opt = getopt (argc, argv, "bhrv")) != -1)
    {
       switch (opt)
@@ -47,7 +50,10 @@ int main (int argc, char **argv)
          printf("\n");
          return (0);
       }
-   } 
+   }
+   #else
+   fprintf(stderr, "getopt() not available; ignoring command line options.\n");
+   #endif
    
    // init ncurses
    wnd = initscr();
