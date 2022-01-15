@@ -6,4 +6,4 @@ rm -f depcomp install-sh missing
 rm -f Makefile.in Makefile
 rm -f compile
 rm -f config.log config.status
-rm -f config.h config.h.in stamp-*
+rm -f config.h config.h.in stamp-* null.d
