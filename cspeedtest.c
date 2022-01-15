@@ -37,14 +37,14 @@ int main (int argc, char **argv)
          printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
          printf("   -b\tlow bandwidth (B/W)\n");
-         printf("   -r\tnon-random pattern\n");
+         printf("   -r\tnon-random pattern (test compression)\n");
          printf("   -v\tdisplay version\n");
          printf("   -h\tshow this help\n");
          return (0);
       case 'v':
          printf(PACKAGE_STRING);
          printf("\n");
-         printf("Copyright (c) 2021 Jonathan R. Birge\n");
+         printf("Copyright 2021, Jonathan R. Birge\n");
          printf("Bug reports to ");
          printf(PACKAGE_BUGREPORT);
          printf("\n");
