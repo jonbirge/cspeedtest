@@ -1,10 +1,10 @@
+#include "config.h"
 #include <ncurses.h>
 #include <math.h>
 #ifdef HAVE_GETOPT
 #include <getopt.h>
 #endif
 #include "curslib.h"
-#include "config.h"
 
 #define N_AVE_COLOR 128
 #define N_AVE 128
