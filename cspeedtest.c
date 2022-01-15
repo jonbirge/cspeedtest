@@ -5,7 +5,7 @@
 #include "config.h"
 
 #define N_AVE_COLOR 128
-#define N_AVE 256
+#define N_AVE 128
 #define BAR_WIDTH 32
 
 int main (int argc, char **argv)
@@ -82,7 +82,7 @@ int main (int argc, char **argv)
          write_matrix (nrows, ncols, docolor);
 
       // interface polling
-      if (!(k % 4))
+      if (!(k % 8))
       {
          d = getch ();
          switch (d)
@@ -98,7 +98,16 @@ int main (int argc, char **argv)
             docomp = !docomp;
             doreset = 1;
             break;
+	 case 'a':
+            doreset = 1;
+            break; 
          }
+      }
+
+      if (doreset)
+      {
+        k = 0;
+        kold = 0;
       }
 
       // update display
@@ -111,15 +120,15 @@ int main (int argc, char **argv)
       }
 
       // throughput update
-      if (!(k % nave) || doreset)
+      if (!(k % nave))
       {
-	      dk = k - kold;
+         dk = k - kold;
          display_mbps (dk, nrows, ncols, docolor, doreset);
-         kold = k;
          drawbar (0, BAR_WIDTH, 0, 14);
-	      doreset = 0;
+         kold = k;
       }
-      
+
+      doreset = 0;
       refresh();
    }
 
