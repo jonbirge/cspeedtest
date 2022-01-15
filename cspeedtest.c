@@ -5,7 +5,7 @@
 #include "config.h"
 
 #define N_AVE_COLOR 128
-#define N_AVE 1024
+#define N_AVE 256
 #define BAR_WIDTH 32
 
 int main (int argc, char **argv)
@@ -92,11 +92,11 @@ int main (int argc, char **argv)
             break;
          case 'c':
             docolor = !docolor;
-	         doreset = 1;
+            doreset = 1;
             break;
          case 'r':
             docomp = !docomp;
-	         doreset = 1;
+            doreset = 1;
             break;
          }
       }
