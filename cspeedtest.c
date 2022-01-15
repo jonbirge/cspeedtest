@@ -98,7 +98,7 @@ int main (int argc, char **argv)
             docomp = !docomp;
             doreset = 1;
             break;
-	 case 'a':
+         case 'a':
             doreset = 1;
             break; 
          }
