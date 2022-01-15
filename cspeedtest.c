@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <getopt.h>
 #include "curslib.h"
+#include "config.h"
 
 #define N_AVE_COLOR 128
 #define N_AVE 1024
@@ -16,6 +17,7 @@ int main (int argc, char **argv)
    
    // options and defaults
    docolor = 1;  // default to color
+   #ifdef HAVE_GETOPT
    while ((opt = getopt (argc, argv, "bhv")) != -1)
    {
       switch (opt)
@@ -31,13 +33,16 @@ int main (int argc, char **argv)
          printf("   -h\tshow this help\n");
          return (0);
       case 'v':
-         printf("cspeedtest ");
-         printf(VERSION);
+         printf(PACKAGE_STRING);
          printf("\n");
          printf("Copyright (c) 2021 Jonathan R. Birge\n");
+         printf("Bug reports to ");
+         printf(PACKAGE_BUGREPORT);
+         printf("\n");
          return (0);
       }
-   }  
+   }
+   #endif  
    
    // init ncurses
    wnd = initscr ();
