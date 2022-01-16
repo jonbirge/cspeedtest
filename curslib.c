@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <math.h>
 
-#define NP 2048
+#define NP 10000
 
 
 /*** Library internal functions ***/
@@ -24,6 +24,14 @@ int limiter (int in, int min, int max)
    return in;
 }
 
+// Is number within limits?
+int qlimit (int in, int min, int max)
+{
+   if ((in > max) || (in < min))
+      return 0;
+   else
+      return 1;
+}
 
 /*** Library external functions ***/
 
@@ -93,9 +101,12 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
 
    if (init)
    {  // rotate
-      for (int k = 0; k < NP; k++)
+      for (register int k = 0; k < NP; k++)
       {
-         phis[k] += 0.01;
+         if (docolor)
+            phis[k] += 0.0001;
+         else
+            phis[k] += 0.005;
       }
    }
    else
@@ -104,7 +115,8 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
       for (int k = 0; k < NP; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
-         rs[k] = sqrt(uniformrv)*ncols/2.0;
+         //rs[k] = sqrt(uniformrv)*ncols/2.0;
+         rs[k] = uniformrv*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       init = 1;
@@ -119,17 +131,20 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
 
    // write field
    attron (A_BOLD);
-   for (int k = 0; k < NP; k++)
+   for (register int k = 0; k < NP; k++)
    {
-      col = round(rs[k]*cos(phis[k]) + ncols/2.0);
-      row = round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
+      col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
+      row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
       if (docolor)
       {
          attrb = COLOR_PAIR((k % 8) + 1);
          attron(attrb);
       }
-      addch ('.');
+      if (qlimit (row, 1, nrows - 2))
+         addch ('.');
+      else
+         addch (' ');
    }
    attroff (A_BOLD);
 
@@ -179,7 +194,7 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
    if (bps == 0)
       printw ("---");
    else
-      printw ("%.1f", bps / 1024 / 1024);
+      printw ("%d", (int) round(bps / 1024 / 1024));
    attroff(A_BOLD);
    attroff(COLOR_PAIR(1));
 }
