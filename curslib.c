@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <math.h>
 
-#define NP 1024
+#define NP 2048
 
 
 /*** Library internal functions ***/
@@ -53,7 +53,7 @@ void drawline (int row, int width)
 }
 
 // Completely random matrix of data
-void write_matrix (int nrows, int ncols, int docolor)
+long write_matrix (int nrows, int ncols, int docolor)
 {
    int r, c, attrb;
 
@@ -72,13 +72,22 @@ void write_matrix (int nrows, int ncols, int docolor)
       }
    }
    attroff (A_BOLD);
+
+   // return frame bit count
+   if (docolor)
+   {
+      return (8+64)*nrows*ncols;
+   }
+   else
+   {
+      return 8*nrows*ncols;
+   }
 }
 
 // Compressible matrix of data
-void write_matrix_comp (int nrows, int ncols, int docolor)
+long write_matrix_comp (int nrows, int ncols, int docolor)
 {
-   double slow;  // factor to slow animation
-   register int row, col, attrb;
+   int row, col, attrb;
    static int init;
    static double rs[NP], phis[NP];
 
@@ -86,7 +95,7 @@ void write_matrix_comp (int nrows, int ncols, int docolor)
    {  // rotate
       for (int k = 0; k < NP; k++)
       {
-         phis[k] += 0.0001;
+         phis[k] += 0.01;
       }
    }
    else
@@ -123,14 +132,24 @@ void write_matrix_comp (int nrows, int ncols, int docolor)
       addch ('.');
    }
    attroff (A_BOLD);
+
+   // return frame bit count
+   if (docolor)
+   {
+      return 64*NP;
+   }
+   else
+   {
+      return 8*NP;
+   }
 }
 
 // Track and display bitrate
-void display_mbps (int dk, int nrows, int ncols, int docolor, int reset)
+void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
 {
-   static int sec, us, secold = 0, usold = 0;
+   static int sec, us, secold, usold;
    struct timeval systime;
-   double dt, fps, bps;
+   double bps, dt;
 
    if (reset || secold == 0)
    {
@@ -148,13 +167,7 @@ void display_mbps (int dk, int nrows, int ncols, int docolor, int reset)
       us = systime.tv_usec;
       dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
       secold = sec;
-      
-      fps = (double) dk / (double) dt;
-      if (docolor)
-         bps = (8+64)*fps*nrows*ncols;  // char and attrib calls
-      else
-         bps = 8*fps*nrows*ncols;
-
+      bps = bits/dt;
       usold = us;
    }
 

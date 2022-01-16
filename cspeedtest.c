@@ -67,6 +67,7 @@ int main (int argc, char **argv)
 
    // main loop
    long dk, k = -1, kold = -1;  // frame counters
+   long bits = 0;  // estimate of bits sent
    while (!done)
    {
       ++k;
@@ -83,9 +84,9 @@ int main (int argc, char **argv)
 
       // write matrix of characters
       if (docomp)
-         write_matrix_comp (nrows, ncols, docolor);
+         bits += write_matrix_comp (nrows, ncols, docolor);
       else
-         write_matrix (nrows, ncols, docolor);
+         bits += write_matrix (nrows, ncols, docolor);
 
       // interface polling
       if (!(k % 8))
@@ -113,7 +114,7 @@ int main (int argc, char **argv)
       if (doreset)
       {
         k = 0;
-        kold = 0;
+        bits = 0;
       }
 
       // update display
@@ -126,12 +127,12 @@ int main (int argc, char **argv)
       }
 
       // throughput update
-      if (!(k % nave))
+      if (k >= nave || doreset)
       {
-         dk = k - kold;
-         display_mbps (dk, nrows, ncols, docolor, doreset);
+         display_mbps (bits, nrows, ncols, docolor, doreset);
          drawbar (0, BAR_WIDTH, 0, 14);
-         kold = k;
+         k = 0;
+         bits = 0;
       }
 
       doreset = 0;
