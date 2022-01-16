@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <math.h>
 
-#define NP 2000
+#define NP 10000
 
 
 /*** Library internal functions ***/
@@ -24,6 +24,14 @@ int limiter (int in, int min, int max)
    return in;
 }
 
+// Is number within limits?
+int qlimit (int in, int min, int max)
+{
+   if ((in > max) || (in < min))
+      return 0;
+   else
+      return 1;
+}
 
 /*** Library external functions ***/
 
@@ -125,15 +133,18 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
    attron (A_BOLD);
    for (register int k = 0; k < NP; k++)
    {
-      col = round(rs[k]*cos(phis[k]) + ncols/2.0);
-      row = round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
+      col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
+      row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
       if (docolor)
       {
          attrb = COLOR_PAIR((k % 8) + 1);
          attron(attrb);
       }
-      addch ('.');
+      if (qlimit (row, 1, nrows - 2))
+         addch ('.');
+      else
+         addch (' ');
    }
    attroff (A_BOLD);
 
