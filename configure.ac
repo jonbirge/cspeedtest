@@ -4,6 +4,8 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_SEARCH_LIBS(ceil, [m])
 AC_SEARCH_LIBS(rand, [m])
+AC_SEARCH_LIBS(sqrt, [m])
+AC_SEARCH_LIBS(sin, [m])
 AC_CHECK_LIB(ncurses, initscr, [], [echo "libncurses needed, but not foundl exiting now."; exit -1])
 AC_CHECK_HEADERS([ncurses.h sys/time.h math.h])
 AC_CHECK_FUNCS(getopt)

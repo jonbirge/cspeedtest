@@ -91,9 +91,11 @@ void write_matrix_comp (int nrows, int ncols, int docolor)
    }
    else
    {  // init
+      double uniformrv;
       for (int k = 0; k < NP; k++)
       {
-         rs[k] = (double) rand_max ( ceil(ncols/2) );
+         uniformrv = (double) rand() / (double) RAND_MAX;
+         rs[k] = sqrt(uniformrv)*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       init = 1;
