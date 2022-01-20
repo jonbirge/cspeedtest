@@ -134,14 +134,16 @@ long write_matrix_det (int nrows, int ncols, int docolor)
 
    // write field
    attron (A_BOLD);
+   int cycletime;
+   cycletime = (int) floor((double) NP / 8.0);
    for (register int k = 0; k < NP; k++)
    {
       col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
       row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
-      if (docolor)
+      if (docolor && !(k % cycletime))
       {
-         attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) NP));
+         attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) NP) + 1);
          attron(attrb);
       }
       if (qlimit (row, 1, nrows - 2))
