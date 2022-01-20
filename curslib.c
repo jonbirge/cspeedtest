@@ -4,7 +4,7 @@
 #include <math.h>
 #include "curslib.h"
 
-#define NP 1024  // number of points in deterministic pattern
+#define NP 2048  // number of points in deterministic pattern
 
 
 /*** Library internal functions ***/
@@ -101,23 +101,25 @@ long write_matrix_det (int nrows, int ncols, int docolor)
    static double rs[NP], phis[NP];
 
    if (init)
-   {  // rotate
+   {
+      // rotate
+      double speed = 0.0001, vorticity = 2.0;
       for (register int k = 0; k < NP; k++)
       {
          if (docolor)
-            phis[k] += 0.0001;
+            phis[k] += speed/(vorticity*rs[k]/ncols+speed);
          else
-            phis[k] += 0.005;
+            phis[k] += speed/(vorticity*rs[k]/ncols+speed);
       }
    }
    else
-   {  // init
+   {
+      // init
       double uniformrv;
       for (int k = 0; k < NP; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
          rs[k] = sqrt(uniformrv)*ncols/2.0;
-         //rs[k] = uniformrv*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       init = 1;
@@ -143,20 +145,20 @@ long write_matrix_det (int nrows, int ncols, int docolor)
          attron(attrb);
       }
       if (qlimit (row, 1, nrows - 2))
-         addch ('.');
+         addch ('.');  // in view
       else
-         addch (' ');
+         addch (' ');  // not in view
    }
    attroff (A_BOLD);
 
    // return frame bit count
    if (docolor)
    {
-      return 16*NP;
+      return 32*NP;
    }
    else
    {
-      return 8*NP;
+      return 16*NP;
    }
 }
 
