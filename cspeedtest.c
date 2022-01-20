@@ -6,9 +6,10 @@
 #endif
 #include "curslib.h"
 
-#define N_AVE_COLOR 128
-#define N_AVE 128
+#define N_AVE_COLOR 1000
+#define N_AVE 4000
 #define BAR_WIDTH 32
+
 
 int main (int argc, char **argv)
 {
@@ -16,14 +17,16 @@ int main (int argc, char **argv)
    char d;
    WINDOW *wnd;
    int nrows, ncols;
-   int docolor, docomp, nave, doreset = 0;
+   int docolor, docomp, verbose;
+   int nave, doreset = 0;
    int opt;
    
    // options and defaults
+   verbose = 0;  // default to no debug info
    docolor = 1;  // default to color
    docomp = 0;  // default to random
    #ifdef HAVE_GETOPT
-   while ((opt = getopt (argc, argv, "bhrv")) != -1)
+   while ((opt = getopt (argc, argv, "bhrvd")) != -1)
    {
       switch (opt)
       {
@@ -33,6 +36,9 @@ int main (int argc, char **argv)
       case 'r':
          docomp = 1;
          break;
+      case 'd':
+         verbose = 1;
+         break;
       case 'h':
          printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
@@ -40,6 +46,7 @@ int main (int argc, char **argv)
          printf("   -r\tnon-random pattern (test compression)\n");
          printf("   -v\tdisplay version\n");
          printf("   -h\tshow this help\n");
+         printf("   -d\tprint debug info\n");
          return (0);
       case 'v':
          printf(PACKAGE_STRING);
@@ -80,11 +87,11 @@ int main (int argc, char **argv)
       getmaxyx (wnd, nrows, ncols);
 
       // static display
-      static_display(nrows, ncols, docolor, docomp);
+      static_display(nrows, ncols, docolor, docomp, verbose);
 
       // write matrix of characters
       if (docomp)
-         bits += write_matrix_comp (nrows, ncols, docolor);
+         bits += write_matrix_det (nrows, ncols, docolor);
       else
          bits += write_matrix (nrows, ncols, docolor);
 
@@ -129,7 +136,7 @@ int main (int argc, char **argv)
       // throughput update
       if (k >= nave || doreset)
       {
-         display_mbps (bits, nrows, ncols, docolor, doreset);
+         display_mbps (bits, nrows, ncols, docolor, docomp, doreset);
          drawbar (0, BAR_WIDTH, 0, 14);
          k = 0;
          bits = 0;

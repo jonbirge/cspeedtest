@@ -2,8 +2,9 @@
 #include <ncurses.h>
 #include <sys/time.h>
 #include <math.h>
+#include "curslib.h"
 
-#define NP 10000
+#define NP 2048  // number of points in deterministic pattern
 
 
 /*** Library internal functions ***/
@@ -84,7 +85,7 @@ long write_matrix (int nrows, int ncols, int docolor)
    // return frame bit count
    if (docolor)
    {
-      return (8+64)*nrows*ncols;
+      return 64*nrows*ncols;
    }
    else
    {
@@ -92,31 +93,33 @@ long write_matrix (int nrows, int ncols, int docolor)
    }
 }
 
-// Compressible matrix of data
-long write_matrix_comp (int nrows, int ncols, int docolor)
+// Deterministic (compressible) matrix of data
+long write_matrix_det (int nrows, int ncols, int docolor)
 {
    int row, col, attrb;
    static int init;
    static double rs[NP], phis[NP];
 
    if (init)
-   {  // rotate
+   {
+      // rotate
+      double speed = 0.0001, vorticity = 2.0;
       for (register int k = 0; k < NP; k++)
       {
          if (docolor)
-            phis[k] += 0.0001;
+            phis[k] += speed/(vorticity*rs[k]/ncols+speed);
          else
-            phis[k] += 0.005;
+            phis[k] += speed/(vorticity*rs[k]/ncols+speed);
       }
    }
    else
-   {  // init
+   {
+      // init
       double uniformrv;
       for (int k = 0; k < NP; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
-         //rs[k] = sqrt(uniformrv)*ncols/2.0;
-         rs[k] = uniformrv*ncols/2.0;
+         rs[k] = sqrt(uniformrv)*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       init = 1;
@@ -131,36 +134,38 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
 
    // write field
    attron (A_BOLD);
+   int cycletime;
+   cycletime = (int) floor((double) NP / 8.0);
    for (register int k = 0; k < NP; k++)
    {
       col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
       row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
-      if (docolor)
+      if (docolor && !(k % cycletime))
       {
-         attrb = COLOR_PAIR((k % 8) + 1);
+         attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) NP) + 1);
          attron(attrb);
       }
       if (qlimit (row, 1, nrows - 2))
-         addch ('.');
+         addch ('.');  // in view
       else
-         addch (' ');
+         addch (' ');  // not in view
    }
    attroff (A_BOLD);
 
    // return frame bit count
    if (docolor)
    {
-      return 64*NP;
+      return 32*NP;
    }
    else
    {
-      return 8*NP;
+      return 16*NP;
    }
 }
 
 // Track and display bitrate
-void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
+void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int reset)
 {
    static int sec, us, secold, usold;
    struct timeval systime;
@@ -195,11 +200,18 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
       printw ("---");
    else
       printw ("%d", (int) round(bps / 1024 / 1024));
-   attroff(A_BOLD);
    attroff(COLOR_PAIR(1));
+   if (docomp)
+   {
+      move(0, ncols - 58);
+      attron(COLOR_PAIR(6));
+      printw("WARNING! Bitrate may be overestimated due to compression.");
+      attroff(COLOR_PAIR(6));
+   }
+   attroff(A_BOLD);
 }
 
-void static_display (int nrows, int ncols, int docolor, int docomp)
+void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
@@ -240,6 +252,15 @@ void static_display (int nrows, int ncols, int docolor, int docomp)
       printw("color");
    }
    addch ('.');
+   if (verbose)
+   {
+      printw(" ### chars: ");
+      if (docomp)
+         printw("%d", NP);
+      else
+         printw("%d", nrows*ncols);
+      printw(" res: %d x %d", ncols, nrows);
+   }
    attroff(COLOR_PAIR(1));
 }
 
