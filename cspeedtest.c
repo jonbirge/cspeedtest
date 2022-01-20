@@ -91,7 +91,7 @@ int main (int argc, char **argv)
 
       // write matrix of characters
       if (docomp)
-         bits += write_matrix_comp (nrows, ncols, docolor);
+         bits += write_matrix_det (nrows, ncols, docolor);
       else
          bits += write_matrix (nrows, ncols, docolor);
 
@@ -136,7 +136,7 @@ int main (int argc, char **argv)
       // throughput update
       if (k >= nave || doreset)
       {
-         display_mbps (bits, nrows, ncols, docolor, doreset);
+         display_mbps (bits, nrows, ncols, docolor, docomp, doreset);
          drawbar (0, BAR_WIDTH, 0, 14);
          k = 0;
          bits = 0;

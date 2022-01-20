@@ -93,8 +93,8 @@ long write_matrix (int nrows, int ncols, int docolor)
    }
 }
 
-// Compressible matrix of data
-long write_matrix_comp (int nrows, int ncols, int docolor)
+// Deterministic (compressible) matrix of data
+long write_matrix_det (int nrows, int ncols, int docolor)
 {
    int row, col, attrb;
    static int init;
@@ -161,7 +161,7 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
 }
 
 // Track and display bitrate
-void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
+void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int reset)
 {
    static int sec, us, secold, usold;
    struct timeval systime;
@@ -196,8 +196,15 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
       printw ("---");
    else
       printw ("%d", (int) round(bps / 1024 / 1024));
-   attroff(A_BOLD);
    attroff(COLOR_PAIR(1));
+   if (docomp)
+   {
+      move(0, ncols - 58);
+      attron(COLOR_PAIR(6));
+      printw("WARNING! Bitrate may be overestimated due to compression.");
+      attroff(COLOR_PAIR(6));
+   }
+   attroff(A_BOLD);
 }
 
 void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
@@ -248,6 +255,7 @@ void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
          printw("%d", NP);
       else
          printw("%d", nrows*ncols);
+      printw(" res: %d x %d", ncols, nrows);
    }
    attroff(COLOR_PAIR(1));
 }
