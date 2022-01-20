@@ -6,7 +6,7 @@ This program uses curses to write screenfuls of random characters to the termina
 
 ## Usage
 
-Install and compile on your remove server using make. Then run as follows:
+Install and compile on your remove server using the standard GNU build process. Then run as follows:
 
 ```
 Usage: cspeedtest [options]
@@ -17,6 +17,8 @@ Options:
   -h   show this help
   -v   show version
 ```
+
+Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed (which is, again, a lower bound).
 
 ## Screenshot
 
