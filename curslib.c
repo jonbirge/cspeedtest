@@ -97,10 +97,10 @@ long write_matrix (int nrows, int ncols, int docolor)
 long write_matrix_det (int nrows, int ncols, int docolor)
 {
    int row, col, attrb;
-   static int init;
    static double rs[NP], phis[NP];
+   static int nrowslast, ncolslast;
 
-   if (init)
+   if ((nrows == nrowslast) && (ncols == ncolslast))
    {
       // rotate
       double speed = 0.0001, vorticity = 2.0;
@@ -122,7 +122,7 @@ long write_matrix_det (int nrows, int ncols, int docolor)
          rs[k] = sqrt(uniformrv)*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
-      init = 1;
+      nrowslast = nrows; ncolslast = ncols;
    }
 
    // clear
