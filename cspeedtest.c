@@ -22,11 +22,11 @@ int main (int argc, char **argv)
    int opt;
    
    // options and defaults
-   verbose = 1;
+   verbose = 0;  // default to no debug info
    docolor = 1;  // default to color
    docomp = 0;  // default to random
    #ifdef HAVE_GETOPT
-   while ((opt = getopt (argc, argv, "bhrv")) != -1)
+   while ((opt = getopt (argc, argv, "bhrvd")) != -1)
    {
       switch (opt)
       {
@@ -36,6 +36,9 @@ int main (int argc, char **argv)
       case 'r':
          docomp = 1;
          break;
+      case 'd':
+         verbose = 1;
+         break;
       case 'h':
          printf("Usage: cspeedtest [options]\n\n");
          printf("Options:\n");
@@ -43,6 +46,7 @@ int main (int argc, char **argv)
          printf("   -r\tnon-random pattern (test compression)\n");
          printf("   -v\tdisplay version\n");
          printf("   -h\tshow this help\n");
+         printf("   -d\tprint debug info\n");
          return (0);
       case 'v':
          printf(PACKAGE_STRING);
