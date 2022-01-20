@@ -18,7 +18,7 @@ int main (int argc, char **argv)
    WINDOW *wnd;
    int nrows, ncols;
    int docolor, docomp, verbose;
-   int nave, doreset = 0;
+   int nave;
    int opt;
    
    // options and defaults
@@ -75,6 +75,7 @@ int main (int argc, char **argv)
    // main loop
    long dk, k = -1, kold = -1;  // frame counters
    long bits = 0;  // estimate of bits sent
+   int doreset = 1;
    while (!done)
    {
       ++k;
@@ -114,7 +115,10 @@ int main (int argc, char **argv)
             break;
          case 'a':
             doreset = 1;
-            break; 
+            break;
+         case 'v':
+            verbose = !verbose;
+            break;
          }
       }
 
