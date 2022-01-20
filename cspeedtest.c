@@ -6,9 +6,10 @@
 #endif
 #include "curslib.h"
 
-#define N_AVE_COLOR 128
-#define N_AVE 128
+#define N_AVE_COLOR 1000
+#define N_AVE 4000
 #define BAR_WIDTH 32
+
 
 int main (int argc, char **argv)
 {
@@ -16,10 +17,12 @@ int main (int argc, char **argv)
    char d;
    WINDOW *wnd;
    int nrows, ncols;
-   int docolor, docomp, nave, doreset = 0;
+   int docolor, docomp, verbose;
+   int nave, doreset = 0;
    int opt;
    
    // options and defaults
+   verbose = 1;
    docolor = 1;  // default to color
    docomp = 0;  // default to random
    #ifdef HAVE_GETOPT
@@ -80,7 +83,7 @@ int main (int argc, char **argv)
       getmaxyx (wnd, nrows, ncols);
 
       // static display
-      static_display(nrows, ncols, docolor, docomp);
+      static_display(nrows, ncols, docolor, docomp, verbose);
 
       // write matrix of characters
       if (docomp)

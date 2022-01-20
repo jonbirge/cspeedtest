@@ -10,4 +10,4 @@ long write_matrix_comp (int nrows, int ncols, int docolor);
 
 void display_mbps (long bits, int nrows, int ncols, int docolor, int reset);
 
-void static_display (int nrows, int ncols, int docolor, int docomp);
+void static_display (int nrows, int ncols, int docolor, int docomp, int verbose);

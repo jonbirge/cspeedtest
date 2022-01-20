@@ -2,8 +2,9 @@
 #include <ncurses.h>
 #include <sys/time.h>
 #include <math.h>
+#include "curslib.h"
 
-#define NP 10000
+#define NP 1024  // number of points in deterministic pattern
 
 
 /*** Library internal functions ***/
@@ -84,7 +85,7 @@ long write_matrix (int nrows, int ncols, int docolor)
    // return frame bit count
    if (docolor)
    {
-      return (8+64)*nrows*ncols;
+      return 64*nrows*ncols;
    }
    else
    {
@@ -115,8 +116,8 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
       for (int k = 0; k < NP; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
-         //rs[k] = sqrt(uniformrv)*ncols/2.0;
-         rs[k] = uniformrv*ncols/2.0;
+         rs[k] = sqrt(uniformrv)*ncols/2.0;
+         //rs[k] = uniformrv*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       init = 1;
@@ -151,7 +152,7 @@ long write_matrix_comp (int nrows, int ncols, int docolor)
    // return frame bit count
    if (docolor)
    {
-      return 64*NP;
+      return 16*NP;
    }
    else
    {
@@ -199,7 +200,7 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int reset)
    attroff(COLOR_PAIR(1));
 }
 
-void static_display (int nrows, int ncols, int docolor, int docomp)
+void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
@@ -240,6 +241,14 @@ void static_display (int nrows, int ncols, int docolor, int docomp)
       printw("color");
    }
    addch ('.');
+   if (verbose)
+   {
+      printw(" ### chars: ");
+      if (docomp)
+         printw("%d", NP);
+      else
+         printw("%d", nrows*ncols);
+   }
    attroff(COLOR_PAIR(1));
 }
 
