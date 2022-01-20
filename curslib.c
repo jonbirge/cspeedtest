@@ -141,7 +141,7 @@ long write_matrix_det (int nrows, int ncols, int docolor)
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
       if (docolor)
       {
-         attrb = COLOR_PAIR((k % 8) + 1);
+         attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) NP));
          attron(attrb);
       }
       if (qlimit (row, 1, nrows - 2))
