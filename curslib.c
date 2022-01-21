@@ -4,7 +4,7 @@
 #include <math.h>
 #include "curslib.h"
 
-#define NP 2048  // number of points in deterministic pattern
+#define NP 4096  // number of points in deterministic pattern
 
 
 /*** Library internal functions ***/
@@ -204,7 +204,7 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    attroff(COLOR_PAIR(1));
    if (docomp)
    {
-      move(0, ncols - 58);
+      move(0, ncols - 52);
       attron(COLOR_PAIR(6));
       printw("WARNING! Bitrate overestimated due to compression.");
       attroff(COLOR_PAIR(6));

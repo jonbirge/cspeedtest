@@ -1,29 +1,30 @@
 #include "config.h"
+#include <stdlib.h>
 #include <ncurses.h>
 #include <math.h>
 #include <sys/time.h>
-#ifdef HAVE_GETOPT_H
 #include <getopt.h>
-#endif
 #include "curslib.h"
 
 
 // Constants
 #define BAR_WIDTH 32
 
-// Global flags
+// Global defaults
 static int debug_flag = 0;  // default to no debug info
 static int color_flag = 1;  // default to color
 static int det_flag = 0;  // default to random
+int Tave = 5000000;  // usec
 
 void print_usage ()
 {
    printf("Usage: cspeedtest [options]\n\n");
    printf("Options:\n");
-   printf("   -b, --low-bandwidth\tlow bandwidth (B/W)\n");
-   printf("   -v, --version\tdisplay version\n");
-   printf("   -h, --help\tshow this help\n");
-   printf("   -d, --debug\tprint debug info\n");
+   printf("  -t T, --time=T\tintegration time in seconds\n");
+   printf("  -b, --low-bandwidth\tlow bandwidth (B/W)\n");
+   printf("  -v, --version\t\tdisplay version\n");
+   printf("  -h, --help\t\tshow this help\n");
+   printf("  -d, --debug\t\tprint debug info\n");
 }
 
 void print_version ()
@@ -50,14 +51,18 @@ int main (int argc, char **argv)
       {
          {"debug", no_argument, 0, 'd'},
          {"low-bandwidth", no_argument, 0, 'b'},
+         {"time", required_argument, 0, 't'},
          {"version", no_argument, 0, 'v'},
          {"help", no_argument, 0, 'h'},
          {0, 0, 0, 0}
       };
-      while ((opt = getopt_long(argc, argv, "bhrvd", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:bhrvd", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
+         case 't':
+            Tave = atoi(optarg)*1000000;
+            break;
          case 'b':
             color_flag = 0;
             break;
@@ -90,7 +95,7 @@ int main (int argc, char **argv)
    // main loop
    long k = -1;  // frame counters
    long bits = 0;  // estimate of bits sent
-   int T, T0, Tave = 5000000;  // usec
+   int T, T0;  // usec
    struct timeval systime;
    int doreset = 1;
    int done = 0;
