@@ -255,7 +255,7 @@ void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
    addch ('.');
    if (verbose)
    {
-      printw(" ### chars: ");
+      printw(" chars: ");
       if (docomp)
          printw("%d", NP);
       else
