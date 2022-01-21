@@ -20,7 +20,7 @@ void print_usage ()
 {
    printf("Usage: cspeedtest [options]\n\n");
    printf("Options:\n");
-   printf("  -t T, --time=T\tintegration time in seconds\n");
+   printf("  -t, --time=T\t\tintegration time in seconds\n");
    printf("  -b, --low-bandwidth\tlow bandwidth (B/W)\n");
    printf("  -v, --version\t\tdisplay version\n");
    printf("  -h, --help\t\tshow this help\n");

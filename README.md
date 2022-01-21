@@ -12,10 +12,10 @@ Install and compile on your remove server using the standard GNU build process (
 Usage: cspeedtest [options]
 
 Options:
-  -b   low bandwidth (B/W)
-  -r   non-random pattern (test compression)
-  -h   show this help
-  -v   show version
+  -t, --time==T        set integration time to T seconds
+  -b, --low-bandwidth    low bandwidth (B/W)
+  -h, --help             show this help
+  -v, --version          show version
 ```
 
 Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed (which is, again, a lower bound).
