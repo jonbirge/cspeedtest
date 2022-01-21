@@ -34,6 +34,7 @@ int qlimit (int in, int min, int max)
       return 1;
 }
 
+
 /*** Library external functions ***/
 
 void drawbar (double frac, int width, int line, int offset)
@@ -205,7 +206,7 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    {
       move(0, ncols - 58);
       attron(COLOR_PAIR(6));
-      printw("WARNING! Bitrate may be overestimated due to compression.");
+      printw("WARNING! Bitrate overestimated due to compression.");
       attroff(COLOR_PAIR(6));
    }
    attroff(A_BOLD);
