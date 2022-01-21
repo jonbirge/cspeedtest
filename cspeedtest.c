@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include <getopt.h>
 #include "curslib.h"
+#include "timecurses.h"
 
 
 // Constants
