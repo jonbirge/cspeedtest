@@ -3,10 +3,8 @@ AC_PREREQ(2.60)
 AC_INIT([cspeedtest], [1.5], [birge@mit.edu])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CC
-AC_PROG_CC_C99
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_HEADER_STDC
 AC_CHECK_HEADERS([ncurses.h sys/time.h math.h getopt.h])
 AC_SEARCH_LIBS(floor, [m])
 AC_SEARCH_LIBS(rand, [m])
