@@ -1,0 +1,22 @@
+name: cspeedtest
+base: core18
+version: '1.4.1'
+summary: Single-line elevator pitch for your amazing snap # 79 char long summary
+description: |
+  Terminal-based network speed test or GNU/Linux servers.
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+parts:
+  curses-speedtest:
+    source: https://cspeedtest.birge.us/files/cspeedtest-1.4.1.tar.gz
+    plugin: autotools
+    build-packages:
+      - libncurses-dev
+    stage-packages:
+      - libncurses-dev
+
+apps:
+  cspeedtest:
+    command: bin/cspeedtest
+    
