@@ -12,7 +12,7 @@ Install and compile on your remove server using the standard GNU build process (
 Usage: cspeedtest [options]
 
 Options:
-  -t, --time==T        set integration time to T seconds
+  -t, --time==T          set integration time to T seconds
   -b, --low-bandwidth    low bandwidth (B/W)
   -h, --help             show this help
   -v, --version          show version
