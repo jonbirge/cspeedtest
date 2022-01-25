@@ -141,21 +141,21 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    attron(COLOR_PAIR(1));
    move(0, 0);
    clrtoeol();
-   printw ("Mbps: ");
    attron(A_BOLD);
    if (bps == 0)
       printw ("---");
    else
       printw ("%d", (int) round(bps / 1024 / 1024));
+   attroff(A_BOLD);
+   printw (" Mbps");
    attroff(COLOR_PAIR(1));
    if (docomp)
    {
-      move(0, ncols - 52);
+      move(0, ncols - 35);
       attron(COLOR_PAIR(6));
-      printw("WARNING! Bitrate overestimated due to compression.");
+      printw("WARNING! Bitrate may be unreliable.");
       attroff(COLOR_PAIR(6));
    }
-   attroff(A_BOLD);
 }
 
 void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
