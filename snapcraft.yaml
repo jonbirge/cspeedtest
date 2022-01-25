@@ -7,7 +7,6 @@ description: |
   terminal to estimate network path speed between you and your server.
 grade: stable
 confinement: strict
-website: https://cspeedtest.birge.us
 
 parts:
   curses-speedtest:
@@ -16,7 +15,7 @@ parts:
     build-packages:
       - libncurses-dev
     stage-packages:
-      - libncurses-dev
+      - libncurses5
 
 apps:
   cspeedtest:
