@@ -5,12 +5,13 @@ summary: Terminal-based network speed test for GNU/Linux servers.
 description: |
   Client-less network speed test for GNU/Linux servers, using curses and your
   terminal to estimate network path speed between you and your server.
-grade: stable # must be 'stable' to release into candidate/stable channels
-confinement: strict # use 'strict' once you have the right plugs and slots
+grade: stable
+confinement: strict
+website: https://cspeedtest.birge.us
 
 parts:
   curses-speedtest:
-    source: https://cspeedtest.birge.us/files/cspeedtest-1.5.tar.gz
+    source: https://github.com/jonbirge/curses-speedtest.git
     plugin: autotools
     build-packages:
       - libncurses-dev
