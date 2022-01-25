@@ -1,6 +1,6 @@
 dnl Process with autoconf
 AC_PREREQ(2.60)
-AC_INIT([cspeedtest], [1.5], [birge@mit.edu])
+AC_INIT([cspeedtest], [1.5.1], [birge@mit.edu])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CC
 AC_PROG_INSTALL

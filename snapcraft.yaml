@@ -1,6 +1,6 @@
 name: cspeedtest
 base: core18
-version: '1.5'
+version: '1.5.1'
 summary: Terminal-based network speed test for GNU/Linux servers.
 description: |
   Client-less network speed test for GNU/Linux servers, using curses and your
