@@ -23,3 +23,7 @@ Depending on your terminal and/or connection, you may have to try both color and
 ## Screenshot
 
 <img width="923" alt="cspeedtest-color" src="https://user-images.githubusercontent.com/660566/147842191-f486bfaa-2f5c-4466-a19b-7e73e34e956f.png">
+
+## Distribution
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/cspeedtest)
