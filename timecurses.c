@@ -5,7 +5,7 @@
 #include "curslib.h"
 #include "timecurses.h"
 
-#define NP 4096  // number of points in deterministic pattern
+#define NP 2048  // number of points in deterministic pattern
 
 
 // Completely random matrix of data
