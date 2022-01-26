@@ -21,7 +21,7 @@ long write_matrix (int nrows, int ncols, int docolor)
       {
          if (docolor)
          {
-            attrb = COLOR_PAIR((rand () & 0x0007) + 1);
+            attrb = COLOR_PAIR((rand () & 0x000D) + 1);
             attron (attrb);
          }
          addch ((rand () & 0x3F) + 33);
@@ -151,9 +151,9 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    attroff(COLOR_PAIR(1));
    if (docomp)
    {
-      move(0, ncols - 35);
+      move(0, ncols - 26);
       attron(COLOR_PAIR(6));
-      printw("WARNING! Bitrate may be unreliable.");
+      printw("Bitrate may be unreliable.");
       attroff(COLOR_PAIR(6));
    }
 }
