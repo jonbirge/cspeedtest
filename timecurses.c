@@ -66,7 +66,7 @@ long write_matrix_det (int nrows, int ncols, int docolor)
       for (int k = 0; k < NP; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
-         rs[k] = sqrt(uniformrv)*ncols/2.0;
+         rs[k] = uniformrv*ncols/2.0;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       nrowslast = nrows; ncolslast = ncols;

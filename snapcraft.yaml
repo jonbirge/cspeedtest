@@ -1,6 +1,6 @@
 name: cspeedtest
 base: core18
-version: '1.5.2'
+version: '1.5.3'
 summary: Measure network throughput between a server and any terminal
 description: |
   Client-less network speed test for GNU/Linux servers, using GNU libncurses
@@ -22,4 +22,3 @@ parts:
 apps:
   cspeedtest:
     command: bin/cspeedtest
-    
