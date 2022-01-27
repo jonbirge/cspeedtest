@@ -15,7 +15,7 @@
 static int debug_flag = 0;  // default to no debug info
 static int color_flag = 1;  // default to color
 static int det_flag = 0;  // default to random
-int Tave = 5000000;  // usec
+int Tave = 5 * 1000000;  // usec
 
 void print_usage ()
 {
@@ -104,7 +104,7 @@ int main (int argc, char **argv)
    {
       ++k;
 
-      // init
+      // screen update
       getmaxyx (wnd, nrows, ncols);
 
       // timing
@@ -151,14 +151,15 @@ int main (int argc, char **argv)
       }
 
       // write matrix of characters
-      if (det_flag)
+      if (det_flag && !doreset)
          bits += write_matrix_det (nrows, ncols, color_flag);
       else
          bits += write_matrix (nrows, ncols, color_flag);
 
       // update display
-      if (!(k % 8))
+      if (!(k % 16) && !doreset)
       {
+         display_mbps (bits, nrows, ncols, color_flag, det_flag, 0);
          attron (COLOR_PAIR(1));
          drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
          printw ("   frames: %d", k);
@@ -168,13 +169,14 @@ int main (int argc, char **argv)
       // throughput update
       if (((T - T0) >= Tave) || doreset)
       {
-         display_mbps (bits, nrows, ncols, color_flag, det_flag, doreset);
+         display_mbps (bits, nrows, ncols, color_flag, det_flag, 1);
          drawbar (0, BAR_WIDTH, 0, 14);
+         bits = 0;
          T0 = T;
          k = -1;
       }
 
-      // clean-up
+      // loop clean-up
       doreset = 0;
       refresh();
    }

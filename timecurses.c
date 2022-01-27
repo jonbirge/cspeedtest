@@ -118,24 +118,20 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    struct timeval systime;
    double bps, dt;
 
-   if (reset || secold == 0)
+   if (reset || secold == 0)  // init
    {
-      // init
       gettimeofday (&systime, NULL);
       secold = systime.tv_sec;
       usold = systime.tv_usec;
       bps = 0;
    }
-   else
+   else  // normal ops
    {
-      // normal ops
       gettimeofday (&systime, NULL);
       sec = systime.tv_sec;
       us = systime.tv_usec;
       dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
-      secold = sec;
       bps = bits/dt;
-      usold = us;
    }
 
    attron(COLOR_PAIR(1));
