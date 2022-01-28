@@ -1,6 +1,6 @@
 name: cspeedtest
 base: core18
-version: '1.5.5'
+version: git
 summary: Measure network throughput between a server and any terminal
 #website: https://cspeedtest.birge.us/
 #contact: https://cspeedtest.birge.us/contact
