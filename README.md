@@ -6,7 +6,11 @@ This program uses curses to write screenfuls of random characters to the termina
 
 ## Usage
 
-Install and compile on your remove server using the standard GNU build process (./configure && make). Then run as follows:
+### Where to install
+
+You just need to install this on the server where you want to measure network speed. Then, you can get an estimate of the network speed from that server to any terminal by logging in via ssh and running `cspeedtest`.
+
+### Command line options
 
 ```
 Usage: cspeedtest [options]
@@ -18,12 +22,19 @@ Options:
   -v, --version          show version
 ```
 
-Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed (which is, again, a lower bound).
+Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed. For testing compression (and fun) there is a deterministic pattern you can run by typing `r` while running the test.
 
 ## Screenshot
 
 <img width="923" alt="cspeedtest-color" src="https://user-images.githubusercontent.com/660566/147842191-f486bfaa-2f5c-4466-a19b-7e73e34e956f.png">
 
-## Distribution
+## Installing
+
+### Install from source
+
+Install and compile on your remote server using the standard GNU build process (`autogen && ./configure && make`). Then run as follows:
+
+### Install from distribution
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/cspeedtest)
+
