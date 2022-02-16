@@ -5,11 +5,33 @@
 #include "curslib.h"
 #include "timecurses.h"
 
-#define NP 2048  // number of points in deterministic pattern
 
+// Structure of all displays
+const int screen_count = 2;
+static screen_display* screen_table;
+
+// API
+void init_screen_table ()
+{
+   screen_table = malloc(sizeof(screen_display)*screen_count);
+   screen_table[0].name = "random";
+   screen_table[0].fun = random_matrix_screen;
+   screen_table[1].name = "swirl";
+   screen_table[1].fun = swirl_screen;
+}
+
+screen_display* get_screen_table ()
+{
+   return screen_table;
+}
+
+int get_screen_count ()
+{
+   return screen_count;
+}
 
 // Completely random matrix of data
-long write_matrix (int nrows, int ncols, int docolor)
+long random_matrix_screen (int nrows, int ncols, int docolor)
 {
    int r, c, attrb;
 
@@ -40,18 +62,19 @@ long write_matrix (int nrows, int ncols, int docolor)
    }
 }
 
-// Deterministic (compressible) matrix of data
-long write_matrix_det (int nrows, int ncols, int docolor)
+// Swirling dots display
+#define np 2048
+long swirl_screen (int nrows, int ncols, int docolor)
 {
    int row, col, attrb;
-   static double rs[NP], phis[NP];
+   static double rs[np], phis[np];
    static int nrowslast, ncolslast;
 
    if ((nrows == nrowslast) && (ncols == ncolslast))
    {
       // rotate
       double speed = 0.0001, vorticity = 2.0;
-      for (register int k = 0; k < NP; k++)
+      for (register int k = 0; k < np; k++)
       {
          if (docolor)
             phis[k] += speed/(vorticity*rs[k]/ncols+speed);
@@ -63,7 +86,7 @@ long write_matrix_det (int nrows, int ncols, int docolor)
    {
       // init
       double uniformrv;
-      for (int k = 0; k < NP; k++)
+      for (int k = 0; k < np; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
          rs[k] = uniformrv*ncols/2.0;
@@ -82,15 +105,15 @@ long write_matrix_det (int nrows, int ncols, int docolor)
    // write field
    attron (A_BOLD);
    int cycletime;
-   cycletime = (int) floor((double) NP / 8.0);
-   for (register int k = 0; k < NP; k++)
+   cycletime = (int) floor((double) np / 8.0);
+   for (register int k = 0; k < np; k++)
    {
       col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
       row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
       if (docolor && !(k % cycletime))
       {
-         attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) NP) + 1);
+         attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) np) + 1);
          attron(attrb);
       }
       if (qlimit (row, 1, nrows - 2))
@@ -103,16 +126,16 @@ long write_matrix_det (int nrows, int ncols, int docolor)
    // return frame bit count
    if (docolor)
    {
-      return 32*NP;
+      return 32*np;
    }
    else
    {
-      return 16*NP;
+      return 16*np;
    }
 }
 
 // Track and display bitrate
-void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int reset)
+void display_mbps (long bits, int nrows, int ncols, int warn, int reset)
 {
    static int sec, us, secold, usold;
    struct timeval systime;
@@ -145,7 +168,7 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    attroff(A_BOLD);
    printw (" Mbps");
    attroff(COLOR_PAIR(1));
-   if (docomp)
+   if (warn)
    {
       move(0, ncols - 26);
       attron(COLOR_PAIR(6));
@@ -154,7 +177,8 @@ void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int
    }
 }
 
-void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
+
+void static_display (int nrows, int ncols, int docolor, int verbose)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
@@ -168,18 +192,7 @@ void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
    attron (A_BOLD);
    addch ('r');
    attroff (A_BOLD);
-   printw (" to toggle ");
-   if (docomp)
-   {
-      printw ("random");
-   }
-   else
-   {
-      attron (COLOR_PAIR(16));
-      printw("random");
-      attron (COLOR_PAIR(1));
-   }
-   printw (", ");
+   printw (" to cycle screen, ");
    attron (A_BOLD);
    addch ('c');
    attroff (A_BOLD);
@@ -198,10 +211,7 @@ void static_display (int nrows, int ncols, int docolor, int docomp, int verbose)
    if (verbose)
    {
       printw(" chars: ");
-      if (docomp)
-         printw("%d", NP);
-      else
-         printw("%d", nrows*ncols);
+      printw("%d", nrows*ncols);
       printw(" res: %d x %d", ncols, nrows);
    }
    attroff(COLOR_PAIR(1));
