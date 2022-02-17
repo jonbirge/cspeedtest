@@ -23,11 +23,11 @@ void print_usage ()
 {
    printf("Usage: cspeedtest [options]\n\n");
    printf("Options:\n");
-   printf("  -t, --time=T\t\tintegration time in seconds\n");
+   printf("  -t T, --time=T\tintegration time in seconds\n");
    printf("  -b, --low-bandwidth\tlow bandwidth (B/W)\n");
-   printf("  -v, --version\t\tdisplay version\n");
+   printf("  -V, --version\t\tdisplay version\n");
    printf("  -h, --help\t\tshow this help\n");
-   printf("  -d, --debug\t\tprint debug info\n");
+   printf("  -v, --verbose\t\tprint debug info\n");
 }
 
 void print_version ()
@@ -52,32 +52,32 @@ int main (int argc, char **argv)
       int option_index = 0;
       struct option long_options[] =
       {
-         {"debug", no_argument, 0, 'd'},
+         {"verbose", no_argument, 0, 'v'},
          {"low-bandwidth", no_argument, 0, 'b'},
          {"time", required_argument, 0, 't'},
-         {"version", no_argument, 0, 'v'},
+         {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
          {0, 0, 0, 0}
       };
-      while ((opt = getopt_long(argc, argv, "t:bhvd", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:hVbv", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
+         case 'h':
+            print_usage();
+            return (0);
+         case 'V':
+            print_version();
+            return (0);
          case 't':
             Tave = atoi(optarg)*1000000;
             break;
          case 'b':
             color_flag = 0;
             break;
-         case 'd':
+         case 'v':
             debug_flag = 1;
             break;
-         case 'h':
-            print_usage();
-            return (0);
-         case 'v':
-            print_version();
-            return (0);
          }
       }
    }
