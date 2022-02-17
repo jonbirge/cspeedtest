@@ -19,7 +19,8 @@ Options:
   -t T, --time=T         set integration time to T seconds
   -b, --low-bandwidth    low bandwidth (B/W)
   -h, --help             show this help
-  -v, --version          show version
+  -V, --version          show version
+  -v, --verbose          show debugging info
 ```
 
 Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed. For testing compression (and fun) there is a deterministic pattern you can run by typing `r` while running the test.
