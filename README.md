@@ -35,7 +35,7 @@ Depending on your terminal and/or connection, you may have to try both color and
 
 ### Install from source
 
-Install and compile on your remote server using the standard GNU build process (`autogen && ./configure && make`). Then run as follows:
+Install and compile on your remote server using the standard GNU build process (`autogen && ./configure && make`).
 
 ### Install from distribution
 
