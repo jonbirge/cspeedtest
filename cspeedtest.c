@@ -155,7 +155,7 @@ int main (int argc, char **argv)
       }
 
       // write screen
-      screen_table[screen_index].fun(nrows, ncols, color_flag);
+      bits += screen_table[screen_index].fun(nrows, ncols, color_flag);
 
       // update display
       if (!(k % 16) && !doreset)
