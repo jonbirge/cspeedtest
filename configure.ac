@@ -1,6 +1,6 @@
 dnl Build tools
-AC_PREREQ(2.60)
-AC_INIT([cspeedtest], [1.5.5], [birge@mit.edu])
+AC_PREREQ([2.60])
+AC_INIT([cspeedtest], [1.6.0], [birge@mit.edu])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -20,7 +20,6 @@ AC_CHECK_FUNCS([nodelay])
 AC_CHECK_FUNCS([atoi])
 
 dnl Generate files
-AC_CONFIG_HEADERS(config.h)
-AC_CONFIG_FILES(Makefile)
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
-

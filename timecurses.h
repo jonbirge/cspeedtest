@@ -1,7 +1,17 @@
-long write_matrix (int nrows, int ncols, int docolor);
+struct screen_display
+{
+  char* name;
+  long (*fun)(int, int, int);
+};
 
-long write_matrix_det (int nrows, int ncols, int docolor);
+typedef struct screen_display screen_display;
 
-void display_mbps (long bits, int nrows, int ncols, int docolor, int docomp, int reset);
+void init_screen_table ();
 
-void static_display (int nrows, int ncols, int docolor, int docomp, int verbose);
+screen_display* get_screen_table ();
+
+int get_screen_count ();
+
+void display_mbps (long bits, int nrows, int ncols, int warn, int reset);
+
+void static_display (int nrows, int ncols, int docolor, int verbose);

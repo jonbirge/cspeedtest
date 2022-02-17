@@ -14,7 +14,9 @@
 // Global defaults
 static int debug_flag = 0;  // default to no debug info
 static int color_flag = 1;  // default to color
-static int det_flag = 0;  // default to random
+static int screen_index = 0;  // default to random
+static int screen_count;
+static screen_display* screen_table;
 int Tave = 5 * 1000000;  // usec
 
 void print_usage ()
@@ -57,7 +59,7 @@ int main (int argc, char **argv)
          {"help", no_argument, 0, 'h'},
          {0, 0, 0, 0}
       };
-      while ((opt = getopt_long(argc, argv, "t:bhrvd", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:bhvd", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -66,9 +68,6 @@ int main (int argc, char **argv)
             break;
          case 'b':
             color_flag = 0;
-            break;
-         case 'r':
-            det_flag = 1;
             break;
          case 'd':
             debug_flag = 1;
@@ -92,6 +91,11 @@ int main (int argc, char **argv)
    init_colors();
    clear();
    refresh();
+
+   // init screens
+   init_screen_table();
+   screen_count = get_screen_count();
+   screen_table = get_screen_table();
 
    // main loop
    long k = -1;  // frame counters
@@ -132,7 +136,7 @@ int main (int argc, char **argv)
             doreset = 1;
             break;
          case 'r':
-            det_flag = !det_flag;
+            screen_index = (screen_index + 1) % screen_count;
             doreset = 1;
             break;
          case 'a':
@@ -142,7 +146,7 @@ int main (int argc, char **argv)
             debug_flag = !debug_flag;
             break;
          }
-         static_display(nrows, ncols, color_flag, det_flag, debug_flag);
+         static_display(nrows, ncols, color_flag, debug_flag);
          if (debug_flag)
          {
             move (nrows - 2, 0);
@@ -150,16 +154,13 @@ int main (int argc, char **argv)
          }
       }
 
-      // write matrix of characters
-      if (det_flag && !doreset)
-         bits += write_matrix_det (nrows, ncols, color_flag);
-      else
-         bits += write_matrix (nrows, ncols, color_flag);
+      // write screen
+      bits += screen_table[screen_index].fun(nrows, ncols, color_flag);
 
       // update display
       if (!(k % 16) && !doreset)
       {
-         display_mbps (bits, nrows, ncols, color_flag, det_flag, 0);
+         display_mbps (bits, nrows, ncols, 0, 0);
          attron (COLOR_PAIR(1));
          drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
          printw ("   frames: %d", k);
@@ -169,7 +170,7 @@ int main (int argc, char **argv)
       // throughput update
       if (((T - T0) >= Tave) || doreset)
       {
-         display_mbps (bits, nrows, ncols, color_flag, det_flag, 1);
+         display_mbps (bits, nrows, ncols, 0, 1);
          drawbar (0, BAR_WIDTH, 0, 14);
          bits = 0;
          T0 = T;
