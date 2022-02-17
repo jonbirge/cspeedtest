@@ -50,6 +50,7 @@ int main (int argc, char **argv)
    {
       int opt;
       int option_index = 0;
+      int T;
       struct option long_options[] =
       {
          {"verbose", no_argument, 0, 'v'},
@@ -70,7 +71,16 @@ int main (int argc, char **argv)
             print_version();
             return (0);
          case 't':
-            Tave = atoi(optarg)*1000000;
+            T = atoi(optarg);  // user specified in seconds
+            if (T < 1)
+            {
+               fprintf(stderr, "Invalid integration time specified. Ignoring.\n");
+            }
+            else
+            {
+               fprintf(stderr, "Setting integration time to %d seconds.\n", T);
+               Tave = T*1000000;  // convert to microsecs
+            }
             break;
          case 'b':
             color_flag = 0;
@@ -142,7 +152,7 @@ int main (int argc, char **argv)
          case 'a':
             doreset = 1;
             break;
-         case 'd':
+         case 'v':
             debug_flag = !debug_flag;
             break;
          }
