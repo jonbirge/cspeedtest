@@ -28,10 +28,10 @@ long random_screen (int nrows, int ncols, int docolor)
    // return frame bit count
    if (docolor)
    {
-      return 64*nrows*ncols;
+      return 64*(long)nrows*(long)ncols;
    }
    else
    {
-      return 8*nrows*ncols;
+      return 8*(long)nrows*(long)ncols;
    }
 }
