@@ -82,7 +82,7 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset)
    }
 }
 
-void static_display (int nrows, int ncols, int docolor, int verbose)
+void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
@@ -96,7 +96,7 @@ void static_display (int nrows, int ncols, int docolor, int verbose)
    attron (A_BOLD);
    addch ('r');
    attroff (A_BOLD);
-   printw (" to cycle screen, ");
+   printw (" to cycle display, ");
    attron (A_BOLD);
    addch ('c');
    attroff (A_BOLD);
@@ -111,7 +111,10 @@ void static_display (int nrows, int ncols, int docolor, int verbose)
    {
       printw("color");
    }
-   addch ('.');
+   printw(". Display: ");
+   attron (A_BOLD);
+   printw(name);
+   attroff (A_BOLD);
    if (verbose)
    {
       printw(" chars: ");
@@ -119,4 +122,5 @@ void static_display (int nrows, int ncols, int docolor, int verbose)
       printw(" res: %d x %d", ncols, nrows);
    }
    attroff(COLOR_PAIR(1));
+   clrtoeol ();
 }

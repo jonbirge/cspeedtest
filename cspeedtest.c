@@ -156,7 +156,7 @@ int main (int argc, char **argv)
             debug_flag = !debug_flag;
             break;
          }
-         static_display(nrows, ncols, color_flag, debug_flag);
+         static_display(nrows, ncols, color_flag, debug_flag, screen_table[screen_index].name);
          if (debug_flag)
          {
             move (nrows - 2, 0);
