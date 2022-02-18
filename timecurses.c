@@ -7,10 +7,10 @@
 
 #include "random_screen.h"
 #include "swirl_screen.h"
-
+#include "disk_screen.h"
 
 // Structure of all displays
-const int screen_count = 2;
+const int screen_count = 3;
 static screen_display* screen_table;
 
 // API plumbing for eventual external plug-ins. For now this just makes it very easy to
@@ -25,6 +25,8 @@ void init_screen_table ()
    screen_table[0].fun = random_screen;
    screen_table[1].name = "swirl";
    screen_table[1].fun = swirl_screen;
+   screen_table[2].name = "disk";
+   screen_table[2].fun = disk_screen;
 }
 
 screen_display* get_screen_table ()
