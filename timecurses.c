@@ -10,7 +10,7 @@
 #include "disk_screen.h"
 
 // Structure of all displays
-const int screen_count = 3;
+const int screen_count = 4;
 static screen_display* screen_table;
 
 // API plumbing for eventual external plug-ins. For now this just makes it very easy to

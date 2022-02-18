@@ -17,6 +17,7 @@ static int color_flag = 1;  // default to color
 static int screen_index = 0;  // default to random
 static int screen_count;
 static screen_display* screen_table;
+static screen_fun_ptr screen_fun;
 int Tave = 5 * 1000000;  // usec
 
 void print_usage ()
@@ -106,6 +107,7 @@ int main (int argc, char **argv)
    init_screen_table();
    screen_count = get_screen_count();
    screen_table = get_screen_table();
+   screen_fun = screen_table[screen_index].fun;
 
    // main loop
    long k = -1;  // frame counters
@@ -147,6 +149,7 @@ int main (int argc, char **argv)
             break;
          case 'r':
             screen_index = (screen_index + 1) % screen_count;
+            screen_fun = screen_table[screen_index].fun;
             doreset = 1;
             break;
          case 'a':
@@ -165,12 +168,12 @@ int main (int argc, char **argv)
       }
 
       // write screen
-      bits += screen_table[screen_index].fun(nrows, ncols, color_flag);
+      bits += screen_fun(nrows, ncols, color_flag);
 
       // update display
       if (!(k % 16) && !doreset)
       {
-         display_mbps (bits, nrows, ncols, 0, 0);
+         display_mbps (bits, nrows, ncols, screen_index, 0);
          attron (COLOR_PAIR(1));
          drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
          printw ("   frames: %d", k);
@@ -180,7 +183,7 @@ int main (int argc, char **argv)
       // throughput update
       if (((T - T0) >= Tave) || doreset)
       {
-         display_mbps (bits, nrows, ncols, 0, 1);
+         display_mbps (bits, nrows, ncols, screen_index, 1);
          drawbar (0, BAR_WIDTH, 0, 14);
          bits = 0;
          T0 = T;

@@ -1,7 +1,9 @@
+typedef long (*screen_fun_ptr)(int, int, int);
+
 struct screen_display
 {
   char* name;
-  long (*fun)(int, int, int);
+  screen_fun_ptr fun;
 };
 
 typedef struct screen_display screen_display;
