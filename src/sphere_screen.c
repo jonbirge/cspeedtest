@@ -11,7 +11,7 @@ long sphere_screen (int nrows, int ncols, int docolor)
    static double rho, phi;
    static int nrowslast, ncolslast;
    const double speed = 0.005;
-   const int nlon = 15;  // number of lon lines
+   const int nlon = 20;  // number of lon lines
    const double minlat = 10;  // deg of min lat
 
    if ((nrows == nrowslast) && (ncols == ncolslast))
@@ -23,7 +23,7 @@ long sphere_screen (int nrows, int ncols, int docolor)
    {
       // init
       phi = 0;
-      rho = ncols/2;
+      rho = ncols/2 - 2;
       nrowslast = nrows;
       ncolslast = ncols;
    }
