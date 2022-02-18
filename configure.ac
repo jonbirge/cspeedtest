@@ -1,6 +1,6 @@
 dnl Build tools
 AC_PREREQ([2.60])
-AC_INIT([cspeedtest], [1.6.0], [birge@mit.edu])
+AC_INIT([cspeedtest], [1.6.1], [birge@mit.edu])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_CONFIG_SRCDIR([cspeedtest.c])
 AC_CONFIG_HEADERS([config.h])
