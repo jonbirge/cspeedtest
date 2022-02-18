@@ -5,8 +5,8 @@
 #include "timecurses.h"
 
 // Swirling dots display
-#define np 2048
-long swirl_screen (int nrows, int ncols, int docolor)
+#define np 512
+long disk_screen (int nrows, int ncols, int docolor)
 {
    int row, col, attrb;
    static double rs[np], phis[np];
@@ -15,21 +15,21 @@ long swirl_screen (int nrows, int ncols, int docolor)
    if ((nrows == nrowslast) && (ncols == ncolslast))
    {
       // rotate
-      double speed = 0.0001, vorticity = 2.0;
+      double speed = 0.0001;
       for (register int k = 0; k < np; k++)
       {
-         phis[k] += speed/(vorticity*rs[k]/ncols+speed);
+         phis[k] += speed;
       }
    }
    else
    {
       // init
       double uniformrv;
-      const double maxr = sqrt((double) (nrows*nrows + ncols*ncols))/2.0;
+      const double maxr = ncols/2.0;
       for (int k = 0; k < np; k++)
       {
          uniformrv = (double) rand() / (double) RAND_MAX;
-         rs[k] = uniformrv*maxr;
+         rs[k] = sqrt(uniformrv)*maxr;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
       nrowslast = nrows; ncolslast = ncols;

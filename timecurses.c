@@ -5,12 +5,15 @@
 #include "curslib.h"
 #include "timecurses.h"
 
-#include "random_screen.h"
-#include "swirl_screen.h"
+#define SCREENDEF(name) long name (int nrows, int ncols, int docolor)
+SCREENDEF(random_screen);
+SCREENDEF(swirl_screen);
+SCREENDEF(disk_screen);
+SCREENDEF(sphere_screen);
 
 
 // Structure of all displays
-const int screen_count = 2;
+const int screen_count = 4;
 static screen_display* screen_table;
 
 // API plumbing for eventual external plug-ins. For now this just makes it very easy to
@@ -23,8 +26,12 @@ void init_screen_table ()
    screen_table = malloc(sizeof(screen_display)*screen_count);
    screen_table[0].name = "random";
    screen_table[0].fun = random_screen;
-   screen_table[1].name = "swirl";
-   screen_table[1].fun = swirl_screen;
+   screen_table[1].name = "sphere";
+   screen_table[1].fun = sphere_screen;
+   screen_table[2].name = "swirl";
+   screen_table[2].fun = swirl_screen;
+   screen_table[3].name = "disk";
+   screen_table[3].fun = disk_screen;
 }
 
 screen_display* get_screen_table ()
@@ -73,14 +80,14 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset)
    attroff(COLOR_PAIR(1));
    if (warn)
    {
-      move(0, ncols - 26);
+      move(0, ncols - 23);
       attron(COLOR_PAIR(6));
-      printw("Bitrate may be unreliable.");
+      printw("Mbps may be unreliable");
       attroff(COLOR_PAIR(6));
    }
 }
 
-void static_display (int nrows, int ncols, int docolor, int verbose)
+void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
@@ -94,7 +101,7 @@ void static_display (int nrows, int ncols, int docolor, int verbose)
    attron (A_BOLD);
    addch ('r');
    attroff (A_BOLD);
-   printw (" to cycle screen, ");
+   printw (" to cycle display, ");
    attron (A_BOLD);
    addch ('c');
    attroff (A_BOLD);
@@ -109,7 +116,10 @@ void static_display (int nrows, int ncols, int docolor, int verbose)
    {
       printw("color");
    }
-   addch ('.');
+   printw(". Display: ");
+   attron (A_BOLD);
+   printw(name);
+   attroff (A_BOLD);
    if (verbose)
    {
       printw(" chars: ");
@@ -117,4 +127,5 @@ void static_display (int nrows, int ncols, int docolor, int verbose)
       printw(" res: %d x %d", ncols, nrows);
    }
    attroff(COLOR_PAIR(1));
+   clrtoeol ();
 }

@@ -1,7 +1,9 @@
+typedef long (*screen_fun_ptr)(int, int, int);
+
 struct screen_display
 {
   char* name;
-  long (*fun)(int, int, int);
+  screen_fun_ptr fun;
 };
 
 typedef struct screen_display screen_display;
@@ -14,4 +16,4 @@ int get_screen_count ();
 
 void display_mbps (long bits, int nrows, int ncols, int warn, int reset);
 
-void static_display (int nrows, int ncols, int docolor, int verbose);
+void static_display (int nrows, int ncols, int docolor, int verbose, char* name);

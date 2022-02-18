@@ -2,7 +2,6 @@
 #include <ncurses.h>
 #include <math.h>
 #include "curslib.h"
-#include "timecurses.h"
 
 // Completely random matrix of data
 long random_screen (int nrows, int ncols, int docolor)
