@@ -24,3 +24,6 @@ missing
 .deps
 *.tar.*
 TODO
+*.out
+test-driver
+*.trs

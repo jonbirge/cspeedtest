@@ -28,7 +28,7 @@ long sphere_screen (int nrows, int ncols, int docolor)
       ncolslast = ncols;
    }
 
-   // clear
+   // clear screen
    for (row = 2; row < nrows - 2; row++)
    {
       move (row, 0);
@@ -37,7 +37,6 @@ long sphere_screen (int nrows, int ncols, int docolor)
 
    // write field
    int nchars = 0;
-
    attron (A_BOLD);
    attron (COLOR_PAIR(8));
    for (double lon = 0; lon < 360; lon += 360.0/nlon)
@@ -62,6 +61,20 @@ long sphere_screen (int nrows, int ncols, int docolor)
          }
       }
    }
+
+   // double rowsteps = 8;
+   // for (row = 2; row < nrows; row += floor(nrows/rowsteps))
+   // {
+   //    double lat = minlat + (180.0 - minlat*2.0)*(row - 2)/(nrows - 5);
+   //    double latfrac = (lat - 90)/90;
+   //    double r = rho*sqrt(1 - latfrac*latfrac);
+   //    move (row, round(ncols/2 - r));
+   //    for (int k = 0; k < 2*r; k++)
+   //    {
+   //       addch ('.');
+   //    }
+   // }
+   
    attroff (A_BOLD);
 
    // return frame bit count
@@ -71,6 +84,6 @@ long sphere_screen (int nrows, int ncols, int docolor)
    }
    else
    {
-      return 16*nchars;
+      return 24*nchars;
    }
 }
