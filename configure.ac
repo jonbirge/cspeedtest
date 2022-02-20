@@ -1,7 +1,7 @@
 dnl Build tools
 AC_PREREQ([2.60])
 AC_INIT([cspeedtest], [1.6.2], [birge@mit.edu])
-AM_INIT_AUTOMAKE([-Wall foreign])
+AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AC_CONFIG_SRCDIR([src/cspeedtest.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -23,5 +23,5 @@ AC_CHECK_FUNCS([getopt getopt_long])
 AC_CHECK_FUNCS([atoi])
 
 dnl Generate files
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
