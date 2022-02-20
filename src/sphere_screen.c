@@ -45,6 +45,7 @@ long sphere_screen (int nrows, int ncols, int docolor)
       if (docolor)
       {
          attron(COLOR_PAIR((int)round((lon / (360.0/nlon))) % 8 + 9));
+         nchars++;
       }
       for (row = 2; row < nrows - 2; row++)
       {
@@ -78,12 +79,5 @@ long sphere_screen (int nrows, int ncols, int docolor)
    attroff (A_BOLD);
 
    // return frame bit count
-   if (docolor)
-   {
-      return 8*nchars;
-   }
-   else
-   {
-      return 24*nchars;
-   }
+   return 8*nchars;
 }
