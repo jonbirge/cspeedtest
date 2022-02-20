@@ -12,7 +12,7 @@ SCREENDEF(sphere_screen);
 
 
 // Structure of all displays
-const int screen_count = 4;
+const int screen_count = 3;
 static screen_display* screen_table;
 
 // API plumbing for eventual external plug-ins. For now this just makes it very easy to
