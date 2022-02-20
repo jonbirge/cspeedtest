@@ -27,3 +27,4 @@ TODO
 *.out
 test-driver
 *.trs
+.dirstamp
