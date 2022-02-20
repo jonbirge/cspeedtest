@@ -26,8 +26,7 @@ Options:
   -v, --verbose          show debugging info
 ```
 
-Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed. For testing compression (and fun) there is a deterministic pattern you can run by typing `r` while running the test.
-
+Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed. To test under different conditions (and for fun) there are deterministic patterns that can be displayed by hitting the `r` key.
 ## Screenshot
 
 <img width="923" alt="cspeedtest-color" src="https://user-images.githubusercontent.com/660566/147842191-f486bfaa-2f5c-4466-a19b-7e73e34e956f.png">
