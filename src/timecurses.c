@@ -8,7 +8,6 @@
 #define SCREENDEF(name) long name (int nrows, int ncols, int docolor)
 SCREENDEF(random_screen);
 SCREENDEF(swirl_screen);
-SCREENDEF(disk_screen);
 SCREENDEF(sphere_screen);
 
 
@@ -30,8 +29,6 @@ void init_screen_table ()
    screen_table[1].fun = sphere_screen;
    screen_table[2].name = "swirl";
    screen_table[2].fun = swirl_screen;
-   screen_table[3].name = "disk";
-   screen_table[3].fun = disk_screen;
 }
 
 screen_display* get_screen_table ()

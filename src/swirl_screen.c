@@ -5,7 +5,7 @@
 #include "timecurses.h"
 
 // Swirling dots display
-#define np 2048
+#define np 1024
 long swirl_screen (int nrows, int ncols, int docolor)
 {
    int row, col, attrb;
