@@ -36,16 +36,37 @@ long sphere_screen (int nrows, int ncols, int docolor)
    }
 
    // write field
+   attron(COLOR_PAIR(8));
    int nchars = 0;
-   attron (A_BOLD);
-   attron (COLOR_PAIR(8));
+   char ch;
    for (double lon = 0; lon < 360; lon += 360.0/nlon)
    {
-      double phi0 = lon + phi;
+      double phi0 = (lon + phi);
+      double phi0int = (int)ceil(lon + phi) % 360;
       if (docolor)
       {
-         attron(COLOR_PAIR((int)round((lon / (360.0/nlon))) % 8 + 9));
+         if (phi0int < 180)
+         {
+            attron(COLOR_PAIR((int)round((lon / (360.0/nlon))) % 8 + 9));
+            ch = ' ';
+         }
+         else
+         {
+            attron(COLOR_PAIR((int)round((lon / (360.0/nlon))) % 8));
+            ch = '.';
+         }
          nchars++;
+      }
+      else
+      {
+         if (phi0int > 180)
+         {
+            continue;
+         }
+         else
+         {
+            ch = '*';
+         }
       }
       for (row = 2; row < nrows - 2; row++)
       {
@@ -53,13 +74,9 @@ long sphere_screen (int nrows, int ncols, int docolor)
          double latfrac = (lat - 90)/90;
          double r = rho*sqrt(1 - latfrac*latfrac);
          int x = round(cos(phi0*DEGRAD)*r);
-         int y = round(sin(phi0*DEGRAD)*r);
-         if (y > 0)
-         {
-            move (row, x + round(ncols/2));
-            addch ('.');
-            nchars++;
-         }
+         move (row, x + round(ncols/2));
+         addch (ch);
+         nchars++;
       }
    }
 
