@@ -28,7 +28,7 @@ long swirl_screen (int nrows, int ncols, int docolor)
       const double maxr = sqrt((double) (nrows*nrows + ncols*ncols))/2.0;
       for (int k = 0; k < np; k++)
       {
-         uniformrv = (double) arc4random() / (double) RAND_MAX;
+         uniformrv = (double) rand() / (double) RAND_MAX;
          rs[k] = uniformrv*maxr;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }

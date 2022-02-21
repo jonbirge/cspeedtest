@@ -16,10 +16,10 @@ long random_screen (int nrows, int ncols, int docolor)
       {
          if (docolor)
          {
-            attrb = COLOR_PAIR((arc4random () & 0x000D) + 1);
+            attrb = COLOR_PAIR((rand () & 0x000D) + 1);
             attron (attrb);
          }
-         addch ((arc4random () & 0x3F) + 33);
+         addch ((rand () & 0x3F) + 33);
       }
    }
    attroff (A_BOLD);
