@@ -8,7 +8,7 @@
 // Return random integer between 0 and max, inclusive. Placeholder for more uniform implementation.
 int rand_max (int max)
 {
-   return rand() % (max + 1);
+   return arc4random() % (max + 1);
 }
 
 // Pass through integer with limits.

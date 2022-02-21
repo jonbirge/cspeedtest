@@ -39,7 +39,7 @@ long sphere_screen (int nrows, int ncols, int docolor)
    attron(COLOR_PAIR(8));
    int nchars = 0;
    char ch;
-   for (double lon = 0; lon < 360; lon += 360.0/nlon)
+   for (int lon = 0; lon < 360; lon += (int)floor(360/nlon))
    {
       double phi0 = (lon + phi);
       double phi0int = (int)ceil(lon + phi) % 360;

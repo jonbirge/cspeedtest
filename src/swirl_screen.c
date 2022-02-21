@@ -28,7 +28,7 @@ long swirl_screen (int nrows, int ncols, int docolor)
       const double maxr = sqrt((double) (nrows*nrows + ncols*ncols))/2.0;
       for (int k = 0; k < np; k++)
       {
-         uniformrv = (double) rand() / (double) RAND_MAX;
+         uniformrv = (double) arc4random() / (double) RAND_MAX;
          rs[k] = uniformrv*maxr;
          phis[k] = rand_max(359) / 3.1456 * 180.0;
       }
@@ -46,7 +46,7 @@ long swirl_screen (int nrows, int ncols, int docolor)
    attron (A_BOLD);
    int cycletime;
    cycletime = (int) floor((double) np / 8.0);
-   for (register int k = 0; k < np; k++)
+   for (int k = 0; k < np; k++)
    {
       col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
       row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
