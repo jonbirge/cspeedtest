@@ -15,7 +15,7 @@ long swirl_screen (int nrows, int ncols, int docolor)
    if ((nrows == nrowslast) && (ncols == ncolslast))
    {
       // rotate
-      double speed = 0.0001, vorticity = 2.0;
+      double speed = 0.000025, vorticity = 2.0;
       for (register int k = 0; k < np; k++)
       {
          phis[k] += speed/(vorticity*rs[k]/ncols+speed);
@@ -46,7 +46,7 @@ long swirl_screen (int nrows, int ncols, int docolor)
    attron (A_BOLD);
    int cycletime;
    cycletime = (int) floor((double) np / 8.0);
-   for (register int k = 0; k < np; k++)
+   for (int k = 0; k < np; k++)
    {
       col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
       row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
@@ -66,10 +66,10 @@ long swirl_screen (int nrows, int ncols, int docolor)
    // return frame bit count
    if (docolor)
    {
-      return 32*np;
+      return 24*np;
    }
    else
    {
-      return 16*np;
+      return 8*np;
    }
 }
