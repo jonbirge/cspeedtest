@@ -28,3 +28,4 @@ TODO
 test-driver
 *.trs
 .dirstamp
+*.cache

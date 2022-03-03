@@ -1,3 +1,4 @@
+
 bin_PROGRAMS = src/cspeedtest
 
 src_cspeedtest_SOURCES = src/curslib.c src/curslib.h src/timecurses.c src/timecurses.h src/cspeedtest.c \
@@ -9,7 +10,7 @@ check_SCRIPTS = src/verstest.sh src/helptest.sh
 TESTS = $(check_SCRIPTS)
 
 src/verstest.sh:
-	echo './src/cspeedtest --version | grep "cspeedtest"' > src/verstest.sh
+	echo './src/cspeedtest --version | grep "@PACKAGE_STRING@"' > src/verstest.sh
 	chmod +x src/verstest.sh
 
 src/helptest.sh:
