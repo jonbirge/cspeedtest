@@ -1,3 +1,4 @@
+config.*
 *.snap
 *.log
 *.scan
