@@ -115,7 +115,7 @@ void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
    }
    printw(". Display: ");
    attron (A_BOLD);
-   printw(name);
+   printw("%s", name);
    attroff (A_BOLD);
    if (verbose)
    {

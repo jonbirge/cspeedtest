@@ -25,7 +25,7 @@ void print_usage ()
    printf("Usage: cspeedtest [options]\n\n");
    printf("Options:\n");
    printf("  -t T, --time=T\tintegration time in seconds\n");
-   printf("  -b, --low-bandwidth\tlow bandwidth (B/W)\n");
+   printf("  -b, --low-bandwidth\tlow bandwidth display (B/W)\n");
    printf("  -V, --version\t\tdisplay version\n");
    printf("  -h, --help\t\tshow this help\n");
    printf("  -v, --verbose\t\tprint debug info\n");
@@ -35,7 +35,7 @@ void print_version ()
 {
    printf(PACKAGE_STRING);
    printf("\n");
-   printf("Copyright 2021, Jonathan R. Birge\n");
+   printf("Copyright 2022, Jonathan R. Birge\n");
    printf("Bug reports to ");
    printf(PACKAGE_BUGREPORT);
    printf("\n");
@@ -176,7 +176,6 @@ int main (int argc, char **argv)
          display_mbps (bits, nrows, ncols, screen_index, 0);
          attron (COLOR_PAIR(1));
          drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
-         printw ("   frames: %d", k);
          attroff (COLOR_PAIR(1));
       }
 

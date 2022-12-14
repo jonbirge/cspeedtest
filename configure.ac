@@ -1,6 +1,6 @@
 dnl Autotools
 AC_PREREQ([2.60])
-AC_INIT([cspeedtest], [1.6.5], [birge@mit.edu])
+AC_INIT([cspeedtest], [1.6.7], [birge@mit.edu])
 AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AC_CONFIG_SRCDIR([src/cspeedtest.c])
 AC_CONFIG_HEADERS([config.h])
