@@ -1,7 +1,7 @@
 [![CodeQL](https://github.com/jonbirge/curses-speedtest/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jonbirge/curses-speedtest/actions/workflows/codeql-analysis.yml)
 [![C/C++ CI](https://github.com/jonbirge/curses-speedtest/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/jonbirge/curses-speedtest/actions/workflows/c-cpp.yml)
 
-# curses-speedtest
+# cspeedtest
 
 ## Overview
 
