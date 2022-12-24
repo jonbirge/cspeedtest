@@ -14,6 +14,7 @@
 // Global defaults
 static int debug_flag = 0;  // default to no debug info
 static int color_flag = 1;  // default to color
+static int run_test = 0;  // default no test
 static int screen_index = 0;  // default to random
 static int screen_count;
 static screen_display* screen_table;
@@ -24,11 +25,12 @@ void print_usage ()
 {
    printf("Usage: cspeedtest [options]\n\n");
    printf("Options:\n");
-   printf("  -t T, --time=T\tintegration time in seconds\n");
-   printf("  -b, --low-bandwidth\tlow bandwidth display (B/W)\n");
+   printf("  -i T, --int=T\tintegration time in seconds\n");
+   printf("  -b, --low-bw\tlow bandwidth display (B/W)\n");
    printf("  -V, --version\t\tdisplay version\n");
    printf("  -h, --help\t\tshow this help\n");
    printf("  -v, --verbose\t\tprint debug info\n");
+   printf("  -t, --test\t\trun test\n");
 }
 
 void print_version ()
@@ -56,14 +58,15 @@ int main (int argc, char **argv)
       struct option long_options[] =
       {
          {"verbose", no_argument, 0, 'v'},
-         {"low-bandwidth", no_argument, 0, 'b'},
-         {"time", required_argument, 0, 't'},
+         {"low-bw", no_argument, 0, 'b'},
+         {"int", required_argument, 0, 'i'},
          {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
+	 {"test", no_argument, 0, 't'},
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "t:hVbv", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "i:hVbvt", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -73,7 +76,7 @@ int main (int argc, char **argv)
          case 'V':
             print_version();
             return (0);
-         case 't':
+         case 'i':
             T = atoi(optarg);  // user specified in seconds
             if (T < 1)
             {
@@ -88,6 +91,9 @@ int main (int argc, char **argv)
          case 'b':
             color_flag = 0;
             break;
+	 case 't':
+	    run_test = 1;
+	    break;
          case 'v':
             debug_flag = 1;
             break;
@@ -111,6 +117,16 @@ int main (int argc, char **argv)
    screen_table = get_screen_table();
    screen_fun = screen_table[screen_index].fun;
 
+   // confirm ncurses working if testing
+   if (run_test)
+   {
+      endwin();
+      if (wnd > 0)
+	return 0;
+      else
+	return -1;
+   }
+   
    // main loop
    struct timeval systime;
    long k = -1;  // frame counters
@@ -120,6 +136,7 @@ int main (int argc, char **argv)
    int done = 0;
    while (!done)
    {
+      // update frame counter
       ++k;
 
       // screen update
