@@ -5,23 +5,15 @@
 #include "curslib.h"
 #include "timecurses.h"
 
+// Define plug-in displays
 #define SCREENDEF(name) long name (int nrows, int ncols, int docolor)
 SCREENDEF(random_screen);
 SCREENDEF(swirl_screen);
 SCREENDEF(sphere_screen);
-
-
-// Structure of all displays
 const int screen_count = 3;
 static screen_display* screen_table;
 
-// API plumbing for eventual external plug-ins. For now this just
-// makes it very easy to add new screens to the program by adding a
-// function elsewhere and referencing it once here.  This approach
-// allows the main function to call screens directly. That might be
-// overkill, and we could simplify things by having all screens
-// controlled internally here, with a single indirection function
-// exposed.
+// API plumbing for eventual external plug-ins.
 void init_screen_table ()
 {
    screen_table = malloc(sizeof(screen_display)*screen_count);
@@ -33,11 +25,13 @@ void init_screen_table ()
    screen_table[2].fun = swirl_screen;
 }
 
+// Return table of screen displays
 screen_display* get_screen_table ()
 {
    return screen_table;
 }
 
+// Return number of screens available
 int get_screen_count ()
 {
    return screen_count;
@@ -86,8 +80,16 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset)
    }
 }
 
+// Menu items
 void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
 {
+   int inter;
+   
+   if (docolor == -1)
+      inter = 0;
+   else
+      inter = 1;
+   
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
@@ -96,35 +98,38 @@ void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
    attron (A_BOLD);
    addch ('q');
    attroff (A_BOLD);
-   printw(" to to quit, ");
-   attron (A_BOLD);
-   addch ('r');
-   attroff (A_BOLD);
-   printw (" to cycle display, ");
-   attron (A_BOLD);
-   addch ('c');
-   attroff (A_BOLD);
-   printw(" to toggle ");
-   if (docolor)
+   printw(" to to quit");
+   if (inter)
    {
-      attron (COLOR_PAIR(16));
-      printw("color");
-      attron (COLOR_PAIR(1));
+      attron (A_BOLD);
+      printw (", r");
+      attroff (A_BOLD);
+      printw (" to cycle display, ");
+      attron (A_BOLD);
+      addch ('c');
+      attroff (A_BOLD);
+      printw (" to toggle ");
+      if (docolor)
+      {
+	 attron (COLOR_PAIR(16));
+	 printw ("color");
+	 attron (COLOR_PAIR(1));
+      }
+      else
+      {
+	 printw ("color");
+      }
+      printw (". Display: ");
+      attron (A_BOLD);
+      printw ("%s", name);
+      attroff (A_BOLD);
    }
-   else
-   {
-      printw("color");
-   }
-   printw(". Display: ");
-   attron (A_BOLD);
-   printw("%s", name);
-   attroff (A_BOLD);
    if (verbose)
    {
-      printw("| chars: ");
-      printw("%d", nrows*ncols);
-      printw(" res: %d x %d", ncols, nrows);
+      printw ("| chars: ");
+      printw ("%d", nrows*ncols);
+      printw (" res: %d x %d", ncols, nrows);
    }
-   attroff(COLOR_PAIR(1));
+   attroff (COLOR_PAIR(1));
    clrtoeol ();
 }
