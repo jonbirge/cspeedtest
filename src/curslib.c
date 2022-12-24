@@ -38,11 +38,11 @@ void drawbar (double frac, int width, int line, int offset)
    addch ('[');
    for (j = 0; j < ceil( (double) width*frac); ++j)
    {
-      addch (ACS_CKBOARD);
+      addch (ACS_VLINE);
    }
    for (; j < width; ++j)
    {
-      addch (ACS_BULLET);
+      addch (' ');
    }
    addch (']');
 }

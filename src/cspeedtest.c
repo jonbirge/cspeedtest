@@ -52,6 +52,7 @@ int main (int argc, char **argv)
       int opt;
       int option_index = 0;
       int T;
+
       struct option long_options[] =
       {
          {"verbose", no_argument, 0, 'v'},
@@ -61,6 +62,7 @@ int main (int argc, char **argv)
          {"help", no_argument, 0, 'h'},
          {0, 0, 0, 0}
       };
+
       while ((opt = getopt_long(argc, argv, "t:hVbv", long_options, &option_index)) != -1)
       {
          switch (opt)
@@ -110,10 +112,10 @@ int main (int argc, char **argv)
    screen_fun = screen_table[screen_index].fun;
 
    // main loop
+   struct timeval systime;
    long k = -1;  // frame counters
    long bits = 0;  // estimate of bits sent
    int T, T0;  // usec
-   struct timeval systime;
    int doreset = 1;
    int done = 0;
    while (!done)
@@ -159,7 +161,9 @@ int main (int argc, char **argv)
             debug_flag = !debug_flag;
             break;
          }
-         static_display(nrows, ncols, color_flag, debug_flag, screen_table[screen_index].name);
+
+	 static_display(nrows, ncols, color_flag, debug_flag, screen_table[screen_index].name);
+	 
          if (debug_flag)
          {
             move (nrows - 2, 0);

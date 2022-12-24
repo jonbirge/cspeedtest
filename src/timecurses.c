@@ -15,11 +15,13 @@ SCREENDEF(sphere_screen);
 const int screen_count = 3;
 static screen_display* screen_table;
 
-// API plumbing for eventual external plug-ins. For now this just makes it very easy to
-// add new screens to the program by adding a function elsewhere and referencing it once here.
-// This approach allows the main function to call screens directly. That might be overkill,
-// and we could simplify things by having all screens controlled internally here,
-// with a single indirection function exposed.
+// API plumbing for eventual external plug-ins. For now this just
+// makes it very easy to add new screens to the program by adding a
+// function elsewhere and referencing it once here.  This approach
+// allows the main function to call screens directly. That might be
+// overkill, and we could simplify things by having all screens
+// controlled internally here, with a single indirection function
+// exposed.
 void init_screen_table ()
 {
    screen_table = malloc(sizeof(screen_display)*screen_count);
@@ -119,7 +121,7 @@ void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
    attroff (A_BOLD);
    if (verbose)
    {
-      printw(" chars: ");
+      printw("| chars: ");
       printw("%d", nrows*ncols);
       printw(" res: %d x %d", ncols, nrows);
    }
