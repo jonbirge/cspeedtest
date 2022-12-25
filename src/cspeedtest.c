@@ -153,11 +153,8 @@ int main (int argc, char **argv)
    // if testing, confirm ncurses then exit
    if (run_test)
    {
-      endwin();
-      if (wnd > 0)
-	return 0;
-      else
-	return -1;
+     endwin();
+     return 0;
    }
    
    /*** main loop ***/

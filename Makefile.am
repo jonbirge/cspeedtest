@@ -19,6 +19,7 @@ test/verstest.sh:
 
 # Overrides default
 test/cspeedtest-int: $(bin_PROGRAMS)
-	ln src/cspeedtest test/cspeedtest-int
+	rm -f $@
+	ln src/cspeedtest $@
 
 CLEANFILES = $(check_SCRIPTS) $(check_DATA)
