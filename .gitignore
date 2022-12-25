@@ -1,3 +1,5 @@
+cspeedtest-int
+verstest.sh
 config.*
 *.snap
 *.log

@@ -25,7 +25,7 @@ int Tave = 5 * 1000000;  // 5 sec (usec)
 
 void print_usage ()
 {
-   if (!inter)
+   if (!inter)  // normal mode
    {
       printf("Usage: cspeedtest [options]\n\n");
       printf("Options:\n");
@@ -52,11 +52,10 @@ void print_version (char* name)
 {
    printf(PACKAGE_STRING);
    printf("\n");
-   printf("%s\n", name);
    printf("Copyright 2022, Jonathan R. Birge\n");
    printf("Bug reports to ");
    printf(PACKAGE_BUGREPORT);
-   printf("\n");
+   printf("\n%s\n", name);
 }
 
 int main (int argc, char **argv)
@@ -134,6 +133,12 @@ int main (int argc, char **argv)
       }
    }  // end of getoptlong
 
+   // if testing, just exit with success
+   if (run_test)
+   {
+     return 0;
+   }
+   
    // init ncurses
    wnd = initscr();
    nodelay (wnd, TRUE);
@@ -149,13 +154,6 @@ int main (int argc, char **argv)
    screen_count = get_screen_count();
    screen_table = get_screen_table();
    screen_fun = screen_table[screen_index].fun;
-   
-   // if testing, confirm ncurses then exit
-   if (run_test)
-   {
-     endwin();
-     return 0;
-   }
    
    /*** main loop ***/
    struct timeval systime;

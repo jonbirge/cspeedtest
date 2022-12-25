@@ -27,3 +27,6 @@ parts:
 apps:
   cspeedtest:
     command: bin/cspeedtest
+  cspeedtest-int:
+    command: bin/cspeedtest-int
+
