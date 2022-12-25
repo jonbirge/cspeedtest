@@ -25,27 +25,27 @@ int Tave = 5 * 1000000;  // 5 sec (usec)
 
 void print_usage ()
 {
-   printf("Usage: cspeedtest [options]\n\n");
-   printf("Options:\n");
-   printf("  -i T, --int=T\t\tintegration time in seconds\n");
-   printf("  -b, --low-bw\t\tlow bandwidth display (B/W)\n");
-   printf("  -n, --inter\tinteractive mode\n");
-   printf("  -V, --version\t\tdisplay version\n");
-   printf("  -h, --help\t\tshow this help\n");
-   printf("  -v, --verbose\t\tprint debug info\n");
-   printf("  -t, --test\t\trun test\n");
-}
-
-void print_usage_inter ()
-{
-   printf("Usage: cspeedtest-int [options]\n\n");
-   printf("Options:\n");
-   printf("  -i T, --int=T\t\tintegration time in seconds\n");
-   printf("  -b, --low-bw\t\tlow bandwidth display (B/W)\n");
-   printf("  -V, --version\t\tdisplay version\n");
-   printf("  -h, --help\t\tshow this help\n");
-   printf("  -v, --verbose\t\tprint debug info\n");
-   printf("  -t, --test\t\trun test\n");
+   if (!inter)
+   {
+      printf("Usage: cspeedtest [options]\n\n");
+      printf("Options:\n");
+      printf("  -i T, --int=T\t\tintegration time in seconds\n");
+      printf("  -n, --inter\t\tinteractive mode\n");
+      printf("  -V, --version\t\tdisplay version\n");
+      printf("  -h, --help\t\tshow this help\n");
+      printf("  -t, --test\t\trun test\n");
+   }
+   else
+   {
+      printf("Usage: cspeedtest-int [options]\n\n");
+      printf("Options:\n");
+      printf("  -i T, --int=T\t\tintegration time in seconds\n");
+      printf("  -b, --low-bw\t\tlow bandwidth display (B/W)\n");
+      printf("  -V, --version\t\tdisplay version\n");
+      printf("  -h, --help\t\tshow this help\n");
+      printf("  -v, --verbose\t\tprint debug info\n");
+      printf("  -t, --test\t\trun test\n");
+   }
 }
 
 void print_version (char* name)
