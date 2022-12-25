@@ -6,19 +6,15 @@ src_cspeedtest_SOURCES = src/curslib.c src/curslib.h src/timecurses.c src/timecu
 
 src_cspeedtest_CFLAGS = -std=c99 -Wall
 
-check_SCRIPTS = src/verstest.sh src/helptest.sh src/testtest.sh
-TESTS = $(check_SCRIPTS)
+check_SCRIPTS = test/verstest.sh
+check_PROGRAMS = test/cspeedtest-int
+TESTS = $(check_SCRIPTS) test/testtest.sh test/helptest.sh test/linktest.sh
 
-src/verstest.sh:
-	echo './src/cspeedtest --version | grep "@PACKAGE_STRING@"' > src/verstest.sh
-	chmod +x src/verstest.sh
+test/verstest.sh:
+	echo '$(bin_PROGRAMS) --version | grep "@PACKAGE_STRING@"' > $@
+	chmod +x $@
 
-src/helptest.sh:
-	echo './src/cspeedtest --help | grep "Usage"' > src/helptest.sh
-	chmod +x src/helptest.sh
-
-src/testtest.sh:
-	echo './src/cspeedtest --test' > src/testtest.sh
-	chmod +x src/testtest.sh
+test/cspeedtest-int$(EXEEXT): $(bin_PROGRAMS)
+	ln src/cspeedtest test/cspeedtest-int
 
 CLEANFILES = $(check_SCRIPTS)
