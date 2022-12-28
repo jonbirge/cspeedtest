@@ -6,15 +6,24 @@ src_cspeedtest_SOURCES = src/curslib.c src/curslib.h src/timecurses.c src/timecu
 
 src_cspeedtest_CFLAGS = -std=c99 -Wall
 
-check_SCRIPTS = src/verstest.sh src/helptest.sh
-TESTS = $(check_SCRIPTS)
+install-exec-local:
+	ln $(DESTDIR)$(bindir)/cspeedtest $(DESTDIR)$(bindir)/cspeedtest-int
+
+uninstall-local:
+	rm -f $(DESTDIR)$(bindir)/cspeedtest-int
+
+dist_check_SCRIPTS = test/testtest.sh test/helptest.sh test/linktest.sh
+check_SCRIPTS = src/verstest.sh
+check_DATA = src/cspeedtest-int
+TESTS = $(dist_check_SCRIPTS) $(check_SCRIPTS)
 
 src/verstest.sh:
-	echo './src/cspeedtest --version | grep "@PACKAGE_STRING@"' > src/verstest.sh
-	chmod +x src/verstest.sh
+	rm -f $@
+	echo '$(bin_PROGRAMS) --version | grep "@PACKAGE_STRING@"' > $@
+	chmod +x $@
 
-src/helptest.sh:
-	echo './src/cspeedtest --help | grep "Usage"' > src/helptest.sh
-	chmod +x src/helptest.sh
+src/cspeedtest-int: $(bin_PROGRAMS)
+	rm -f $@
+	ln src/cspeedtest $@
 
-CLEANFILES = $(check_SCRIPTS)
+CLEANFILES = $(check_SCRIPTS) $(check_DATA)

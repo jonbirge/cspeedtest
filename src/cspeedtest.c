@@ -1,5 +1,6 @@
 #include "config.h"
 #include <stdlib.h>
+#include <string.h>
 #include <ncurses.h>
 #include <math.h>
 #include <sys/time.h>
@@ -13,38 +14,66 @@
 
 // Global defaults
 static int debug_flag = 0;  // default to no debug info
-static int color_flag = 1;  // default to color
+static int color_flag = 1;  // default color, or -1 if non-interactive
+static int run_test = 0;  // default no test
+static int inter = 0;  // default to non-interactive
 static int screen_index = 0;  // default to random
 static int screen_count;
 static screen_display* screen_table;
 static screen_fun_ptr screen_fun;
-int Tave = 5 * 1000000;  // usec
+int Tave = 5 * 1000000;  // 5 sec (usec)
 
 void print_usage ()
 {
-   printf("Usage: cspeedtest [options]\n\n");
-   printf("Options:\n");
-   printf("  -t T, --time=T\tintegration time in seconds\n");
-   printf("  -b, --low-bandwidth\tlow bandwidth display (B/W)\n");
-   printf("  -V, --version\t\tdisplay version\n");
-   printf("  -h, --help\t\tshow this help\n");
-   printf("  -v, --verbose\t\tprint debug info\n");
+   if (!inter)  // normal mode
+   {
+      printf("Usage: cspeedtest [options]\n\n");
+      printf("Options:\n");
+      printf("  -i T, --int=T\t\tintegration time in seconds\n");
+      printf("  -n, --inter\t\tinteractive mode\n");
+      printf("  -V, --version\t\tdisplay version\n");
+      printf("  -h, --help\t\tshow this help\n");
+      printf("  -t, --test\t\trun test\n");
+   }
+   else
+   {
+      printf("Usage: cspeedtest-int [options]\n\n");
+      printf("Options:\n");
+      printf("  -i T, --int=T\t\tintegration time in seconds\n");
+      printf("  -b, --low-bw\t\tlow bandwidth display (B/W)\n");
+      printf("  -V, --version\t\tdisplay version\n");
+      printf("  -h, --help\t\tshow this help\n");
+      printf("  -v, --verbose\t\tprint debug info\n");
+      printf("  -t, --test\t\trun test\n");
+   }
 }
 
-void print_version ()
+void print_version (char* name)
 {
    printf(PACKAGE_STRING);
    printf("\n");
    printf("Copyright 2022, Jonathan R. Birge\n");
    printf("Bug reports to ");
    printf(PACKAGE_BUGREPORT);
-   printf("\n");
+   printf("\n%s\n", name);
 }
 
 int main (int argc, char **argv)
 {
-   WINDOW *wnd;
-   int nrows, ncols;
+   WINDOW *wnd;  // curses window
+   int nrows, ncols;  // win size
+   char* name = argv[0];  // called name
+
+   // determine mode from calling name
+   if (strstr(name, "cspeedtest-int") != NULL)
+   {
+     inter = 1;
+   }
+   else
+   {
+     inter = 0;
+     color_flag = -1;
+   }
    
    // options and defaults
    if (HAVE_GETOPT_LONG)
@@ -56,14 +85,16 @@ int main (int argc, char **argv)
       struct option long_options[] =
       {
          {"verbose", no_argument, 0, 'v'},
-         {"low-bandwidth", no_argument, 0, 'b'},
-         {"time", required_argument, 0, 't'},
+         {"low-bw", no_argument, 0, 'b'},
+         {"int", required_argument, 0, 'i'},
+	 {"non-inter", required_argument, 0, 'n'},
          {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
+	 {"test", no_argument, 0, 't'},
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "t:hVbv", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "i:hnVbvt", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -71,9 +102,16 @@ int main (int argc, char **argv)
             print_usage();
             return (0);
          case 'V':
-            print_version();
+            print_version(argv[0]);
             return (0);
-         case 't':
+         case 'b':
+	    if (!inter)
+	      color_flag = 0;
+            break;
+	 case 'n':
+	    inter = 1;
+	    break;
+         case 'i':
             T = atoi(optarg);  // user specified in seconds
             if (T < 1)
             {
@@ -85,16 +123,22 @@ int main (int argc, char **argv)
                Tave = T*1000000;  // convert to microsecs
             }
             break;
-         case 'b':
-            color_flag = 0;
-            break;
+	 case 't':
+	    run_test = 1;
+	    break;
          case 'v':
             debug_flag = 1;
             break;
          }
       }
-   }
+   }  // end of getoptlong
 
+   // if testing, just exit with success
+   if (run_test)
+   {
+     return 0;
+   }
+   
    // init ncurses
    wnd = initscr();
    nodelay (wnd, TRUE);
@@ -110,18 +154,19 @@ int main (int argc, char **argv)
    screen_count = get_screen_count();
    screen_table = get_screen_table();
    screen_fun = screen_table[screen_index].fun;
-
-   // main loop
+   
+   /*** main loop ***/
    struct timeval systime;
    long k = -1;  // frame counters
    long bits = 0;  // estimate of bits sent
    int T, T0;  // usec
-   int doreset = 1;
-   int done = 0;
+   int doreset = 1;  // reset counter
+   int done = 0;  // quit next loop
    while (!done)
    {
+      // update frame counter
       ++k;
-
+      
       // screen update
       getmaxyx (wnd, nrows, ncols);
 
@@ -134,6 +179,7 @@ int main (int argc, char **argv)
       {
         bits = 0;
         T0 = T;
+	doreset = 0;
       }
 
       // interface polling
@@ -146,23 +192,29 @@ int main (int argc, char **argv)
             done = 1;
             break;
          case 'c':
-            color_flag = !color_flag;
-            doreset = 1;
+	    if (inter)
+	    {
+	       color_flag = !color_flag;
+	       doreset = 1;
+	    }
             break;
          case 'r':
-            screen_index = (screen_index + 1) % screen_count;
-            screen_fun = screen_table[screen_index].fun;
-            doreset = 1;
-            break;
-         case 'a':
-            doreset = 1;
+	    if (inter)
+	    {
+	       screen_index = (screen_index + 1) % screen_count;
+	       screen_fun = screen_table[screen_index].fun;
+	       doreset = 1;
+	    }
             break;
          case 'v':
             debug_flag = !debug_flag;
             break;
          }
 
-	 static_display(nrows, ncols, color_flag, debug_flag, screen_table[screen_index].name);
+	 if (inter)
+	   static_display(nrows, ncols, color_flag, debug_flag, screen_table[screen_index].name);
+	 else
+	   static_display(nrows, ncols, -1, 0, "non-interactive mode");
 	 
          if (debug_flag)
          {
@@ -172,7 +224,10 @@ int main (int argc, char **argv)
       }
 
       // write screen
-      bits += screen_fun(nrows, ncols, color_flag);
+      if (inter)
+	bits += screen_fun(nrows, ncols, color_flag);
+      else
+	bits += screen_fun(nrows, ncols, 1);
 
       // update display
       if (!(k % 16) && !doreset)
@@ -183,22 +238,31 @@ int main (int argc, char **argv)
          attroff (COLOR_PAIR(1));
       }
 
-      // throughput update
-      if (((T - T0) >= Tave) || doreset)
+      // done with integration time
+      if (((T - T0) >= Tave))
       {
-         display_mbps (bits, nrows, ncols, screen_index, 1);
-         drawbar (0, BAR_WIDTH, 0, 14);
-         bits = 0;
-         T0 = T;
-         k = -1;
+	 if (!inter)
+	 {
+	    done = 1;
+	 }
+	 else
+	 {
+	    display_mbps (bits, nrows, ncols, screen_index, 1);
+	    drawbar (0, BAR_WIDTH, 0, 14);
+	    bits = 0;
+	    T0 = T;
+	    k = -1;
+	 }
       }
 
       // loop clean-up
-      doreset = 0;
       refresh();
    }
 
    endwin ();
 
+   if (!inter)
+     fprintf (stdout, "%g Mbps\n", (double) bits/(T - T0));
+   
    return 0;
 }
