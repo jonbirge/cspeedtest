@@ -1,1 +1,1 @@
-./test/cspeedtest-int -V | grep "cspeedtest-int"
+./src/cspeedtest-int -V | grep "cspeedtest-int"

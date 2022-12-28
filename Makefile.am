@@ -9,16 +9,20 @@ src_cspeedtest_CFLAGS = -std=c99 -Wall
 install-exec-local:
 	ln $(DESTDIR)$(bindir)/cspeedtest $(DESTDIR)$(bindir)/cspeedtest-int
 
-check_SCRIPTS = test/verstest.sh
-check_DATA = test/cspeedtest-int
-TESTS = $(check_SCRIPTS) test/testtest.sh test/helptest.sh test/linktest.sh
+uninstall-local:
+	rm -f $(DESTDIR)$(bindir)/cspeedtest-int
 
-test/verstest.sh:
+dist_check_SCRIPTS = test/testtest.sh test/helptest.sh test/linktest.sh
+check_SCRIPTS = src/verstest.sh
+check_DATA = src/cspeedtest-int
+TESTS = $(dist_check_SCRIPTS) $(check_SCRIPTS)
+
+src/verstest.sh:
+	rm -f $@
 	echo '$(bin_PROGRAMS) --version | grep "@PACKAGE_STRING@"' > $@
 	chmod +x $@
 
-# Overrides default
-test/cspeedtest-int: $(bin_PROGRAMS)
+src/cspeedtest-int: $(bin_PROGRAMS)
 	rm -f $@
 	ln src/cspeedtest $@
 
