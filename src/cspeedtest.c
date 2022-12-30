@@ -12,7 +12,7 @@
 // Constants
 #define BAR_WIDTH 32
 
-// Global defaults
+// Global parameters
 static int debug_flag = 0;  // default to no debug info
 static int color_flag = 1;  // default color, or -1 if non-interactive
 static int run_test = 0;  // default no test
@@ -29,22 +29,21 @@ void print_usage ()
    {
       printf("Usage: cspeedtest [options]\n\n");
       printf("Options:\n");
-      printf("  -i T, --int=T\t\tintegration time in seconds\n");
-      printf("  -n, --inter\t\tinteractive mode\n");
-      printf("  -V, --version\t\tdisplay version\n");
       printf("  -h, --help\t\tshow this help\n");
-      printf("  -t, --test\t\trun test\n");
+      printf("  -t T, --int=T\t\tintegration time in seconds\n");
+      printf("  -i, --interactive\tinteractive mode\n");
+      printf("  -b, --low-bw\t\tlow bandwidth mode\n");
+      printf("  -V, --version\t\tdisplay version\n");
    }
    else
    {
       printf("Usage: cspeedtest-int [options]\n\n");
       printf("Options:\n");
-      printf("  -i T, --int=T\t\tintegration time in seconds\n");
-      printf("  -b, --low-bw\t\tlow bandwidth display (B/W)\n");
-      printf("  -V, --version\t\tdisplay version\n");
       printf("  -h, --help\t\tshow this help\n");
+      printf("  -i T, --int=T\t\tintegration time in seconds\n");
+      printf("  -b, --low-bw\t\tlow bandwidth mode\n");
+      printf("  -V, --version\t\tdisplay version\n");
       printf("  -v, --verbose\t\tprint debug info\n");
-      printf("  -t, --test\t\trun test\n");
    }
 }
 
@@ -86,15 +85,15 @@ int main (int argc, char **argv)
       {
          {"verbose", no_argument, 0, 'v'},
          {"low-bw", no_argument, 0, 'b'},
-         {"int", required_argument, 0, 'i'},
-	 {"non-inter", required_argument, 0, 'n'},
+         {"int", required_argument, 0, 't'},
+	 {"interactive", required_argument, 0, 'i'},
          {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
-	 {"test", no_argument, 0, 't'},
+	 {"test", no_argument, 0, 'x'},  // hidden option
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "i:hnVbvt", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:hiVbvx", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -104,14 +103,12 @@ int main (int argc, char **argv)
          case 'V':
             print_version(argv[0]);
             return (0);
-         case 'b':
-	    if (!inter)
-	      color_flag = 0;
-            break;
-	 case 'n':
+	 case 'i':
 	    inter = 1;
 	    break;
-         case 'i':
+         case 'b':
+	    color_flag = 0;
+         case 't':
             T = atoi(optarg);  // user specified in seconds
             if (T < 1)
             {
@@ -123,7 +120,7 @@ int main (int argc, char **argv)
                Tave = T*1000000;  // convert to microsecs
             }
             break;
-	 case 't':
+	 case 'x':
 	    run_test = 1;
 	    break;
          case 'v':
@@ -133,7 +130,7 @@ int main (int argc, char **argv)
       }
    }  // end of getoptlong
 
-   // if testing, just exit with success
+   // if testing, just exit with success if we got this far
    if (run_test)
    {
      return 0;
@@ -212,9 +209,9 @@ int main (int argc, char **argv)
          }
 
 	 if (inter)
-	   static_display(nrows, ncols, color_flag, debug_flag, screen_table[screen_index].name);
+	   static_display(nrows, ncols, inter, color_flag, debug_flag, screen_table[screen_index].name);
 	 else
-	   static_display(nrows, ncols, -1, 0, "non-interactive mode");
+	   static_display(nrows, ncols, inter, color_flag, 0, "non-interactive mode");
 	 
          if (debug_flag)
          {
@@ -227,7 +224,7 @@ int main (int argc, char **argv)
       if (inter)
 	bits += screen_fun(nrows, ncols, color_flag);
       else
-	bits += screen_fun(nrows, ncols, 1);
+	bits += screen_fun(nrows, ncols, color_flag);
 
       // update display
       if (!(k % 16) && !doreset)
