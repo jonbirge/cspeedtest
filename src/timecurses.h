@@ -16,4 +16,4 @@ int get_screen_count ();
 
 void display_mbps (long bits, int nrows, int ncols, int warn, int reset);
 
-void static_display (int nrows, int ncols, int docolor, int verbose, char* name);
+void static_display (int nrows, int ncols, int inter, int docolor, int verbose, char* name);
