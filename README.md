@@ -20,7 +20,8 @@ Usage: cspeedtest [options]
 
 Options:
   -t T, --time=T         set integration time to T seconds
-  -b, --low-bandwidth    low bandwidth (B/W)
+  -i, --interactive      interactive mode
+  -b, --low-bandwidth    start in low bandwidth mode
   -h, --help             show this help
   -V, --version          show version
   -v, --verbose          show debugging info
