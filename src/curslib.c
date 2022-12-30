@@ -11,7 +11,7 @@ int rand_max (int max)
    return rand() % (max + 1);
 }
 
-// Pass through integer with limits.
+// pass through integer with limits
 int limiter (int in, int min, int max)
 {
    if (in > max)
@@ -21,7 +21,7 @@ int limiter (int in, int min, int max)
    return in;
 }
 
-// Is number within limits?
+// is number within limits?
 int qlimit (int in, int min, int max)
 {
    if ((in > max) || (in < min))
@@ -30,6 +30,30 @@ int qlimit (int in, int min, int max)
       return 1;
 }
 
+// draw centered box
+void draw_box(int width, int height)
+{
+   int start_x, start_y;
+
+  // Calculate the starting coordinates for the box
+  start_x = (COLS - width) / 2;
+  start_y = (LINES - height) / 2;
+
+  // Draw the box using ncursed functions
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      if (i == 0 || i == height - 1) {
+        mvaddch(start_y + i, start_x + j, '*');
+      } else if (j == 0 || j == width - 1) {
+        mvaddch(start_y + i, start_x + j, '*');
+      } else {
+        mvaddch(start_y + i, start_x + j, ' ');
+      }
+    }
+  }
+}
+
+// draw single line horizontal bar graph
 void drawbar (double frac, int width, int line, int offset)
 {
    int j;
