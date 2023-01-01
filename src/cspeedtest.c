@@ -86,10 +86,10 @@ int main (int argc, char **argv)
          {"verbose", no_argument, 0, 'v'},
          {"low-bw", no_argument, 0, 'b'},
          {"int", required_argument, 0, 't'},
-	 {"interactive", required_argument, 0, 'i'},
+         {"interactive", required_argument, 0, 'i'},
          {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
-	 {"test", no_argument, 0, 'x'},  // hidden option
+         {"test", no_argument, 0, 'x'},  // hidden option
          {0, 0, 0, 0}
       };
 
@@ -103,11 +103,11 @@ int main (int argc, char **argv)
          case 'V':
             print_version(argv[0]);
             return (0);
-	 case 'i':
-	    inter = 1;
-	    break;
+         case 'i':
+            inter = 1;
+	         break;
          case 'b':
-	    color_flag = 0;
+            color_flag = 0;
          case 't':
             T = atoi(optarg);  // user specified in seconds
             if (T < 1)
@@ -120,9 +120,9 @@ int main (int argc, char **argv)
                Tave = T*1000000;  // convert to microsecs
             }
             break;
-	 case 'x':
-	    run_test = 1;
-	    break;
+         case 'x':
+            run_test = 1;
+            break;
          case 'v':
             debug_flag = 1;
             break;
@@ -176,7 +176,7 @@ int main (int argc, char **argv)
       {
         bits = 0;
         T0 = T;
-	doreset = 0;
+        doreset = 0;
       }
 
       // interface polling
@@ -189,42 +189,44 @@ int main (int argc, char **argv)
             done = 1;
             break;
          case 'c':
-	    if (inter)
-	    {
-	       color_flag = !color_flag;
-	       doreset = 1;
-	    }
+            if (inter)
+            {
+               color_flag = !color_flag;
+               doreset = 1;
+            }
             break;
          case 'r':
-	    if (inter)
-	    {
-	       screen_index = (screen_index + 1) % screen_count;
-	       screen_fun = screen_table[screen_index].fun;
-	       doreset = 1;
-	    }
+            if (inter)
+            {
+               screen_index = (screen_index + 1) % screen_count;
+               screen_fun = screen_table[screen_index].fun;
+               doreset = 1;
+            }
             break;
          case 'v':
             debug_flag = !debug_flag;
             break;
          }
-
-	 if (inter)
-	   static_display(nrows, ncols, inter, color_flag, debug_flag, screen_table[screen_index].name);
-	 else
-	   static_display(nrows, ncols, inter, color_flag, 0, "non-interactive mode");
+         
+         if (inter)
+            static_display(nrows, ncols, inter, color_flag, debug_flag, screen_table[screen_index].name);
+         else
+            static_display(nrows, ncols, inter, color_flag, 0, "non-interactive mode");
 	 
          if (debug_flag)
          {
             move (nrows - 2, 0);
             printw("dT = %f sec", (double) (T - T0)/1000000.0);
          }
-      }
+      }  // end interface polling
+
+      /*** TODO: move everything after here into timecurses.c ***/
 
       // write screen
       if (inter)
-	bits += screen_fun(nrows, ncols, color_flag);
+         bits += screen_fun(nrows, ncols, color_flag);
       else
-	bits += screen_fun(nrows, ncols, color_flag);
+         bits += screen_fun(nrows, ncols, color_flag);
 
       // update display
       if (!(k % 16) && !doreset)
@@ -238,18 +240,18 @@ int main (int argc, char **argv)
       // done with integration time
       if (((T - T0) >= Tave))
       {
-	 if (!inter)
-	 {
-	    done = 1;
-	 }
-	 else
-	 {
-	    display_mbps (bits, nrows, ncols, screen_index, 1);
-	    drawbar (0, BAR_WIDTH, 0, 14);
-	    bits = 0;
-	    T0 = T;
-	    k = -1;
-	 }
+         if (!inter)
+         {
+            done = 1;
+         }
+         else
+         {
+            display_mbps (bits, nrows, ncols, screen_index, 1);
+            drawbar (0, BAR_WIDTH, 0, 14);
+            bits = 0;
+            T0 = T;
+            k = -1;
+         }
       }
 
       // loop clean-up
@@ -258,6 +260,7 @@ int main (int argc, char **argv)
 
    endwin ();
 
+   // write final result to stdout
    if (!inter)
      fprintf (stdout, "%g Mbps\n", (double) bits/(T - T0));
    
