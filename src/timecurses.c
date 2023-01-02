@@ -108,15 +108,8 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
 }
 
 // Menu items
-void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
+void static_display (int nrows, int ncols, int inter, int docolor, int verbose, char* name)
 {
-   int inter;
-   
-   if (docolor == -1)
-      inter = 0;
-   else
-      inter = 1;
-   
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
    drawline (nrows - 2, ncols);
@@ -153,7 +146,7 @@ void static_display (int nrows, int ncols, int docolor, int verbose, char* name)
    }
    if (verbose)
    {
-      printw ("| chars: ");
+      printw (" | chars: ");
       printw ("%d", nrows*ncols);
       printw (" res: %d x %d", ncols, nrows);
    }
