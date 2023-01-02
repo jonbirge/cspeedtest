@@ -29,9 +29,12 @@ int qlimit(int in, int min, int max)
       return 1;
 }
 
-// draw box centered on screen
-void draw_centered_box(int width, int height)
+// draw box centered on screen, with black background and white border
+void draw_centered_box_border(int width, int height)
 {
+   // Set to color pair 1
+   attron(COLOR_PAIR(1));
+
    // Get the current terminal size
    int terminal_width, terminal_height;
    getmaxyx(stdscr, terminal_height, terminal_width);
@@ -59,6 +62,36 @@ void draw_centered_box(int width, int height)
          }
       }
    }
+
+   // Reset to color pair 0
+   attroff(COLOR_PAIR(1));
+}
+
+// draw box centered on screen, with black background
+void draw_centered_box(int width, int height)
+{
+   // Set to color pair 1
+   attron(COLOR_PAIR(1));
+
+   // Get the current terminal size
+   int terminal_width, terminal_height;
+   getmaxyx(stdscr, terminal_height, terminal_width);
+
+   // Calculate the starting position of the box
+   int start_x = (terminal_width - width) / 2;
+   int start_y = (terminal_height - height) / 2;
+
+   // Draw the box using the ncurses functions
+   for (int y = start_y; y < start_y + height; y++)
+   {
+      for (int x = start_x; x < start_x + width; x++)
+      {
+         mvaddch(y, x, ' ');
+      }
+   }
+
+   // Reset to color pair 0
+   attroff(COLOR_PAIR(1));
 }
 
 // draw graph centered on screen
@@ -134,7 +167,6 @@ void drawline(int row, int width)
    for (int j = 0; j < width; ++j)
       addch(ACS_HLINE);
 }
-
 
 // init color pairs
 void init_colors()

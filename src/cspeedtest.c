@@ -1,3 +1,5 @@
+/* cspeedtest.c */
+
 #include "config.h"
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +13,8 @@
 
 // Constants
 #define BAR_WIDTH 32
+#define MEAS_FRAMES 16
+#define POLL_FRAMES 4
 
 // Global parameters
 static int debug_flag = 0;  // default to no debug info
@@ -20,7 +24,6 @@ static int inter = 0;  // default to non-interactive
 static int screen_index = 0;  // default to random
 static int screen_count;
 static screen_display* screen_table;
-static screen_fun_ptr screen_fun;
 int Tave = 5 * 1000000;  // 5 sec (usec)
 
 void print_usage ()
@@ -150,7 +153,6 @@ int main (int argc, char **argv)
    init_screen_table();
    screen_count = get_screen_count();
    screen_table = get_screen_table();
-   screen_fun = screen_table[screen_index].fun;
    
    /*** main loop ***/
    struct timeval systime;
@@ -180,7 +182,7 @@ int main (int argc, char **argv)
       }
 
       // interface polling
-      if (!(k % 4))
+      if (!(k % POLL_FRAMES))
       {
          char d = getch ();
          switch (d)
@@ -199,7 +201,7 @@ int main (int argc, char **argv)
             if (inter)
             {
                screen_index = (screen_index + 1) % screen_count;
-               screen_fun = screen_table[screen_index].fun;
+               set_current_screen(screen_index);
                doreset = 1;
             }
             break;
@@ -211,27 +213,25 @@ int main (int argc, char **argv)
          if (inter)
             static_display(nrows, ncols, inter, color_flag, debug_flag, screen_table[screen_index].name);
          else
-            static_display(nrows, ncols, inter, color_flag, 0, "non-interactive mode");
+            static_display(nrows, ncols, inter, color_flag, 0, "[non-interactive]");
 	 
          if (debug_flag)
          {
             move (nrows - 2, 0);
-            printw("dT = %f sec", (double) (T - T0)/1000000.0);
+            printw("dT = %f sec | frame: %ld", (double) (T - T0)/1000000.0, k);
          }
       }  // end interface polling
 
       /*** TODO: move everything after here into timecurses.c ***/
 
       // write screen
-      if (inter)
-         bits += screen_fun(nrows, ncols, color_flag);
-      else
-         bits += screen_fun(nrows, ncols, color_flag);
+      // bits += screen_fun(nrows, ncols, color_flag);
+      bits += draw_screen(nrows, ncols, color_flag);
 
       // update display
-      if (!(k % 16) && !doreset)
+      if (!(k % MEAS_FRAMES) && !doreset)
       {
-         display_mbps (bits, nrows, ncols, screen_index, 0);
+         display_mbps (bits, nrows, ncols, screen_index, 0, inter);
          attron (COLOR_PAIR(1));
          drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
          attroff (COLOR_PAIR(1));
@@ -246,7 +246,7 @@ int main (int argc, char **argv)
          }
          else
          {
-            display_mbps (bits, nrows, ncols, screen_index, 1);
+            display_mbps (bits, nrows, ncols, screen_index, 1, inter);
             drawbar (0, BAR_WIDTH, 0, 14);
             bits = 0;
             T0 = T;
