@@ -1,0 +1,19 @@
+TODO for cspeedtest
+
+    Copyright (c) 2022 Jonathan R. Birge
+
+    Copying and distribution of this file, with or without modification,
+    are permitted in any medium without royalty provided the copyright
+    notice and this notice are preserved.
+
+Items are ordered not by priority but by the order in which they are most efficiently accomplished.
+
+* Make graph a command-line and real-time option
+
+* Add man page
+
+* Switch to frame-based integration period to avoid long waits with bad connections
+
+* Further refine calibration, especially for the non-random patterns.
+
+* Record results in database for later analysis
