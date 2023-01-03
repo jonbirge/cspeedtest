@@ -17,8 +17,8 @@ static screen_display* screen_table;
 static int current_screen = 0;
 
 // Global variables (maybe these should go inside a function)
-#define ng_max 1024
-static int ng = 128;
+#define ng_max 128
+static int ng = ng_max;
 static double mbps[ng_max];
 static int ts[ng_max];
 

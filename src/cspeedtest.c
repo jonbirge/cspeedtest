@@ -15,6 +15,7 @@
 #define BAR_WIDTH 32
 #define MEAS_FRAMES 16
 #define POLL_FRAMES 4
+#define INT_FRAMES 2048
 
 // Global parameters
 static int debug_flag = 0;  // default to no debug info
@@ -222,10 +223,7 @@ int main (int argc, char **argv)
          }
       }  // end interface polling
 
-      /*** TODO: move everything after here into timecurses.c ***/
-
       // write screen
-      // bits += screen_fun(nrows, ncols, color_flag);
       bits += draw_screen(nrows, ncols, color_flag);
 
       // update display
@@ -233,12 +231,12 @@ int main (int argc, char **argv)
       {
          display_mbps (bits, nrows, ncols, screen_index, 0, inter);
          attron (COLOR_PAIR(1));
-         drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
+         drawbar ((double) k/INT_FRAMES, BAR_WIDTH, 0, 14);
          attroff (COLOR_PAIR(1));
       }
 
-      // done with integration time
-      if (((T - T0) >= Tave))
+      // done with integration period
+      if (k >= INT_FRAMES)
       {
          if (!inter)
          {

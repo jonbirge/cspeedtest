@@ -8,14 +8,14 @@ TODO for cspeedtest
 
 Items are ordered not by priority but by the order in which they are most efficiently accomplished.
 
-* Move screen update to single function in timecurse.c
-
-* Show box for future graph each frame and validate it doesn't impact measurement
-
-* Switch from time-based integration period to frame-based integration time
-
 * Plot graph in each frame
 
 * Make graph a command-line and real-time option
 
-* Correct for presence of graph in bitrate calculation
+* Add man page
+
+* Switch to frame-based integration period to avoid long waits with bad connections
+
+* Further refine calibration, especially for the non-random patterns.
+
+* Record results in database for later analysis
