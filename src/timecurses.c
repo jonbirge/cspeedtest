@@ -18,9 +18,9 @@ static int current_screen = 0;
 
 // Global variables (maybe these should go inside a function)
 #define ng_max 128
-static int ng = ng_max;
+static const int ng = ng_max;
 static double mbps[ng_max];
-static int ts[ng_max];
+static double ts[ng_max];
 
 // API plumbing for eventual external plug-ins
 void init_screen_table ()
@@ -34,9 +34,9 @@ void init_screen_table ()
    screen_table[2].name = "swirl";
    screen_table[2].fun = swirl_screen;
 
-   // initialize ts to sequence from 1 to 256
-   for (int i = 0; i < 256; i++)
-      ts[i] = i + 1;
+   // initialize ts to sequence from 1 to ng
+   for (int i = 0; i < ng; i++)
+      ts[i] = (double) i + 1.0;
 }
 
 // Return table of screen displays
@@ -57,7 +57,7 @@ int get_current_screen ()
    return current_screen;
 }
 
-// Draw current screen
+// Draw current scree   n
 int draw_screen (int rows, int cols, int docolor)
 {
    int rawbits, totalbits;
@@ -65,6 +65,7 @@ int draw_screen (int rows, int cols, int docolor)
    rawbits = screen_table[current_screen].fun(rows, cols, docolor);
    draw_centered_box (cols/2, rows/2);
    totalbits = 3 * rawbits / 4;
+   draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng);
 
    return totalbits;
 }
@@ -78,35 +79,34 @@ void set_current_screen (int i)
 // Track and display bitrate. Run after screen display is done.
 void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int inter)
 {
-   static int sec, us, secold, usold;
+   static int sec, us, secinit, usinit;
    static int kt = 0;  // index of point to replace
    struct timeval systime;
    double bps, dt;
 
-   if (reset || secold == 0)  // init
-   {
-      gettimeofday (&systime, NULL);
-      secold = systime.tv_sec;
-      usold = systime.tv_usec;
-      bps = 0;
-      ng = nrows/2;
-      kt = 0;
-      // initialize mbps to 0
-      for (int i = 0; i < ng_max; i++)
-         mbps[i] = 0;
-   }
-   else  // normal ops
+   if (!(reset || secinit == 0))  // normal ops
    {
       gettimeofday (&systime, NULL);
       sec = systime.tv_sec;
       us = systime.tv_usec;
-      dt = (double) (sec - secold) + (double) (us - usold)*1e-6;
+      dt = (double) (sec - secinit) + (double) (us - usinit)*1e-6;
       bps = bits/dt;
 
-      // add bps to mbps array
-      mbps[kt++] = bps;
+      // add measurement to mbps array
+      mbps[kt++] = bps/1024/1024;
       if (kt >= ng)
          kt = 0;
+   }
+   else  // init
+   {
+      gettimeofday (&systime, NULL);
+      secinit = systime.tv_sec;
+      usinit = systime.tv_usec;
+      bps = 0;
+      kt = 0;
+      // initialize mbps to 0
+      for (int i = 0; i < ng_max; i++)
+         mbps[i] = 0;
    }
 
    // text display

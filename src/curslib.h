@@ -10,7 +10,7 @@ void draw_centered_box_border(int width, int height);
 
 void draw_centered_box(int width, int height);
 
-void draw_graph(int width, int height, int x_values[], int y_values[], int num_values);
+void draw_graph(int width, int height, double x_values[], double y_values[], int num_values);
 
 void drawbar (double frac, int width, int line, int offset);
 
