@@ -17,7 +17,7 @@ static screen_display* screen_table;
 static int current_screen = 0;
 
 // Global variables (maybe these should go inside a function)
-#define ng_max 128
+#define ng_max 100
 static const int ng = ng_max;
 static double mbps[ng_max];
 static double ts[ng_max];
@@ -57,15 +57,23 @@ int get_current_screen ()
    return current_screen;
 }
 
-// Draw current scree   n
-int draw_screen (int rows, int cols, int docolor)
+// Draw current screen
+int draw_screen (int rows, int cols, int docolor, int dograph)
 {
    int rawbits, totalbits;
 
    rawbits = screen_table[current_screen].fun(rows, cols, docolor);
-   draw_centered_box (cols/2, rows/2);
-   totalbits = 3 * rawbits / 4;
-   draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng);
+
+   if (dograph)
+   {
+      draw_centered_box (cols/2, rows/2);
+      totalbits = 3 * rawbits / 4 + ng*16;
+      draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng);
+   }
+   else
+   {
+      totalbits = rawbits;
+   }
 
    return totalbits;
 }
@@ -131,7 +139,7 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
 }
 
 // Menu items
-void static_display (int nrows, int ncols, int inter, int docolor, int verbose, char* name)
+void static_display (int nrows, int ncols, int inter, int docolor, int dograph, int verbose, char* name)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols);
@@ -161,6 +169,21 @@ void static_display (int nrows, int ncols, int inter, int docolor, int verbose, 
       else
       {
          printw ("color");
+      }
+      printw (", ");
+      attron (A_BOLD);
+      addch ('g');
+      attroff (A_BOLD);
+      printw (" to toggle ");
+      if (dograph)
+      {
+         attron (COLOR_PAIR(16));
+         printw ("graph");
+         attron (COLOR_PAIR(1));
+      }
+      else
+      {
+         printw ("graph");
       }
       printw (". Display: ");
       attron (A_BOLD);

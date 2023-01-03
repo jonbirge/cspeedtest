@@ -18,10 +18,10 @@ int get_screen_count ();
 
 void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int inter);
 
-void static_display (int nrows, int ncols, int inter, int docolor, int verbose, char* name);
+void static_display (int nrows, int ncols, int inter, int docolor, int dograph, int verbose, char* name);
 
 void set_current_screen (int i);
 
 int get_current_screen ();
 
-int draw_screen (int rows, int cols, int docolor);
+int draw_screen (int rows, int cols, int docolor, int dograph);

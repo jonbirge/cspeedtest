@@ -1,3 +1,5 @@
+/* curslib.c */
+
 #include <stdlib.h>
 #include <ncurses.h>
 #include <sys/time.h>
@@ -127,7 +129,7 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
 
    // Draw the X and Y axes
    mvaddch(start_y + height, start_x, '+');
-   //mvaddch(start_y, start_x, '+');
+   mvaddch(start_y, start_x, '^');
    for (int x = start_x + 1; x < start_x + width; x++)
    {
       mvaddch(start_y + height, x, ACS_HLINE);
@@ -139,18 +141,22 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
 
    // Label Y axis limits
    mvprintw(start_y, start_x, "%d Mbps", (int) ceil(y_max));
-   // mvprintw(start_y + height, start_x + 5, "%d Mbps", (int) ceil(y_min));
 
-   // Draw the data points
+   // switch to new color pair
+   int colpair = 3;
+   attron(COLOR_PAIR(colpair));
+   // draw the data points
    for (int i = 0; i < num_values; i++)
    {
       if (y_values[i] != 0)
       {
          int x = ceil(1 + start_x + (x_values[i] - x_min) * x_scale);
          int y = round(start_y + height - (y_values[i] - y_min) * y_scale);
-         mvaddch(y, x, ACS_BULLET);
+         mvaddch(y, x, '*');
       }
    }
+   // switch back to old color pair
+   attroff(COLOR_PAIR(colpair));
 }
 
 // draw single line horizontal bar graph

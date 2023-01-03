@@ -6,14 +6,14 @@ TODO for cspeedtest
     are permitted in any medium without royalty provided the copyright
     notice and this notice are preserved.
 
-Items are ordered not by priority but by the order in which they are most efficiently accomplished.
+Items are ordered not by priority but by the order in which they are most efficiently accomplished
 
-* Make graph a command-line and real-time option
+* Have graph show instantaneous versus integrated values
 
 * Add man page
 
-* Switch to frame-based integration period to avoid long waits with bad connections
+* Switch to time-based integration period to avoid long waits with bad connections
 
-* Further refine calibration, especially for the non-random patterns.
+* Further refine calibration, especially for the non-random patterns
 
 * Record results in database for later analysis

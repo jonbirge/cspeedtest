@@ -13,29 +13,31 @@
 
 // Constants
 #define BAR_WIDTH 32
-#define MEAS_FRAMES 16
+#define MEAS_FRAMES 10
 #define POLL_FRAMES 4
-#define INT_FRAMES 2048
+#define INT_FRAMES 1000
 
 // Global parameters
-static int debug_flag = 0;  // default to no debug info
-static int color_flag = 1;  // default color, or -1 if non-interactive
-static int run_test = 0;  // default no test
-static int inter = 0;  // default to non-interactive
-static int screen_index = 0;  // default to random
+static int debug_flag = 0;   // default to no debug info
+static int color_flag = 1;   // default to color
+static int inter_flag = 0;   // default to non-interactive
+static int graph_flag = 1;   // default to graph
+static int run_test = 0;     // default no test
+static int screen_index = 0; // default to random
 static int screen_count;
-static screen_display* screen_table;
-int Tave = 5 * 1000000;  // 5 sec (usec)
+static screen_display *screen_table;
+int Tave = 5 * 1000000; // 5 sec (usec)
 
 void print_usage ()
 {
-   if (!inter)  // normal mode
+   if (!inter_flag)  // normal mode
    {
       printf("Usage: cspeedtest [options]\n\n");
       printf("Options:\n");
       printf("  -h, --help\t\tshow this help\n");
-      printf("  -t T, --int=T\t\tintegration time in seconds\n");
+      printf("  -g, --graph\t\thide graph\n");
       printf("  -i, --interactive\tinteractive mode\n");
+      printf("  -t T, --int=T\t\tintegration time in seconds\n");
       printf("  -b, --low-bw\t\tlow bandwidth mode\n");
       printf("  -V, --version\t\tdisplay version\n");
    }
@@ -44,6 +46,7 @@ void print_usage ()
       printf("Usage: cspeedtest-int [options]\n\n");
       printf("Options:\n");
       printf("  -h, --help\t\tshow this help\n");
+      printf("  -g, --graph\t\thide graph\n");
       printf("  -i T, --int=T\t\tintegration time in seconds\n");
       printf("  -b, --low-bw\t\tlow bandwidth mode\n");
       printf("  -V, --version\t\tdisplay version\n");
@@ -55,7 +58,7 @@ void print_version (char* name)
 {
    printf(PACKAGE_STRING);
    printf("\n");
-   printf("Copyright 2022, Jonathan R. Birge\n");
+   printf("Copyright 2022-2023, Jonathan R. Birge\n");
    printf("Bug reports to ");
    printf(PACKAGE_BUGREPORT);
    printf("\n%s\n", name);
@@ -70,11 +73,11 @@ int main (int argc, char **argv)
    // determine mode from calling name
    if (strstr(name, "cspeedtest-int") != NULL)
    {
-     inter = 1;
+     inter_flag = 1;
    }
    else
    {
-     inter = 0;
+     inter_flag = 0;
      color_flag = -1;
    }
    
@@ -87,17 +90,18 @@ int main (int argc, char **argv)
 
       struct option long_options[] =
       {
-         {"verbose", no_argument, 0, 'v'},
-         {"low-bw", no_argument, 0, 'b'},
          {"int", required_argument, 0, 't'},
-         {"interactive", required_argument, 0, 'i'},
+         {"verbose", no_argument, 0, 'v'},
+         {"graph", no_argument, 0, 'g'},
+         {"low-bw", no_argument, 0, 'b'},
+         {"interactive", no_argument, 0, 'i'},
          {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
-         {"test", no_argument, 0, 'x'},  // hidden option
+         {"test", no_argument, 0, 'x'},
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "t:hiVbvx", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:ghiVbvx", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -108,10 +112,14 @@ int main (int argc, char **argv)
             print_version(argv[0]);
             return (0);
          case 'i':
-            inter = 1;
+            inter_flag = 1;
 	         break;
+         case 'g':
+            graph_flag = 0;
+            break;
          case 'b':
             color_flag = 0;
+            break;
          case 't':
             T = atoi(optarg);  // user specified in seconds
             if (T < 1)
@@ -192,14 +200,20 @@ int main (int argc, char **argv)
             done = 1;
             break;
          case 'c':
-            if (inter)
+            if (inter_flag)
             {
                color_flag = !color_flag;
                doreset = 1;
             }
             break;
+         case 'g':
+            if (inter_flag)
+            {
+               graph_flag = !graph_flag;
+            }
+            break;
          case 'r':
-            if (inter)
+            if (inter_flag)
             {
                screen_index = (screen_index + 1) % screen_count;
                set_current_screen(screen_index);
@@ -211,10 +225,10 @@ int main (int argc, char **argv)
             break;
          }
          
-         if (inter)
-            static_display(nrows, ncols, inter, color_flag, debug_flag, screen_table[screen_index].name);
+         if (inter_flag)
+            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, screen_table[screen_index].name);
          else
-            static_display(nrows, ncols, inter, color_flag, 0, "[non-interactive]");
+            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, 0, "[non-interactive]");
 	 
          if (debug_flag)
          {
@@ -224,12 +238,12 @@ int main (int argc, char **argv)
       }  // end interface polling
 
       // write screen
-      bits += draw_screen(nrows, ncols, color_flag);
+      bits += draw_screen(nrows, ncols, color_flag, graph_flag);
 
       // update display
       if (!(k % MEAS_FRAMES) && !doreset)
       {
-         display_mbps (bits, nrows, ncols, screen_index, 0, inter);
+         display_mbps (bits, nrows, ncols, screen_index, 0, inter_flag);
          attron (COLOR_PAIR(1));
          drawbar ((double) k/INT_FRAMES, BAR_WIDTH, 0, 14);
          attroff (COLOR_PAIR(1));
@@ -238,13 +252,13 @@ int main (int argc, char **argv)
       // done with integration period
       if (k >= INT_FRAMES)
       {
-         if (!inter)
+         if (!inter_flag)
          {
             done = 1;
          }
          else
          {
-            display_mbps (bits, nrows, ncols, screen_index, 1, inter);
+            display_mbps (bits, nrows, ncols, screen_index, 1, inter_flag);
             drawbar (0, BAR_WIDTH, 0, 14);
             bits = 0;
             T0 = T;
@@ -259,7 +273,7 @@ int main (int argc, char **argv)
    endwin ();
 
    // write final result to stdout
-   if (!inter)
+   if (!inter_flag)
      fprintf (stdout, "%g Mbps\n", (double) bits/(T - T0));
    
    return 0;
