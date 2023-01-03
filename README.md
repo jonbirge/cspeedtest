@@ -19,7 +19,7 @@ You just need to install this on the server where you want to measure network sp
 Usage: cspeedtest [options]
 
 Options:
-  -t T, --time=T         set integration time to T seconds
+  -t T, --int T          set integration time to T seconds
   -i, --interactive      interactive mode
   -b, --low-bandwidth    start in low bandwidth mode
   -h, --help             show this help
