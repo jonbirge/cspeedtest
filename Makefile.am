@@ -7,7 +7,7 @@ src_cspeedtest_SOURCES = src/curslib.c src/curslib.h src/timecurses.c src/timecu
 src_cspeedtest_CFLAGS = -std=c99 -Wall
 
 install-exec-local:
-	ln $(DESTDIR)$(bindir)/cspeedtest $(DESTDIR)$(bindir)/cspeedtest-int
+	ln -f $(DESTDIR)$(bindir)/cspeedtest $(DESTDIR)$(bindir)/cspeedtest-int
 
 uninstall-local:
 	rm -f $(DESTDIR)$(bindir)/cspeedtest-int
