@@ -13,9 +13,9 @@
 
 // Constants
 #define BAR_WIDTH 32
-#define MEAS_FRAMES 10
+#define MEAS_FRAMES 16
 #define POLL_FRAMES 4
-#define INT_FRAMES 1000
+#define INT_TIME 7  // seconds
 
 // Global parameters
 static int debug_flag = 0;   // default to no debug info
@@ -26,7 +26,7 @@ static int run_test = 0;     // default no test
 static int screen_index = 0; // default to random
 static int screen_count;
 static screen_display *screen_table;
-int Tave = 5 * 1000000; // 5 sec (usec)
+int Tave = INT_TIME * 1000000; // usec
 
 void print_usage ()
 {
@@ -245,12 +245,12 @@ int main (int argc, char **argv)
       {
          display_mbps (bits, nrows, ncols, screen_index, 0, inter_flag);
          attron (COLOR_PAIR(1));
-         drawbar ((double) k/INT_FRAMES, BAR_WIDTH, 0, 14);
+         drawbar ((double) (T - T0)/Tave, BAR_WIDTH, 0, 14);
          attroff (COLOR_PAIR(1));
       }
 
       // done with integration period
-      if (k >= INT_FRAMES)
+      if ((T - T0) >= Tave)
       {
          if (!inter_flag)
          {
