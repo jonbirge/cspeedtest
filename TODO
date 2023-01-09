@@ -12,8 +12,6 @@ Items are ordered not by priority but by the order in which they are most effici
 
 * Add man page
 
-* Switch to time-based integration period to avoid long waits with bad connections
-
 * Further refine calibration, especially for the non-random patterns
 
 * Record results in database for later analysis

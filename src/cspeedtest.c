@@ -12,10 +12,11 @@
 
 
 // Constants
-#define BAR_WIDTH 32
-#define MEAS_FRAMES 10
+#define BAR_WIDTH 35
+#define MEAS_FRAMES 16
 #define POLL_FRAMES 4
-#define INT_FRAMES 1000
+#define INT_TIME 7
+#define GRAPH_N 256
 
 // Global parameters
 static int debug_flag = 0;   // default to no debug info
@@ -26,7 +27,7 @@ static int run_test = 0;     // default no test
 static int screen_index = 0; // default to random
 static int screen_count;
 static screen_display *screen_table;
-int Tave = 5 * 1000000; // 5 sec (usec)
+int Tave = INT_TIME * 1000000; // usec
 
 void print_usage ()
 {
@@ -162,14 +163,16 @@ int main (int argc, char **argv)
    init_screen_table();
    screen_count = get_screen_count();
    screen_table = get_screen_table();
-   
+
    /*** main loop ***/
    struct timeval systime;
-   long k = -1;  // frame counters
-   long bits = 0;  // estimate of bits sent
-   int T, T0;  // usec
-   int doreset = 1;  // reset counter
-   int done = 0;  // quit next loop
+   int k = -1;                   // frame counters
+   long bits = 0;                // estimate of bits sent
+   int T, T0;                    // usec
+   int doreset = 1;              // reset counter
+   int done = 0;                 // quit next loop
+   int measframes = MEAS_FRAMES; // initial frames between measurements
+   int ngraphed = 0;             // number of graphed frames
    while (!done)
    {
       // update frame counter
@@ -228,29 +231,46 @@ int main (int argc, char **argv)
          if (inter_flag)
             static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, screen_table[screen_index].name);
          else
-            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, 0, "[non-interactive]");
-	 
+            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, "[non-interactive]");
+
          if (debug_flag)
          {
-            move (nrows - 2, 0);
-            printw("dT = %f sec | frame: %ld", (double) (T - T0)/1000000.0, k);
+            move(nrows - 2, 0);
+            printw("dT = %f sec | frame: %d",
+                   (double)(T - T0) / 1000000.0, k);
          }
-      }  // end interface polling
+      } // end interface polling
 
       // write screen
       bits += draw_screen(nrows, ncols, color_flag, graph_flag);
 
       // update display
-      if (!(k % MEAS_FRAMES) && !doreset)
+      if (!(k % measframes) && !doreset)
       {
-         display_mbps (bits, nrows, ncols, screen_index, 0, inter_flag);
-         attron (COLOR_PAIR(1));
-         drawbar ((double) k/INT_FRAMES, BAR_WIDTH, 0, 14);
-         attroff (COLOR_PAIR(1));
+         if (!inter_flag && (T - T0) > 1000) // update measframes to ensure graph is filled during integration time
+         {
+            ngraphed++;
+            if (ngraphed >= GRAPH_N)
+               ngraphed = 0;
+            int Tleft = Tave - (T - T0);
+            int graph_points_left = GRAPH_N - ngraphed;
+            double frame_rate = (double)k / (double)(T - T0);
+            int frames_left = (int)ceil((double)Tleft * frame_rate); // estimate of frames left
+            measframes = (int)ceil((double)frames_left / graph_points_left);
+         }
+         display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
+         attron(COLOR_PAIR(1));
+         drawbar((double)(T - T0) / Tave, BAR_WIDTH, 0, 14);
+         attroff(COLOR_PAIR(1));
+         if (debug_flag)
+         {
+            move(0, 64);
+            printw("measframes: %d", measframes);
+         }
       }
 
       // done with integration period
-      if (k >= INT_FRAMES)
+      if ((T - T0) >= Tave)
       {
          if (!inter_flag)
          {
