@@ -163,7 +163,7 @@ int main (int argc, char **argv)
    init_screen_table();
    screen_count = get_screen_count();
    screen_table = get_screen_table();
-   
+
    /*** main loop ***/
    struct timeval systime;
    int k = -1;                   // frame counters
@@ -247,11 +247,11 @@ int main (int argc, char **argv)
       // update display
       if (!(k % measframes) && !doreset)
       {
-         ngraphed++;
-         if (ngraphed >= GRAPH_N)
-            ngraphed = 0;
-         if ((T - T0) > 1000)
+         if (!inter_flag && (T - T0) > 1000) // update measframes to ensure graph is filled during integration time
          {
+            ngraphed++;
+            if (ngraphed >= GRAPH_N)
+               ngraphed = 0;
             int Tleft = Tave - (T - T0);
             int graph_points_left = GRAPH_N - ngraphed;
             double frame_rate = (double)k / (double)(T - T0);
