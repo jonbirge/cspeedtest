@@ -258,7 +258,7 @@ int main (int argc, char **argv)
             double frame_rate = (double) k / (T - T0);
             int frames_left = (int) ceil(Tleft * frame_rate); // estimate of frames left
             if (frames_left > 0 && graph_points_left > 0)
-               measframes = (int) ceil((double) frames_left / graph_points_left);
+               measframes = (int) floor((double) frames_left / graph_points_left);
          }
          display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
          attron(COLOR_PAIR(1));

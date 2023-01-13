@@ -127,20 +127,8 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
    double x_scale = (double) (width - 2) / (double) (x_max - x_min);
    double y_scale = (double) height / (double) (y_max - y_min);
 
-   // Draw the X and Y axes
-   mvaddch(start_y + height, start_x, '+');
-   mvaddch(start_y, start_x, '^');
-   for (int x = start_x + 1; x < start_x + width; x++)
-   {
-      mvaddch(start_y + height, x, ACS_HLINE);
-   }
-   for (int y = start_y + 1; y < start_y + height; y++)
-   {
-      mvaddch(y, start_x, ACS_VLINE);
-   }
-
    // Label Y axis limits
-   mvprintw(start_y, start_x, "%d Mbps", (int) ceil(y_max));
+   mvprintw(start_y - 1, start_x, "%d Mbps", (int) ceil(y_max));
 
    // switch to new color pair
    int colpair = 3;
