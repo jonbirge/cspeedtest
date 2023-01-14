@@ -37,7 +37,7 @@ void print_usage ()
       printf("  -h, --help\t\tshow this help\n");
       printf("  -g, --graph\t\thide graph\n");
       printf("  -i, --interactive\tinteractive mode\n");
-      printf("  -t T, --time=T\t\tintegration time in seconds\n");
+      printf("  -t T, --time=T\tintegration time in seconds\n");
       printf("  -b, --low-bw\t\tlow bandwidth mode\n");
       printf("  -V, --version\t\tdisplay version\n");
    }
@@ -47,7 +47,7 @@ void print_usage ()
       printf("Options:\n");
       printf("  -h, --help\t\tshow this help\n");
       printf("  -g, --graph\t\thide graph\n");
-      printf("  -t T, --time=T\t\tintegration time in seconds\n");
+      printf("  -t T, --time=T\tintegration time in seconds\n");
       printf("  -b, --low-bw\t\tlow bandwidth mode\n");
       printf("  -V, --version\t\tdisplay version\n");
       printf("  -v, --verbose\t\tprint debug info\n");
