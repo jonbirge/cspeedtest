@@ -254,9 +254,9 @@ int main (int argc, char **argv)
             ngraphed++;
             int Tleft = Tave - (T - T0);
             int graph_points_left = GRAPH_N - ngraphed;
-            double frame_rate = (double) k / (T - T0);
-            int frames_left = (int) floor(Tleft * frame_rate); // estimate of frames left
-            if (frames_left > 0 && graph_points_left > 0)
+            double frame_rate = (double) k / (double) (T - T0);
+            double frames_left = Tleft * frame_rate; // estimate of frames left
+            if ((frames_left > 1) && (graph_points_left > 1))
                measframes = (int) floor((double) frames_left / (double) graph_points_left);
          }
          display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
