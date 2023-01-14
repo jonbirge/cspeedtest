@@ -28,9 +28,7 @@ src/cspeedtest-int: $(bin_PROGRAMS)
 
 dist_man_MANS = man/cspeedtest.1
 
-check_MANS = man/cspeedtest.1.md
-
-man/cspeedtest.1: $(dist_check_MANS)
+man/cspeedtest.1:
 	pandoc -s -t man man/cspeedtest.1.md -o $@
 
-CLEANFILES = $(check_SCRIPTS) $(check_DATA) $(dist_man_MANS)
+CLEANFILES = $(check_SCRIPTS) $(check_DATA)

@@ -1,13 +1,13 @@
 name: cspeedtest
 base: core18
 version: git
-summary: Measure network throughput between a server and any terminal
-#website: https://cspeedtest.birge.us/
-#contact: https://cspeedtest.birge.us/contact
-#source-code: https://github.com/jonbirge/curses-speedtest
-#issues: https://github.com/jonbirge/curses-speedtest/issues
+summary: Measure network throughput between a server and your terminal using curses
+website: https://cspeedtest.birge.us/
+contact: https://cspeedtest.birge.us/contact
+source-code: https://github.com/jonbirge/cspeedtest
+issues: https://github.com/jonbirge/cspeedtest/issues
 description: |
-  Clientless network speed test for GNU/Linux servers, using GNU libncurses,
+  Clientless network speed test for GNU/Linux servers, using ncurses
   to estimate network throughput between your server and wherever you are
   connecting from. Automatically works on any client platform that has a
   terminal that supports curses (e.g. iOS, Android, Mac, Windows, Linux, etc).
@@ -29,4 +29,3 @@ apps:
     command: bin/cspeedtest
   cspeedtest-int:
     command: bin/cspeedtest-int
-
