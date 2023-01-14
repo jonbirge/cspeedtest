@@ -99,6 +99,9 @@ void draw_centered_box(int width, int height)
 // draw graph centered on screen
 void draw_graph(int width, int height, double x_values[], double y_values[], int num_values)
 {
+   // Draw a box to contain the graph
+   draw_centered_box (width, height);
+
    // Get the current terminal size
    int terminal_width, terminal_height;
    getmaxyx(stdscr, terminal_height, terminal_width);

@@ -2,5 +2,5 @@
 
 aclocal
 autoheader
-autoconf
-automake --add-missing --copy
+autoconf --warnings=all
+automake --warnings=all --add-missing --copy

@@ -10,7 +10,6 @@
 #include "curslib.h"
 #include "timecurses.h"
 
-
 // Constants
 #define BAR_WIDTH 35
 #define MEAS_FRAMES 8
@@ -38,7 +37,7 @@ void print_usage ()
       printf("  -h, --help\t\tshow this help\n");
       printf("  -g, --graph\t\thide graph\n");
       printf("  -i, --interactive\tinteractive mode\n");
-      printf("  -t T, --int=T\t\tintegration time in seconds\n");
+      printf("  -t T, --time=T\t\tintegration time in seconds\n");
       printf("  -b, --low-bw\t\tlow bandwidth mode\n");
       printf("  -V, --version\t\tdisplay version\n");
    }
@@ -48,7 +47,7 @@ void print_usage ()
       printf("Options:\n");
       printf("  -h, --help\t\tshow this help\n");
       printf("  -g, --graph\t\thide graph\n");
-      printf("  -i T, --int=T\t\tintegration time in seconds\n");
+      printf("  -t T, --time=T\t\tintegration time in seconds\n");
       printf("  -b, --low-bw\t\tlow bandwidth mode\n");
       printf("  -V, --version\t\tdisplay version\n");
       printf("  -v, --verbose\t\tprint debug info\n");
@@ -59,7 +58,7 @@ void print_version (char* name)
 {
    printf(PACKAGE_STRING);
    printf("\n");
-   printf("Copyright 2022-2023, Jonathan R. Birge\n");
+   printf("Copyright 2023, Jonathan R. Birge\n");
    printf("Bug reports to ");
    printf(PACKAGE_BUGREPORT);
    printf("\n%s\n", name);
@@ -91,7 +90,7 @@ int main (int argc, char **argv)
 
       struct option long_options[] =
       {
-         {"int", required_argument, 0, 't'},
+         {"time", required_argument, 0, 't'},
          {"verbose", no_argument, 0, 'v'},
          {"graph", no_argument, 0, 'g'},
          {"low-bw", no_argument, 0, 'b'},
@@ -250,15 +249,15 @@ int main (int argc, char **argv)
       if (!(k % measframes) && !doreset)
       {
          // ensure graph is filled during integration time
-         if ((T - T0) > 500000)  // wait until there's a good average...
+         if ((T - T0) > 100000)  // wait until there's a good average...
          {
             ngraphed++;
-            long Tleft = Tave - (T - T0);
+            int Tleft = Tave - (T - T0);
             int graph_points_left = GRAPH_N - ngraphed;
             double frame_rate = (double) k / (T - T0);
-            int frames_left = (int) ceil(Tleft * frame_rate); // estimate of frames left
+            int frames_left = (int) floor(Tleft * frame_rate); // estimate of frames left
             if (frames_left > 0 && graph_points_left > 0)
-               measframes = (int) floor((double) frames_left / graph_points_left);
+               measframes = (int) floor((double) frames_left / (double) graph_points_left);
          }
          display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
          attron(COLOR_PAIR(1));

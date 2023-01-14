@@ -66,7 +66,6 @@ int draw_screen (int rows, int cols, int docolor, int dograph)
 
    if (dograph)
    {
-      draw_centered_box (cols/2, rows/2);
       totalbits = 3 * rawbits / 4 + ng*16;
       draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng);
    }
