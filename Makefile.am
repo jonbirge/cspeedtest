@@ -22,7 +22,7 @@ src/verstest.sh:
 	echo '$(bin_PROGRAMS) --version | grep "@PACKAGE_STRING@"' > $@
 	chmod +x $@
 
-src/cspeedtest-int: $(bin_PROGRAMS)
+src/cspeedtest-int$(EXEEXT): $(bin_PROGRAMS)
 	rm -f $@
 	ln src/cspeedtest $@
 

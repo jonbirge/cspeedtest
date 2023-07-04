@@ -1,4 +1,4 @@
-TODO for cspeedtest
+# TODO for cspeedtest
 
     Copyright (c) 2022 Jonathan R. Birge
 
@@ -6,12 +6,14 @@ TODO for cspeedtest
     are permitted in any medium without royalty provided the copyright
     notice and this notice are preserved.
 
-Items are ordered not by priority but by the order in which they are most efficiently accomplished
+* Fix extended character support on non-Linux terminals
 
-* Have graph show instantaneous versus integrated values
+* Have cspeedtest-int generated before installation (for testing)
 
-* Add man page
+* Put border around graph
 
 * Further refine calibration, especially for the non-random patterns
 
-* Record results in database for later analysis
+* Record results in local database for later comparison
+
+* Show remote and local IP addresses in header
