@@ -143,7 +143,7 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
       {
          int x = ceil(1 + start_x + (x_values[i] - x_min) * x_scale);
          int y = round(start_y + height - (y_values[i] - y_min) * y_scale);
-         mvaddch(y, x, '*');
+         mvaddch(y, x, '.');
       }
    }
    // switch back to old color pair
@@ -151,7 +151,7 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
 }
 
 // draw single line horizontal bar graph
-void drawbar(double frac, int width, int line, int offset)
+void drawbar(double frac, int width, int line, int offset, int use_ext)
 {
    int j;
 
@@ -159,7 +159,10 @@ void drawbar(double frac, int width, int line, int offset)
    addch('[');
    for (j = 0; j < ceil((double)width * frac); ++j)
    {
-      addch(ACS_VLINE);
+      if (use_ext)
+         addch(ACS_VLINE);
+      else
+         addch('|');
    }
    for (; j < width; ++j)
    {
@@ -169,12 +172,15 @@ void drawbar(double frac, int width, int line, int offset)
 }
 
 // draw horizonal line
-void drawline(int row, int width)
+void drawline(int row, int width, int use_ext)
 {
    move(row, 0);
    clrtoeol();
    for (int j = 0; j < width; ++j)
-      addch(ACS_HLINE);
+      if (use_ext)
+         addch(ACS_HLINE);
+      else
+         addch('-');
 }
 
 // init color pairs

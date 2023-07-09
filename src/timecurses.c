@@ -138,11 +138,11 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
 }
 
 // Menu items
-void static_display (int nrows, int ncols, int inter, int docolor, int dograph, int verbose, char* name)
+void static_display (int nrows, int ncols, int inter, int docolor, int dograph, int verbose, int use_ext, char* name)
 {
    attron(COLOR_PAIR(1));
-   drawline (1, ncols);
-   drawline (nrows - 2, ncols);
+   drawline (1, ncols, use_ext);
+   drawline (nrows - 2, ncols, use_ext);
    move (nrows - 1, 0);
    printw ("Type ");
    attron (A_BOLD);

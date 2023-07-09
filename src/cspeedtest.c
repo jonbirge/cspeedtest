@@ -22,6 +22,7 @@ static int debug_flag = 0;   // default to no debug info
 static int color_flag = 1;   // default to color
 static int inter_flag = 0;   // default to non-interactive
 static int graph_flag = 1;   // default to graph
+static int use_extended = 0;  // default to no extended chars
 static int run_test = 0;     // default no test
 static int screen_index = 0; // default to random
 static int screen_count;
@@ -229,9 +230,9 @@ int main (int argc, char **argv)
          }
          
          if (inter_flag)
-            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, screen_table[screen_index].name);
+            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, use_extended, screen_table[screen_index].name);
          else
-            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, "[non-interactive]");
+            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, use_extended, "[non-interactive]");
       } // end interface polling
 
       // write screen
@@ -261,7 +262,7 @@ int main (int argc, char **argv)
          }
          display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
          attron(COLOR_PAIR(1));
-         drawbar((double)(T - T0) / Tave, BAR_WIDTH, 0, 14);
+         drawbar((double)(T - T0) / Tave, BAR_WIDTH, 0, 14, use_extended);
          attroff(COLOR_PAIR(1));
       }
 
@@ -275,7 +276,7 @@ int main (int argc, char **argv)
          else
          {
             display_mbps (bits, nrows, ncols, screen_index, 1, inter_flag);
-            drawbar (0, BAR_WIDTH, 0, 14);
+            drawbar (0, BAR_WIDTH, 0, 14, use_extended);
             bits = 0;
             T0 = T;
             ngraphed = 0;
