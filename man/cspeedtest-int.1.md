@@ -4,11 +4,11 @@
 
 # NAME
 
-cspeedtest - clientless network speed test
+cspeedtest-int - clientless network speed test running interactively
 
 # SYNOPSIS
 
-cspeedtest [*options*] ...
+cspeedtest-int [*options*] ...
 
 # DESCRIPTION
 
@@ -25,13 +25,6 @@ The way cspeedtest measures network speed is by using the ncurses library to sen
 Because this relies on ncurses, it will only work on terminals which support ANSI escape sequences. This includes most modern terminals, but not all. It has been tested on xterm and gnome-terminal on Linux, on the Mac OS X Terminal, and on the Windows Command Prompt.
 
 # OPTIONS
-
--t *TIME*, \--time *TIME*
-:   Set the integration time of the measurement to *TIME* seconds.
-    The default is 7 seconds.
-
--i, \--interactive
-:   Run in interactive mode in an infinite loop, measuring network speed every 7 seconds.
 
 -h, \--help
 :   Show a brief help message and exit.
@@ -50,13 +43,9 @@ Because this relies on ncurses, it will only work on terminals which support ANS
 
 # EXAMPLES
 
-    cspeedtest -t 10 >> log.txt
+    cspeedtest-int >> log.txt
 
-Measure network speed for 10 seconds and log the value to a file.
-
-    cspeedtest -i
-
-Run in interactive mode in an infinite loop, measuring network speed every 7 seconds.
+Measure network speed and log the value to a file.
 
 # DIAGNOSTICS
 
