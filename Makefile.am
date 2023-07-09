@@ -38,10 +38,10 @@ src/verstest.sh:
 
 dist_man_MANS = man/cspeedtest.1 man/cspeedtest-int.1
 
-man/cspeedtest.1: man/cspeedtest.1.md
+man/cspeedtest.1:
 	pandoc -s -t man man/cspeedtest.1.md -o $@
 
-man/cspeedtest-int.1: man/cspeedtest-int.1.md
+man/cspeedtest-int.1:
 	pandoc -s -t man man/cspeedtest-int.1.md -o $@
 
 
