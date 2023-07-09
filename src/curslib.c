@@ -31,7 +31,7 @@ int qlimit(int in, int min, int max)
       return 1;
 }
 
-// draw box centered on screen, with black background and white border
+// draw box centered on screen, with no background and white border
 void draw_centered_box_border(int width, int height)
 {
    // Set to color pair 1
@@ -52,15 +52,11 @@ void draw_centered_box_border(int width, int height)
       {
          if (y == start_y || y == start_y + height - 1)
          {
-            mvaddch(y, x, ACS_HLINE);
+            mvaddch(y, x, '-');
          }
          else if (x == start_x || x == start_x + width - 1)
          {
-            mvaddch(y, x, ACS_VLINE);
-         }
-         else
-         {
-            mvaddch(y, x, ' ');
+            mvaddch(y, x, '|');
          }
       }
    }
@@ -84,7 +80,7 @@ void draw_centered_box(int width, int height)
    int start_y = (terminal_height - height) / 2;
 
    // Draw the box using the ncurses functions
-   for (int y = start_y - 1; y < start_y + height; y++)
+   for (int y = start_y; y < start_y + height; y++)
    {
       for (int x = start_x; x < start_x + width + 1; x++)
       {
@@ -127,11 +123,11 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
    y_max = y_max * 1.1;
 
    // Calculate the scaling factor for the X and Y axes
-   double x_scale = (double) (width - 2) / (double) (x_max - x_min);
-   double y_scale = (double) height / (double) (y_max - y_min);
+   double x_scale = (double) (width - 2) / (double) (x_max - x_min - 1);
+   double y_scale = (double) height / (double) (y_max - y_min - 1);
 
    // Label Y axis limits
-   mvprintw(start_y - 1, start_x, "%d Mbps", (int) ceil(y_max));
+   mvprintw(start_y + 1, start_x + 1, "%d Mbps", (int) ceil(y_max));
 
    // switch to new color pair
    int colpair = 3;
@@ -141,13 +137,16 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
    {
       if (y_values[i] != 0)
       {
-         int x = ceil(1 + start_x + (x_values[i] - x_min) * x_scale);
+         int x = floor(1 + start_x + (x_values[i] - x_min) * x_scale);
          int y = round(start_y + height - (y_values[i] - y_min) * y_scale);
          mvaddch(y, x, '.');
       }
    }
    // switch back to old color pair
    attroff(COLOR_PAIR(colpair));
+
+   // draw outline
+   draw_centered_box_border (width, height);
 }
 
 // draw single line horizontal bar graph

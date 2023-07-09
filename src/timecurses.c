@@ -16,7 +16,7 @@ const int screen_count = 3;
 static screen_display* screen_table;
 static int current_screen = 0;
 
-// Global variables (maybe these should go inside a function)
+// Global variables (maybe these should go inside a struct)
 #define ng_max 256
 static const int ng = ng_max;
 static double mbps[ng_max];
