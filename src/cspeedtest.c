@@ -114,7 +114,7 @@ int main (int argc, char **argv)
             return (0);
          case 'i':
             inter_flag = 1;
-	         break;
+	    break;
          case 'g':
             graph_flag = 0;
             break;
@@ -168,7 +168,7 @@ int main (int argc, char **argv)
    struct timeval systime;
    int k = 0;                    // frame counters
    long bits = 0;                // estimate of bits sent
-   long T, T0;                    // usec
+   long T, T0;                   // usec
    int doreset = 1;              // reset counter
    int done = 0;                 // quit next loop
    int measframes = MEAS_FRAMES; // initial frames between measurements
@@ -258,7 +258,7 @@ int main (int argc, char **argv)
             double frame_rate = (double) k / (double) (T - T0);
             double frames_left = Tleft * frame_rate; // estimate of frames left
             if ((frames_left > 1) && (graph_points_left > 1))
-               measframes = (int) floor((double) frames_left / (double) graph_points_left);
+               measframes = (int) ceil((double) frames_left / (double) graph_points_left);
          }
          display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
          attron(COLOR_PAIR(1));
