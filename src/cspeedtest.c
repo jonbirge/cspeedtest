@@ -11,11 +11,11 @@
 #include "timecurses.h"
 
 // Constants
-#define BAR_WIDTH 35
-#define MEAS_FRAMES 8
+#define BAR_WIDTH 48
+#define MEAS_FRAMES 10
 #define POLL_FRAMES 4
-#define INT_TIME 7
-#define GRAPH_N 256
+#define INT_TIME 10
+#define GRAPH_N 128
 
 // Global parameters
 static int debug_flag = 0;   // default to no debug info
