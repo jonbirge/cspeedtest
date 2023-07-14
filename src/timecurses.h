@@ -24,4 +24,4 @@ void set_current_screen (int i);
 
 int get_current_screen ();
 
-int draw_screen (int rows, int cols, int docolor, int dograph);
+int draw_screen (int rows, int cols, int docolor, int dograph, int use_ext);

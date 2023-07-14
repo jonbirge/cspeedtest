@@ -58,7 +58,7 @@ int get_current_screen ()
 }
 
 // Draw current screen
-int draw_screen (int rows, int cols, int docolor, int dograph)
+int draw_screen (int rows, int cols, int docolor, int dograph, int use_ext)
 {
    int rawbits, totalbits;
 
@@ -67,7 +67,7 @@ int draw_screen (int rows, int cols, int docolor, int dograph)
    if (dograph)
    {
       totalbits = 3 * rawbits / 4 + ng*16;
-      draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng);
+      draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng, use_ext);
    }
    else
    {

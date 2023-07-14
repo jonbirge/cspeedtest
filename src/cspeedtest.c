@@ -37,6 +37,7 @@ void print_options ()
    printf("  -g, --graph\t\thide graph\n");
    printf("  -t T, --time=T\tintegration time in seconds\n");
    printf("  -b, --low-bw\t\tlow bandwidth mode\n");
+   printf("  -e, --extended\tuse extended characters\n");
    printf("  -V, --version\t\tdisplay version\n");
    printf("  -v, --verbose\t\tprint debug info\n");
 }
@@ -97,13 +98,14 @@ int main (int argc, char **argv)
          {"graph", no_argument, 0, 'g'},
          {"low-bw", no_argument, 0, 'b'},
          {"interactive", no_argument, 0, 'i'},
+         {"extended", no_argument, 0, 'e'},
          {"version", no_argument, 0, 'V'},
          {"help", no_argument, 0, 'h'},
          {"test", no_argument, 0, 'x'},
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "t:ghiVbvx", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:ghieVbvx", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -115,7 +117,7 @@ int main (int argc, char **argv)
             return (0);
          case 'i':
             inter_flag = 1;
-	    break;
+	         break;
          case 'g':
             graph_flag = 0;
             break;
@@ -133,6 +135,10 @@ int main (int argc, char **argv)
                fprintf(stderr, "Setting integration time to %d seconds.\n", T);
                Tave = T*1000000;  // convert to microsecs
             }
+            break;
+         case 'e':
+            fprintf(stderr, "Using extended characters. Some terminals may have issues.\n");
+            use_extended = 1;
             break;
          case 'x':
             run_test = 1;
@@ -237,7 +243,7 @@ int main (int argc, char **argv)
       } // end interface polling
 
       // write screen
-      bits += draw_screen(nrows, ncols, color_flag, graph_flag);
+      bits += draw_screen(nrows, ncols, color_flag, graph_flag, use_extended);
 
       // debugging
       if (debug_flag)

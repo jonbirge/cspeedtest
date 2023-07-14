@@ -32,7 +32,7 @@ int qlimit(int in, int min, int max)
 }
 
 // draw box centered on screen, with no background and white border
-void draw_centered_box_border(int width, int height)
+void draw_centered_box_border(int width, int height, int use_ext)
 {
    // Set to color pair 1
    attron(COLOR_PAIR(1));
@@ -56,7 +56,10 @@ void draw_centered_box_border(int width, int height)
          }
          else if (x == start_x || x == start_x + width - 1)
          {
-            mvaddch(y, x, '|');
+            if (use_ext)
+               mvaddch(y, x, ACS_VLINE);
+            else
+               mvaddch(y, x, '|');
          }
       }
    }
@@ -93,7 +96,7 @@ void draw_centered_box(int width, int height)
 }
 
 // draw graph centered on screen
-void draw_graph(int width, int height, double x_values[], double y_values[], int num_values)
+void draw_graph(int width, int height, double x_values[], double y_values[], int num_values, int use_ext)
 {
    // Draw a box to contain the graph
    draw_centered_box (width, height);
@@ -146,7 +149,7 @@ void draw_graph(int width, int height, double x_values[], double y_values[], int
    attroff(COLOR_PAIR(colpair));
 
    // draw outline
-   draw_centered_box_border (width, height);
+   draw_centered_box_border (width, height, use_ext);
 }
 
 // draw single line horizontal bar graph
@@ -159,7 +162,7 @@ void drawbar(double frac, int width, int line, int offset, int use_ext)
    for (j = 0; j < ceil((double)width * frac); ++j)
    {
       if (use_ext)
-         addch(ACS_VLINE);
+         addch(ACS_CKBOARD);
       else
          addch('|');
    }
