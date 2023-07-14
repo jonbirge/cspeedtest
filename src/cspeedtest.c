@@ -29,30 +29,30 @@ static int screen_count;
 static screen_display *screen_table;
 long Tave = INT_TIME * 1000000; // usec
 
-// TODO: Make function for common option help
+
+void print_options ()
+{
+   printf("Options:\n");
+   printf("  -h, --help\t\tshow this help\n");
+   printf("  -g, --graph\t\thide graph\n");
+   printf("  -t T, --time=T\tintegration time in seconds\n");
+   printf("  -b, --low-bw\t\tlow bandwidth mode\n");
+   printf("  -V, --version\t\tdisplay version\n");
+   printf("  -v, --verbose\t\tprint debug info\n");
+}
+
 void print_usage ()
 {
    if (!inter_flag)  // normal mode
    {
       printf("Usage: cspeedtest [options]\n\n");
-      printf("Options:\n");
-      printf("  -h, --help\t\tshow this help\n");
-      printf("  -g, --graph\t\thide graph\n");
+      print_options();
       printf("  -i, --interactive\tinteractive mode\n");
-      printf("  -t T, --time=T\tintegration time in seconds\n");
-      printf("  -b, --low-bw\t\tlow bandwidth mode\n");
-      printf("  -V, --version\t\tdisplay version\n");
    }
    else
    {
       printf("Usage: cspeedtest-int [options]\n\n");
-      printf("Options:\n");
-      printf("  -h, --help\t\tshow this help\n");
-      printf("  -g, --graph\t\thide graph\n");
-      printf("  -t T, --time=T\tintegration time in seconds\n");
-      printf("  -b, --low-bw\t\tlow bandwidth mode\n");
-      printf("  -V, --version\t\tdisplay version\n");
-      printf("  -v, --verbose\t\tprint debug info\n");
+      print_options();
    }
 }
 
