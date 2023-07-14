@@ -11,11 +11,11 @@
 #include "timecurses.h"
 
 // Constants
-#define BAR_WIDTH 48
-#define MEAS_FRAMES 10
+#define BAR_WIDTH 36
+#define MEAS_FRAMES 12
 #define POLL_FRAMES 4
 #define INT_TIME 10
-#define GRAPH_N 128
+#define GRAPH_N 256  // TODO: should work at any value, but doesn't
 
 // Global parameters
 static int debug_flag = 0;   // default to no debug info
@@ -27,8 +27,9 @@ static int run_test = 0;     // default no test
 static int screen_index = 0; // default to random
 static int screen_count;
 static screen_display *screen_table;
-int Tave = INT_TIME * 1000000; // usec
+long Tave = INT_TIME * 1000000; // usec
 
+// TODO: Make function for common option help
 void print_usage ()
 {
    if (!inter_flag)  // normal mode
