@@ -15,16 +15,17 @@
 #define MEAS_FRAMES 12
 #define POLL_FRAMES 4
 #define INT_TIME 10
+#define PRIMING_TIME 2
 #define GRAPH_N 256  // TODO: should work at any value, but doesn't
 
 // Global parameters
-static int debug_flag = 0;   // default to no debug info
-static int color_flag = 1;   // default to color
-static int inter_flag = 0;   // default to non-interactive
-static int graph_flag = 1;   // default to graph
+static int debug_flag = 0;    // default to no debug info
+static int color_flag = 1;    // default to color
+static int inter_flag = 0;    // default to non-interactive
+static int graph_flag = 1;    // default to graph
 static int use_extended = 0;  // default to no extended chars
-static int run_test = 0;     // default no test
-static int screen_index = 0; // default to random
+static int run_test = 0;      // default no test
+static int screen_index = 0;  // default to random
 static int screen_count;
 static screen_display *screen_table;
 long Tave = INT_TIME * 1000000; // usec
@@ -180,6 +181,7 @@ int main (int argc, char **argv)
    int done = 0;                 // quit next loop
    int measframes = MEAS_FRAMES; // initial frames between measurements
    int ngraphed = 0;             // number of graphed frames
+   int primed = 0;               // we've finished priming period
    while (!done)
    {
       // update frame counter
@@ -242,6 +244,13 @@ int main (int argc, char **argv)
             static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, use_extended, "[non-interactive]");
       } // end interface polling
 
+      // priming
+      if (!primed && (T - T0) > PRIMING_TIME*1000000)
+      {
+	doreset = 1;
+	primed = 1;
+      }
+      
       // write screen
       bits += draw_screen(nrows, ncols, color_flag, graph_flag, use_extended);
 

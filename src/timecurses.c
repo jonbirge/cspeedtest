@@ -17,7 +17,7 @@ static screen_display* screen_table;
 static int current_screen = 0;
 
 // Global variables (maybe these should go inside a struct)
-#define ng_max 256
+#define ng_max 256  // TODO: Here's the conflict with the DEFINE!
 static const int ng = ng_max;
 static double mbps[ng_max];
 static double ts[ng_max];
