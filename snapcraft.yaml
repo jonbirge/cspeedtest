@@ -13,7 +13,7 @@ description: |
   terminal that supports curses (e.g. iOS, Android, Mac, Windows, Linux, etc).
 license: GPL-3.0
 grade: stable
-confinement: devmode
+confinement: strict
 
 parts:
   cspeedtest:
