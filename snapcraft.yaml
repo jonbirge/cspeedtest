@@ -1,5 +1,5 @@
 name: cspeedtest
-base: core18
+base: core22
 version: git
 summary: Measure network throughput between a server and your terminal using curses
 website: https://cspeedtest.birge.us/
@@ -12,12 +12,12 @@ description: |
   connecting from. Automatically works on any client platform that has a
   terminal that supports curses (e.g. iOS, Android, Mac, Windows, Linux, etc).
 license: GPL-3.0
-grade: stable
-confinement: strict
+grade: devel
+confinement: devmode
 
 parts:
-  curses-speedtest:
-    source: https://github.com/jonbirge/curses-speedtest.git
+  cspeedtest:
+    source: .
     plugin: autotools
     build-packages:
       - libncurses5-dev
@@ -26,6 +26,5 @@ parts:
 
 apps:
   cspeedtest:
-    command: bin/cspeedtest
-  cspeedtest-int:
-    command: bin/cspeedtest-int
+    command: usr/local/bin/cspeedtest
+
