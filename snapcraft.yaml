@@ -12,7 +12,7 @@ description: |
   connecting from. Automatically works on any client platform that has a
   terminal that supports curses (e.g. iOS, Android, Mac, Windows, Linux, etc).
 license: GPL-3.0
-grade: devel
+grade: stable
 confinement: devmode
 
 parts:
