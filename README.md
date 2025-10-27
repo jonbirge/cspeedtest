@@ -7,6 +7,12 @@
 
 This program uses curses to write screenfuls of random characters to the terminal, and uses the resulting framerate to estimate the network throughput. This is essentially a "clientless" speedtest for the network path between your server your terminal, using a standard ANSI terminal as the remote client. This means that you can get a quick approximate network speed test from anywhere without having to install local software. The cost to this convenience is that the test is only an approximate lower bound, especially for high bandwidth situations where the terminal speed becomes the limiting factor.
 
+## Work needed
+
+- This does a pretty good job at establishing a *lower bound* on the the network speed between the terminal and the server on which cspeedtest is installed, but better calibration could be done.
+- We should probably just dispense with the "fun" displays, as it seems they are too easy for ncurses to compress and thus provide an anomolous reading.
+- The performance graph is also likely impacting the measurement for the same reason, and should be relegated to a simple bar graph in the top line (and not counted as part of the throughput)
+
 ## Usage
 
 ### Where to install
