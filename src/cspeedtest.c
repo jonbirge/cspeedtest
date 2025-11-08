@@ -18,7 +18,6 @@
 
 // Global parameters
 static int debug_flag = 0;   // default to no debug info
-static int color_flag = 1;   // default to color
 static int inter_flag = 0;   // default to non-interactive
 static int use_extended = 0;  // default to no extended chars
 static int run_test = 0;     // default no test
@@ -33,7 +32,6 @@ void print_options ()
    printf("Options:\n");
    printf("  -h, --help\t\tshow this help\n");
    printf("  -t T, --time=T\tintegration time in seconds\n");
-   printf("  -b, --low-bw\t\tlow bandwidth mode\n");
    printf("  -e, --extended\tuse extended characters\n");
    printf("  -V, --version\t\tdisplay version\n");
    printf("  -v, --verbose\t\tprint debug info\n");
@@ -78,7 +76,6 @@ int main (int argc, char **argv)
    else
    {
      inter_flag = 0;
-     color_flag = -1;
    }
    
    // options and defaults
@@ -92,7 +89,6 @@ int main (int argc, char **argv)
       {
          {"time", required_argument, 0, 't'},
          {"verbose", no_argument, 0, 'v'},
-         {"low-bw", no_argument, 0, 'b'},
          {"interactive", no_argument, 0, 'i'},
          {"extended", no_argument, 0, 'e'},
          {"version", no_argument, 0, 'V'},
@@ -101,7 +97,7 @@ int main (int argc, char **argv)
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "t:hieVbvx", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:hieVvx", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -114,9 +110,6 @@ int main (int argc, char **argv)
          case 'i':
             inter_flag = 1;
 	         break;
-         case 'b':
-            color_flag = 0;
-            break;
          case 't':
             T = atoi(optarg);  // user specified in seconds
             if (T < 1)
@@ -201,13 +194,6 @@ int main (int argc, char **argv)
          case 'q':
             done = 1;
             break;
-         case 'c':
-            if (inter_flag)
-            {
-               color_flag = !color_flag;
-               doreset = 1;
-            }
-            break;
          case 'r':
             if (inter_flag)
             {
@@ -222,13 +208,13 @@ int main (int argc, char **argv)
          }
          
          if (inter_flag)
-            static_display(nrows, ncols, inter_flag, color_flag, debug_flag, use_extended, screen_table[screen_index].name);
+            static_display(nrows, ncols, inter_flag, debug_flag, use_extended, screen_table[screen_index].name);
          else
-            static_display(nrows, ncols, inter_flag, color_flag, debug_flag, use_extended, "[non-interactive]");
+            static_display(nrows, ncols, inter_flag, debug_flag, use_extended, "[non-interactive]");
       } // end interface polling
 
       // write screen
-      bits += draw_screen(nrows, ncols, color_flag);
+      bits += draw_screen(nrows, ncols);
 
       // debugging
       if (debug_flag)

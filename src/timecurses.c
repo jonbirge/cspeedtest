@@ -8,7 +8,7 @@
 #include "timecurses.h"
 
 // Define plug-in displays
-#define SCREENDEF(name) long name (int nrows, int ncols, int docolor)
+#define SCREENDEF(name) long name (int nrows, int ncols)
 SCREENDEF(random_screen);
 SCREENDEF(swirl_screen);
 SCREENDEF(sphere_screen);
@@ -49,11 +49,11 @@ int get_current_screen ()
 }
 
 // Draw current screen
-int draw_screen (int rows, int cols, int docolor)
+int draw_screen (int rows, int cols)
 {
    int rawbits, totalbits;
 
-   rawbits = screen_table[current_screen].fun(rows, cols, docolor);
+   rawbits = screen_table[current_screen].fun(rows, cols);
 
    totalbits = rawbits;
 
@@ -112,7 +112,7 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
 }
 
 // Menu items
-void static_display (int nrows, int ncols, int inter, int docolor, int verbose, int use_ext, char* name)
+void static_display (int nrows, int ncols, int inter, int verbose, int use_ext, char* name)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols, use_ext);
@@ -122,28 +122,13 @@ void static_display (int nrows, int ncols, int inter, int docolor, int verbose, 
    attron (A_BOLD);
    addch ('q');
    attroff (A_BOLD);
-   printw(" to to quit");
+   printw(" to quit");
    if (inter)
    {
       attron (A_BOLD);
       printw (", r");
       attroff (A_BOLD);
-      printw (" to cycle display, ");
-      attron (A_BOLD);
-      addch ('c');
-      attroff (A_BOLD);
-      printw (" to toggle ");
-      if (docolor)
-      {
-         attron (COLOR_PAIR(16));
-         printw ("color");
-         attron (COLOR_PAIR(1));
-      }
-      else
-      {
-         printw ("color");
-      }
-      printw (". Display: ");
+      printw (" to cycle display. Display: ");
       attron (A_BOLD);
       printw ("%s", name);
       attroff (A_BOLD);

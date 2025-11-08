@@ -7,7 +7,7 @@
 
 // Swirling dots display
 #define np 1024
-long swirl_screen (int nrows, int ncols, int docolor)
+long swirl_screen (int nrows, int ncols)
 {
    int row, col, attrb;
    static double rs[np], phis[np];
@@ -52,7 +52,7 @@ long swirl_screen (int nrows, int ncols, int docolor)
       col = (int) round(rs[k]*cos(phis[k]) + ncols/2.0);
       row = (int) round(rs[k]*sin(phis[k])/2.0 + nrows/2.0);
       move (limiter(row, 2, nrows - 3), limiter(col, 1, ncols));
-      if (docolor && !(k % cycletime))
+      if (!(k % cycletime))
       {
          attrb = COLOR_PAIR((int) ceil((double) 8*k / (double) np) + 1);
          attron(attrb);
@@ -65,12 +65,5 @@ long swirl_screen (int nrows, int ncols, int docolor)
    attroff (A_BOLD);
 
    // return frame bit count
-   if (docolor)
-   {
-      return 24*np;
-   }
-   else
-   {
-      return 8*np;
-   }
+   return 24*np;
 }
