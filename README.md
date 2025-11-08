@@ -25,15 +25,17 @@ You just need to install this on the server where you want to measure network sp
 Usage: cspeedtest [options]
 
 Options:
-  -t T, --int T          set integration time to T seconds
-  -i, --interactive      interactive mode
-  -b, --low-bandwidth    start in low bandwidth mode
   -h, --help             show this help
-  -V, --version          show version
-  -v, --verbose          show debugging info
+  -t T, --time=T         integration time in seconds
+  -e, --extended         use extended characters when drawing
+  -V, --version          display version
+  -v, --verbose          print debugging info
+  -i, --interactive      interactive mode
 ```
 
 Depending on your terminal and/or connection, you may have to try both color and b/w modes to get the highest speed. To test under different conditions (and for fun) there are deterministic patterns that can be displayed by hitting the `r` key.
+
+Interactive mode can also be started directly with `cspeedtest-int`, which enables switching between the deterministic patterns with `r` while the test runs.
 
 ## Screenshot
 
