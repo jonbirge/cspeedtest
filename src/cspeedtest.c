@@ -15,13 +15,11 @@
 #define MEAS_FRAMES 12
 #define POLL_FRAMES 4
 #define INT_TIME 10
-#define GRAPH_N 256  // TODO: should work at any value, but doesn't
 
 // Global parameters
 static int debug_flag = 0;   // default to no debug info
 static int color_flag = 1;   // default to color
 static int inter_flag = 0;   // default to non-interactive
-static int graph_flag = 1;   // default to graph
 static int use_extended = 0;  // default to no extended chars
 static int run_test = 0;     // default no test
 static int screen_index = 0; // default to random
@@ -34,7 +32,6 @@ void print_options ()
 {
    printf("Options:\n");
    printf("  -h, --help\t\tshow this help\n");
-   printf("  -g, --graph\t\thide graph\n");
    printf("  -t T, --time=T\tintegration time in seconds\n");
    printf("  -b, --low-bw\t\tlow bandwidth mode\n");
    printf("  -e, --extended\tuse extended characters\n");
@@ -95,7 +92,6 @@ int main (int argc, char **argv)
       {
          {"time", required_argument, 0, 't'},
          {"verbose", no_argument, 0, 'v'},
-         {"graph", no_argument, 0, 'g'},
          {"low-bw", no_argument, 0, 'b'},
          {"interactive", no_argument, 0, 'i'},
          {"extended", no_argument, 0, 'e'},
@@ -105,7 +101,7 @@ int main (int argc, char **argv)
          {0, 0, 0, 0}
       };
 
-      while ((opt = getopt_long(argc, argv, "t:ghieVbvx", long_options, &option_index)) != -1)
+      while ((opt = getopt_long(argc, argv, "t:hieVbvx", long_options, &option_index)) != -1)
       {
          switch (opt)
          {
@@ -118,9 +114,6 @@ int main (int argc, char **argv)
          case 'i':
             inter_flag = 1;
 	         break;
-         case 'g':
-            graph_flag = 0;
-            break;
          case 'b':
             color_flag = 0;
             break;
@@ -179,7 +172,6 @@ int main (int argc, char **argv)
    int doreset = 1;              // reset counter
    int done = 0;                 // quit next loop
    int measframes = MEAS_FRAMES; // initial frames between measurements
-   int ngraphed = 0;             // number of graphed frames
    while (!done)
    {
       // update frame counter
@@ -197,7 +189,6 @@ int main (int argc, char **argv)
       {
         bits = 0;
         T0 = T;
-        ngraphed = 0;
         doreset = 0;
       }
 
@@ -217,12 +208,6 @@ int main (int argc, char **argv)
                doreset = 1;
             }
             break;
-         case 'g':
-            if (inter_flag)
-            {
-               graph_flag = !graph_flag;
-            }
-            break;
          case 'r':
             if (inter_flag)
             {
@@ -237,36 +222,25 @@ int main (int argc, char **argv)
          }
          
          if (inter_flag)
-            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, use_extended, screen_table[screen_index].name);
+            static_display(nrows, ncols, inter_flag, color_flag, debug_flag, use_extended, screen_table[screen_index].name);
          else
-            static_display(nrows, ncols, inter_flag, color_flag, graph_flag, debug_flag, use_extended, "[non-interactive]");
+            static_display(nrows, ncols, inter_flag, color_flag, debug_flag, use_extended, "[non-interactive]");
       } // end interface polling
 
       // write screen
-      bits += draw_screen(nrows, ncols, color_flag, graph_flag, use_extended);
+      bits += draw_screen(nrows, ncols, color_flag);
 
       // debugging
       if (debug_flag)
       {
          move(nrows - 2, 0);
-         printw("dT = %f sec | frame: %d | measframes: %d | ngraphed: %d",
-                (double)(T - T0) / 1000000.0, k, measframes, ngraphed);
+         printw("dT = %f sec | frame: %d | measframes: %d",
+                (double)(T - T0) / 1000000.0, k, measframes);
       }
 
       // update display
       if (!(k % measframes) && !doreset)
       {
-         // ensure graph is filled during integration time
-         if ((T - T0) > 100000)  // wait until there's a good average...
-         {
-            ngraphed++;
-            int Tleft = Tave - (T - T0);
-            int graph_points_left = GRAPH_N - ngraphed;
-            double frame_rate = (double) k / (double) (T - T0);
-            double frames_left = Tleft * frame_rate; // estimate of frames left
-            if ((frames_left > 1) && (graph_points_left > 1))
-               measframes = (int) ceil((double) frames_left / (double) graph_points_left);
-         }
          display_mbps(bits, nrows, ncols, screen_index, 0, inter_flag);
          attron(COLOR_PAIR(1));
          drawbar((double)(T - T0) / Tave, BAR_WIDTH, 0, 14, use_extended);
@@ -286,8 +260,8 @@ int main (int argc, char **argv)
             drawbar (0, BAR_WIDTH, 0, 14, use_extended);
             bits = 0;
             T0 = T;
-            ngraphed = 0;
             k = 0;
+            measframes = MEAS_FRAMES;
          }
       }
 

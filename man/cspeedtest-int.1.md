@@ -29,9 +29,6 @@ Because this relies on ncurses, it will only work on terminals which support ANS
 -h, \--help
 :   Show a brief help message and exit.
 
--g, \--graph
-:   Show a live graph of the measurements.
-
 -b, \--low-bw
 :   Low bandwidth mode. This mode is useful for measuring network speed over a slow connection. It uses less data per screen to allow for a reasonable update rate.
 

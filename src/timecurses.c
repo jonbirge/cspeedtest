@@ -16,12 +16,6 @@ const int screen_count = 3;
 static screen_display* screen_table;
 static int current_screen = 0;
 
-// Global variables (maybe these should go inside a struct)
-#define ng_max 256
-static const int ng = ng_max;
-static double mbps[ng_max];
-static double ts[ng_max];
-
 // API plumbing for eventual external plug-ins
 void init_screen_table ()
 {
@@ -34,9 +28,6 @@ void init_screen_table ()
    screen_table[2].name = "swirl";
    screen_table[2].fun = swirl_screen;
 
-   // initialize ts to sequence from 1 to ng
-   for (int i = 0; i < ng; i++)
-      ts[i] = (double) i + 1.0;
 }
 
 // Return table of screen displays
@@ -58,21 +49,13 @@ int get_current_screen ()
 }
 
 // Draw current screen
-int draw_screen (int rows, int cols, int docolor, int dograph, int use_ext)
+int draw_screen (int rows, int cols, int docolor)
 {
    int rawbits, totalbits;
 
    rawbits = screen_table[current_screen].fun(rows, cols, docolor);
 
-   if (dograph)
-   {
-      totalbits = 3 * rawbits / 4 + ng*16;
-      draw_graph ((int) round(cols/2.0), (int) round(rows/2.0), ts, mbps, ng, use_ext);
-   }
-   else
-   {
-      totalbits = rawbits;
-   }
+   totalbits = rawbits;
 
    return totalbits;
 }
@@ -87,7 +70,6 @@ void set_current_screen (int i)
 void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int inter)
 {
    static int sec, us, secinit, usinit;
-   static int kt = 0;  // index of point to replace
    struct timeval systime;
    double bps, dt;
 
@@ -99,10 +81,6 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
       dt = (double) (sec - secinit) + (double) (us - usinit)*1e-6;
       bps = bits/dt;
 
-      // add measurement to mbps array
-      mbps[kt++] = bps/1024/1024;
-      if (kt >= ng)
-         kt = 0;
    }
    else  // init
    {
@@ -110,10 +88,6 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
       secinit = systime.tv_sec;
       usinit = systime.tv_usec;
       bps = 0;
-      kt = 0;
-      // initialize mbps to 0
-      for (int i = 0; i < ng_max; i++)
-         mbps[i] = 0;
    }
 
    // text display
@@ -138,7 +112,7 @@ void display_mbps (long bits, int nrows, int ncols, int warn, int reset, int int
 }
 
 // Menu items
-void static_display (int nrows, int ncols, int inter, int docolor, int dograph, int verbose, int use_ext, char* name)
+void static_display (int nrows, int ncols, int inter, int docolor, int verbose, int use_ext, char* name)
 {
    attron(COLOR_PAIR(1));
    drawline (1, ncols, use_ext);
@@ -168,21 +142,6 @@ void static_display (int nrows, int ncols, int inter, int docolor, int dograph, 
       else
       {
          printw ("color");
-      }
-      printw (", ");
-      attron (A_BOLD);
-      addch ('g');
-      attroff (A_BOLD);
-      printw (" to toggle ");
-      if (dograph)
-      {
-         attron (COLOR_PAIR(16));
-         printw ("graph");
-         attron (COLOR_PAIR(1));
-      }
-      else
-      {
-         printw ("graph");
       }
       printw (". Display: ");
       attron (A_BOLD);
